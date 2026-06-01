@@ -189,6 +189,54 @@ def status_border_color():
     return (120, 120, 120)
 
 
+def map_panel_color():
+    return (255, 255, 255) if WHITE_BACKGROUND else (15, 15, 15)
+
+
+def map_plot_border_color():
+    return (185, 205, 190) if WHITE_BACKGROUND else (35, 65, 45)
+
+
+def map_grid_color():
+    return (215, 215, 215) if WHITE_BACKGROUND else (50, 50, 50)
+
+
+def map_axis_color():
+    return (190, 200, 200) if WHITE_BACKGROUND else (55, 70, 70)
+
+
+def map_frame_box_color():
+    return (246, 250, 246) if WHITE_BACKGROUND else (22, 32, 24)
+
+
+def map_frame_box_border_color():
+    return (125, 170, 135) if WHITE_BACKGROUND else (70, 120, 80)
+
+
+def robot_marker_color():
+    return (20, 20, 20) if WHITE_BACKGROUND else (255, 255, 255)
+
+
+def robot_frame_color():
+    return (90, 90, 90) if WHITE_BACKGROUND else (230, 230, 230)
+
+
+def serial_panel_color():
+    return (255, 255, 255) if WHITE_BACKGROUND else (18, 18, 18)
+
+
+def serial_panel_border_color():
+    return (170, 170, 170) if WHITE_BACKGROUND else (90, 90, 90)
+
+
+def serial_ok_color():
+    return (0, 125, 70) if WHITE_BACKGROUND else (0, 255, 120)
+
+
+def serial_warning_color():
+    return (170, 95, 0) if WHITE_BACKGROUND else (255, 180, 70)
+
+
 def toggle_background_theme():
     """Toggle the main Pygame background between dark and white."""
     global WHITE_BACKGROUND, last_message
@@ -1647,12 +1695,12 @@ def draw_waypoint_list(surface):
 
 
 def draw_lidar_screen(surface, fps):
-    pygame.draw.rect(surface, (15, 15, 15), lidar_rect)
-    pygame.draw.rect(surface, (0, 220, 120), lidar_rect, 2)
+    pygame.draw.rect(surface, map_panel_color(), lidar_rect)
+    pygame.draw.rect(surface, highlight_text_color(), lidar_rect, 2)
 
-    title = small_font.render("COIN-D6 LiDAR + Arduino Odometry Map", True, (0, 255, 120))
+    title = small_font.render("COIN-D6 LiDAR + Arduino Odometry Map", True, highlight_text_color())
     surface.blit(title, (lidar_rect.x + 12, lidar_rect.y + 10))
-    offset_label = tiny_font.render(f"LiDAR heading offset: {LIDAR_HEADING_OFFSET_DEG:+.1f} deg", True, (230, 230, 120))
+    offset_label = tiny_font.render(f"LiDAR heading offset: {LIDAR_HEADING_OFFSET_DEG:+.1f} deg", True, serial_warning_color())
     surface.blit(offset_label, (max(lidar_rect.x + 260, lidar_rect.right - 240), lidar_rect.y + 13))
 
     # Reserve clean space for title at the top and status text at the bottom.
@@ -1680,25 +1728,25 @@ def draw_lidar_screen(surface, fps):
     nav_x, nav_y, nav_h = current_nav_pose()
     robot_sx, robot_sy = world_to_screen(nav_x, nav_y, center_x, center_y, scale, view_x, view_y)
 
-    pygame.draw.rect(surface, (35, 65, 45), plot_area, 1)
+    pygame.draw.rect(surface, map_plot_border_color(), plot_area, 1)
 
     # LiDAR range rings centred on the moving robot marker.
     max_whole_m = int(max_range_m)
     if plot_area.collidepoint(robot_sx, robot_sy):
         for r_m in range(1, max_whole_m + 1):
             radius = int(r_m * 1000 * scale)
-            pygame.draw.circle(surface, (50, 50, 50), (robot_sx, robot_sy), radius, 1)
-            label = tiny_font.render(f"{r_m}m", True, (120, 120, 120))
+            pygame.draw.circle(surface, map_grid_color(), (robot_sx, robot_sy), radius, 1)
+            label = tiny_font.render(f"{r_m}m", True, muted_text_color())
             surface.blit(label, (min(plot_area.right - 30, robot_sx + radius + 4), robot_sy - 8))
 
     # Fixed world axes through the map origin.
     origin_sx, origin_sy = world_to_screen(0.0, 0.0, center_x, center_y, scale, view_x, view_y)
     if plot_area.left <= origin_sx <= plot_area.right:
-        pygame.draw.line(surface, (55, 70, 70), (origin_sx, plot_area.top), (origin_sx, plot_area.bottom), 1)
+        pygame.draw.line(surface, map_axis_color(), (origin_sx, plot_area.top), (origin_sx, plot_area.bottom), 1)
     if plot_area.top <= origin_sy <= plot_area.bottom:
-        pygame.draw.line(surface, (55, 70, 70), (plot_area.left, origin_sy), (plot_area.right, origin_sy), 1)
+        pygame.draw.line(surface, map_axis_color(), (plot_area.left, origin_sy), (plot_area.right, origin_sy), 1)
     if plot_area.collidepoint(origin_sx, origin_sy):
-        pygame.draw.circle(surface, (120, 120, 120), (origin_sx, origin_sy), 4, 1)
+        pygame.draw.circle(surface, muted_text_color(), (origin_sx, origin_sy), 4, 1)
 
     # Front safety stop zone. Anything inside this body-clearance zone triggers STOP.
     stop_radius = int(FRONT_STOP_DISTANCE_MM * scale)
@@ -1706,7 +1754,7 @@ def draw_lidar_screen(surface, fps):
     right_angle = math.radians(nav_h + FRONT_CONE_HALF_ANGLE_DEG)
     left_pt = (robot_sx + int(math.sin(left_angle) * stop_radius), robot_sy - int(math.cos(left_angle) * stop_radius))
     right_pt = (robot_sx + int(math.sin(right_angle) * stop_radius), robot_sy - int(math.cos(right_angle) * stop_radius))
-    zone_color = (255, 70, 70) if obstacle_detected else (100, 70, 70)
+    zone_color = (220, 40, 40) if obstacle_detected else ((150, 80, 80) if WHITE_BACKGROUND else (100, 70, 70))
     if plot_area.collidepoint(robot_sx, robot_sy):
         pygame.draw.line(surface, zone_color, (robot_sx, robot_sy), left_pt, 1)
         pygame.draw.line(surface, zone_color, (robot_sx, robot_sy), right_pt, 1)
@@ -1721,18 +1769,18 @@ def draw_lidar_screen(surface, fps):
     # This circle represents the 200 mm radius from the robot centre.
     robot_radius_px = max(4, int(ROBOT_RADIUS_MM * scale))
     if plot_area.collidepoint(robot_sx, robot_sy):
-        pygame.draw.circle(surface, (230, 230, 230), (robot_sx, robot_sy), robot_radius_px, 1)
+        pygame.draw.circle(surface, robot_frame_color(), (robot_sx, robot_sy), robot_radius_px, 1)
 
     # Keep the robot-frame text outside the map centre so it does not cover LiDAR points.
     # Important: the emergency stop is based on CLEARANCE from the robot frame, not
     # from the robot centre. With a 200 mm robot radius and 250 mm clearance,
     # the LiDAR trigger distance from the centre is 450 mm.
     frame_box = pygame.Rect(plot_area.right - 230, plot_area.y + 8, 220, 66)
-    pygame.draw.rect(surface, (22, 32, 24), frame_box)
-    pygame.draw.rect(surface, (70, 120, 80), frame_box, 1)
-    draw_text_fit(surface, f"Robot frame: R={ROBOT_RADIUS_MM} mm", tiny_font, (220, 220, 220), (frame_box.x + 8, frame_box.y + 6), frame_box.width - 16)
-    draw_text_fit(surface, f"Cost clearance: {INFLATION_RADIUS_MM} mm", tiny_font, (180, 220, 180), (frame_box.x + 8, frame_box.y + 23), frame_box.width - 16)
-    draw_text_fit(surface, f"Front stop: {FRONT_STOP_CLEARANCE_MM} mm clearance", tiny_font, (255, 180, 120), (frame_box.x + 8, frame_box.y + 40), frame_box.width - 16)
+    pygame.draw.rect(surface, map_frame_box_color(), frame_box)
+    pygame.draw.rect(surface, map_frame_box_border_color(), frame_box, 1)
+    draw_text_fit(surface, f"Robot frame: R={ROBOT_RADIUS_MM} mm", tiny_font, main_text_color(), (frame_box.x + 8, frame_box.y + 6), frame_box.width - 16)
+    draw_text_fit(surface, f"Cost clearance: {INFLATION_RADIUS_MM} mm", tiny_font, highlight_text_color(), (frame_box.x + 8, frame_box.y + 23), frame_box.width - 16)
+    draw_text_fit(surface, f"Front stop: {FRONT_STOP_CLEARANCE_MM} mm clearance", tiny_font, serial_warning_color(), (frame_box.x + 8, frame_box.y + 40), frame_box.width - 16)
 
     # Draw fixed occupancy map and inflated cost map
     map_drawn = 0
@@ -1808,14 +1856,14 @@ def draw_lidar_screen(surface, fps):
 
     # Robot marker moves inside the fixed map.
     if plot_area.collidepoint(robot_sx, robot_sy):
-        pygame.draw.circle(surface, (255, 255, 255), (robot_sx, robot_sy), 7)
+        pygame.draw.circle(surface, robot_marker_color(), (robot_sx, robot_sy), 7)
         heading_rad = math.radians(nav_h)
         hx = robot_sx + int(math.sin(heading_rad) * 26)
         hy = robot_sy - int(math.cos(heading_rad) * 26)
-        pygame.draw.line(surface, (255, 255, 255), (robot_sx, robot_sy), (hx, hy), 2)
+        pygame.draw.line(surface, robot_marker_color(), (robot_sx, robot_sy), (hx, hy), 2)
         pygame.draw.polygon(
             surface,
-            (255, 255, 255),
+            robot_marker_color(),
             [(hx, hy), (hx - 5, hy + 8), (hx + 5, hy + 8)],
         )
     else:
@@ -1843,26 +1891,26 @@ def draw_lidar_screen(surface, fps):
 
     if front_obstacle_distance_mm is None:
         stop_status = f"Front stop ON: stop when frame clearance < {FRONT_STOP_CLEARANCE_MM} mm | no front object"
-        stop_color = (160, 160, 160)
+        stop_color = muted_text_color()
     elif obstacle_detected:
         stop_status = f"EMERGENCY STOP: frame clearance {front_obstacle_clearance_mm:.0f} mm < {FRONT_STOP_CLEARANCE_MM} mm limit"
-        stop_color = (255, 80, 80)
+        stop_color = (220, 40, 40)
     else:
         stop_status = f"Front stop ON: frame clearance {front_obstacle_clearance_mm:.0f} mm | limit {FRONT_STOP_CLEARANCE_MM} mm"
-        stop_color = (180, 180, 180)
+        stop_color = muted_text_color()
 
     help_line = "P plan | V LiDAR odom | Q/E heading | R reset LiDAR | M map | C scan | S stop | U reset all"
 
     info_y = lidar_rect.bottom - 104
     info_x = lidar_rect.x + 12
     info_w = lidar_rect.width - 24
-    draw_text_fit(surface, pose_line, tiny_font, (230, 230, 230), (info_x, info_y), info_w)
-    draw_text_fit(surface, health_line, tiny_font, (180, 180, 180), (info_x, info_y + 17), info_w)
-    draw_text_fit(surface, map_line, tiny_font, (180, 220, 180), (info_x, info_y + 34), info_w)
-    odom_color = (120, 220, 255) if lidar_odom_confidence >= 0.65 else (230, 190, 120)
+    draw_text_fit(surface, pose_line, tiny_font, main_text_color(), (info_x, info_y), info_w)
+    draw_text_fit(surface, health_line, tiny_font, muted_text_color(), (info_x, info_y + 17), info_w)
+    draw_text_fit(surface, map_line, tiny_font, highlight_text_color(), (info_x, info_y + 34), info_w)
+    odom_color = ((0, 100, 160) if WHITE_BACKGROUND else (120, 220, 255)) if lidar_odom_confidence >= 0.65 else serial_warning_color()
     draw_text_fit(surface, lidar_odom_line, tiny_font, odom_color, (info_x, info_y + 51), info_w)
     draw_text_fit(surface, stop_status, tiny_font, stop_color, (info_x, info_y + 68), info_w)
-    draw_text_fit(surface, help_line, tiny_font, (160, 160, 160), (info_x, info_y + 85), info_w)
+    draw_text_fit(surface, help_line, tiny_font, muted_text_color(), (info_x, info_y + 85), info_w)
 
 
 def draw_arduino_data_panel(surface):
@@ -1875,11 +1923,11 @@ def draw_arduino_data_panel(surface):
     if panel_h < 55:
         return
 
-    pygame.draw.rect(surface, (18, 18, 18), (panel_x, panel_y, panel_w, panel_h))
-    pygame.draw.rect(surface, (90, 90, 90), (panel_x, panel_y, panel_w, panel_h), 1)
+    pygame.draw.rect(surface, serial_panel_color(), (panel_x, panel_y, panel_w, panel_h))
+    pygame.draw.rect(surface, serial_panel_border_color(), (panel_x, panel_y, panel_w, panel_h), 1)
 
     arduino_ok = (time.time() - last_arduino_time) < 1.0 if last_arduino_time else False
-    header_color = (0, 255, 120) if arduino_ok else (255, 180, 70)
+    header_color = serial_ok_color() if arduino_ok else serial_warning_color()
     header = tiny_font.render(f"Arduino data  |  {'OK' if arduino_ok else 'No pose'}  |  lines={arduino_rx_count}", True, header_color)
     surface.blit(header, (panel_x + 8, panel_y + 8))
 
@@ -1895,12 +1943,12 @@ def draw_arduino_data_panel(surface):
         f"Error: {lidar_odom_error_dist:.0f} mm, {lidar_odom_error_heading:+.1f} deg",
     ]
     for i, line in enumerate(pose_lines):
-        txt = tiny_font.render(line, True, (220, 220, 220))
+        txt = tiny_font.render(line, True, main_text_color())
         surface.blit(txt, (panel_x + 8, panel_y + 28 + i * 15))
 
     log_y = panel_y + 138
     if log_y < panel_y + panel_h - 18:
-        title = tiny_font.render("Recent raw serial:", True, (200, 200, 200))
+        title = tiny_font.render("Recent raw serial:", True, muted_text_color())
         surface.blit(title, (panel_x + 8, log_y))
         log_y += 16
 
@@ -1909,7 +1957,7 @@ def draw_arduino_data_panel(surface):
 
     for i, line in enumerate(list(serial_log)[-max_lines:]):
         shown = line[:max_chars] + ("..." if len(line) > max_chars else "")
-        color = (0, 255, 120) if ">" in line and line.count(">") == 2 else (180, 180, 180)
+        color = serial_ok_color() if ">" in line and line.count(">") == 2 else muted_text_color()
         txt = tiny_font.render(shown, True, color)
         surface.blit(txt, (panel_x + 8, log_y + i * 14))
 
