@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Pygame robot waypoint controller + Arduino odometry + COIN-D6 LiDAR map.
+Optimised low-RAM version for Raspberry Pi 3B / 1GB RAM.
 
 Arduino side:
 - Serial.begin(500000)
@@ -111,7 +112,7 @@ pygame.init()
 
 MIN_WIDTH, MIN_HEIGHT = 760, 430
 WINDOWED_WIDTH, WINDOWED_HEIGHT = 900, 500
-START_FULLSCREEN = True
+START_FULLSCREEN = False  # Pi 3B low-RAM: start windowed; press F11 for fullscreen
 
 # Start the controller in fullscreen as soon as the Pygame window opens.
 # Press F11 to switch between fullscreen and a normal resizable window.
@@ -132,8 +133,25 @@ small_font = pygame.font.SysFont("Arial", 17)
 tiny_font = pygame.font.SysFont("Arial", 14)
 clock = pygame.time.Clock()
 
+# =========================
+# LOW-RAM / PI 3B PERFORMANCE SETTINGS
+# =========================
+LOW_RAM_MODE = True
+MAIN_FPS = 20                         # Pi 3B: reduce CPU/GPU load
+LIDAR_READ_BYTES = 1024               # smaller serial chunks reduce buffer spikes
+MAX_LIDAR_PACKETS_PER_FRAME = 3       # avoids long blocking parse loops
+LIDAR_ANGLE_BIN_DEG = 2.0             # 180 scan bins instead of 720 bins
+LIDAR_MIN_UPDATE_MM = 20              # ignore tiny distance changes in same bin
+OCCUPANCY_UPDATE_INTERVAL = 0.10      # update fixed map at 10 Hz
+MAX_LATEST_LIDAR_POINTS = int(360 / LIDAR_ANGLE_BIN_DEG)
+MAX_OCCUPANCY_CELLS = 3500            # cap fixed map memory
+MAX_COST_CELLS = 6000                 # cap cost map memory after inflation
+MAX_DRAW_OCC_CELLS = 1400             # draw cap keeps UI responsive
+MAX_DRAW_COST_CELLS = 1200
+last_occupancy_update_time = 0.0
+
 last_message = "Waiting for command..."
-serial_log = deque(maxlen=30)
+serial_log = deque(maxlen=8)  # low-RAM: keep only a few visible serial lines
 arduino_rx_count = 0
 last_arduino_raw = ""
 
@@ -317,7 +335,7 @@ slam_status = "Arduino pose only"
 # This is a lightweight LiDAR-assisted SLAM-style map. The first map is created
 # from Arduino odometry; once enough map exists, scan matching is used to reduce
 # drift and keep the room map fixed in world coordinates.
-MAP_RES_MM = 50                         # each grid cell = 50 mm
+MAP_RES_MM = 75                         # Pi 3B low-RAM: coarser grid = much less memory
 MAP_FREE_DECAY = 1
 MAP_OCC_INC = 4
 MAP_FREE_DEC = 1
@@ -335,7 +353,7 @@ ROBOT_CLEARANCE_MARGIN_MM = 50
 INFLATION_RADIUS_MM = ROBOT_RADIUS_MM + ROBOT_CLEARANCE_MARGIN_MM
 INFLATION_CELLS = max(1, int(math.ceil(INFLATION_RADIUS_MM / MAP_RES_MM)))
 ROBOT_RADIUS_CELLS = max(1, int(math.ceil(ROBOT_RADIUS_MM / MAP_RES_MM)))
-MAX_RAY_RANGE_MM = 4000
+MAX_RAY_RANGE_MM = 3500                   # lower range reduces map/cost-map growth
 MAPPING_ENABLED = True
 
 # Fixed map display. The green map view is centred on a fixed world origin, so
@@ -373,15 +391,15 @@ planning_message = "No path planned"
 # then shows the difference between:
 #   Arduino encoder X/Y + MPU6050 yaw
 #   LiDAR-matched X/Y/yaw
-LIDAR_ODOM_ENABLED = True
-LIDAR_ODOM_INTERVAL = 0.25
+LIDAR_ODOM_ENABLED = False  # Pi 3B low-RAM: press V to enable only when needed
+LIDAR_ODOM_INTERVAL = 0.80
 LIDAR_ODOM_MAX_SCAN_AGE = 0.45
-LIDAR_ODOM_MIN_POINTS = 35
+LIDAR_ODOM_MIN_POINTS = 20
 LIDAR_ODOM_MIN_MAP_CELLS = 25
-LIDAR_ODOM_SEARCH_XY_MM = 180
-LIDAR_ODOM_SEARCH_XY_STEP_MM = 60
-LIDAR_ODOM_SEARCH_YAW_DEG = 10
-LIDAR_ODOM_SEARCH_YAW_STEP_DEG = 2.5
+LIDAR_ODOM_SEARCH_XY_MM = 120
+LIDAR_ODOM_SEARCH_XY_STEP_MM = 80
+LIDAR_ODOM_SEARCH_YAW_DEG = 8
+LIDAR_ODOM_SEARCH_YAW_STEP_DEG = 4.0
 LIDAR_ODOM_MAX_ACCEPT_XY_MM = 220
 LIDAR_ODOM_MAX_ACCEPT_YAW_DEG = 12
 LIDAR_ODOM_GOOD_SCORE = 0.23
@@ -574,15 +592,17 @@ def read_lidar_data():
         return
 
     try:
-        data = lidar.read(4096)
+        data = lidar.read(LIDAR_READ_BYTES)
         if data:
             lidar_buffer.extend(data)
 
-        while True:
+        packets_this_frame = 0
+        while packets_this_frame < MAX_LIDAR_PACKETS_PER_FRAME:
             packet = find_lidar_packet(lidar_buffer)
             if packet is None:
                 break
 
+            packets_this_frame += 1
             lidar_packet_count += 1
             last_lidar_time = time.time()
             points = parse_lidar_packet(packet)
@@ -594,9 +614,16 @@ def read_lidar_data():
                 if distance_mm > max_range_m * 1000:
                     continue
 
-                # 0.5-degree bins keep the newest point for each direction.
-                angle_key = round(angle_deg * 2) / 2.0
-                latest_lidar_points[angle_key] = (angle_deg, distance_mm, intensity, now)
+                # Low-RAM bins keep only one recent point per direction.
+                angle_key = round(angle_deg / LIDAR_ANGLE_BIN_DEG) * LIDAR_ANGLE_BIN_DEG
+                old_pt = latest_lidar_points.get(angle_key)
+                if old_pt is None or abs(distance_mm - old_pt[1]) >= LIDAR_MIN_UPDATE_MM or now - old_pt[3] > 0.20:
+                    latest_lidar_points[angle_key] = (angle_deg, distance_mm, intensity, now)
+
+                # Hard cap as protection if angle rounding ever changes.
+                if len(latest_lidar_points) > MAX_LATEST_LIDAR_POINTS:
+                    oldest_key = min(latest_lidar_points, key=lambda k: latest_lidar_points[k][3])
+                    latest_lidar_points.pop(oldest_key, None)
 
     except Exception as e:
         serial_log.append(f"LiDAR read failed: {e}")
@@ -738,16 +765,49 @@ def bresenham_cells(x0, y0, x1, y1):
     return cells
 
 
+def prune_occupancy_grid():
+    """Keep only the most useful map cells so Pi 3B memory stays stable."""
+    if len(occupancy_grid) <= MAX_OCCUPANCY_CELLS:
+        return
+
+    pose_x, pose_y, _ = current_nav_pose()
+    rgx, rgy = world_to_grid(pose_x, pose_y)
+
+    # Keep strong occupied cells near the robot/map area. Drop weak/free far cells first.
+    cells = list(occupancy_grid.items())
+    cells.sort(key=lambda item: (item[1], -abs(item[0][0] - rgx) - abs(item[0][1] - rgy)))
+    remove_count = len(cells) - MAX_OCCUPANCY_CELLS
+    for cell, _score in cells[:remove_count]:
+        occupancy_grid.pop(cell, None)
+
+
+def prune_cost_grid():
+    """Limit inflated cost-map size after building it."""
+    if len(cost_grid) <= MAX_COST_CELLS:
+        return
+    pose_x, pose_y, _ = current_nav_pose()
+    rgx, rgy = world_to_grid(pose_x, pose_y)
+    cells = list(cost_grid.items())
+    cells.sort(key=lambda item: (abs(item[0][0] - rgx) + abs(item[0][1] - rgy), item[1]))
+    keep = dict(cells[:MAX_COST_CELLS])
+    cost_grid.clear()
+    cost_grid.update(keep)
+
+
 def update_occupancy_map_from_lidar():
     """Fuse recent LiDAR points into a fixed world occupancy map using SLAM pose."""
+    global last_occupancy_update_time
     if not MAPPING_ENABLED or MAPPING_WAIT_FOR_FIRST_ROUTE_POINT or not latest_lidar_points:
         return
 
     now = time.time()
+    if now - last_occupancy_update_time < OCCUPANCY_UPDATE_INTERVAL:
+        return
+    last_occupancy_update_time = now
     pose_x, pose_y, _pose_h = current_nav_pose()
     robot_cell = world_to_grid(pose_x, pose_y)
 
-    for angle_deg, distance_mm, _intensity, timestamp in list(latest_lidar_points.values()):
+    for angle_deg, distance_mm, _intensity, timestamp in tuple(latest_lidar_points.values()):
         if now - timestamp > 0.25:
             continue
         if distance_mm < 80 or distance_mm > MAX_RAY_RANGE_MM:
@@ -764,6 +824,8 @@ def update_occupancy_map_from_lidar():
 
         occupancy_grid[hit_cell] = clamp_occ(occupancy_grid.get(hit_cell, 0) + MAP_OCC_INC)
 
+    prune_occupancy_grid()
+
 
 def wrap_angle_180(angle_deg):
     """Return angle in the range -180..180 degrees."""
@@ -778,7 +840,7 @@ def transform_local_to_world_pose(local_x, local_y, pose_x, pose_y, pose_heading
     return wx, wy
 
 
-def get_recent_lidar_local_points(max_points=140):
+def get_recent_lidar_local_points(max_points=60):
     """Return recent LiDAR points already corrected into robot-local X/Y."""
     now = time.time()
     pts = []
@@ -1009,6 +1071,8 @@ def build_cost_map():
     """Create a collision cost map around occupied cells using the 200 mm robot frame radius."""
     cost_grid.clear()
     occupied = [cell for cell, score in occupancy_grid.items() if score >= OCCUPIED_THRESHOLD]
+    if len(occupied) > MAX_OCCUPANCY_CELLS:
+        occupied = occupied[-MAX_OCCUPANCY_CELLS:]
 
     for ox, oy in occupied:
         cost_grid[(ox, oy)] = COST_OBSTACLE
@@ -1027,6 +1091,8 @@ def build_cost_map():
                 else:
                     inflated = int(220 * (1.0 - d / (INFLATION_CELLS + 0.001)))
                 cost_grid[cell] = max(cost_grid.get(cell, 0), inflated)
+
+    prune_cost_grid()
 
 
 def is_cell_blocked(cell):
@@ -1323,7 +1389,7 @@ def read_arduino_lines():
         return
 
     try:
-        data = arduino.read(4096)
+        data = arduino.read(512)
         if not data:
             return
 
@@ -1401,7 +1467,7 @@ def update_front_obstacle_stop():
     nearest_clearance = None
     lateral_limit = ROBOT_RADIUS_MM + FRONT_STOP_LATERAL_MARGIN_MM
 
-    for angle_deg, distance_mm, _intensity, timestamp in list(latest_lidar_points.values()):
+    for angle_deg, distance_mm, _intensity, timestamp in tuple(latest_lidar_points.values()):
         if now - timestamp > 0.30:
             continue
         if distance_mm <= 0 or distance_mm > FRONT_STOP_DISTANCE_MM + 50:
@@ -1784,7 +1850,7 @@ def draw_lidar_screen(surface, fps):
 
     # Draw fixed occupancy map and inflated cost map
     map_drawn = 0
-    for (gx, gy), score in list(occupancy_grid.items()):
+    for (gx, gy), score in tuple(occupancy_grid.items()):
         if score < OCCUPIED_THRESHOLD:
             continue
         wx, wy = grid_to_world(gx, gy)
@@ -1793,8 +1859,11 @@ def draw_lidar_screen(surface, fps):
             size = max(2, int(MAP_RES_MM * scale))
             pygame.draw.rect(surface, (190, 90, 90), (sx - size // 2, sy - size // 2, size, size))
             map_drawn += 1
+            if map_drawn >= MAX_DRAW_OCC_CELLS:
+                break
 
-    for (gx, gy), cost in list(cost_grid.items()):
+    cost_drawn = 0
+    for (gx, gy), cost in tuple(cost_grid.items()):
         if cost <= 0 or cost >= COST_OBSTACLE:
             continue
         wx, wy = grid_to_world(gx, gy)
@@ -1803,6 +1872,9 @@ def draw_lidar_screen(surface, fps):
             size = max(1, int(MAP_RES_MM * scale))
             shade = max(40, min(140, cost))
             pygame.draw.rect(surface, (shade, shade, 40), (sx - size // 2, sy - size // 2, size, size), 1)
+            cost_drawn += 1
+            if cost_drawn >= MAX_DRAW_COST_CELLS:
+                break
 
     # Draw planned path
     if planned_path:
@@ -1880,7 +1952,7 @@ def draw_lidar_screen(surface, fps):
         f"Range={max_range_m:.1f} m   Scan={visible_points} pts   FPS={fps:.1f}   |   {mapping_status}"
     )
     map_line = (
-        f"Map cells={len(occupancy_grid)}   Path={len(path_waypoints)}/10   "
+        f"Map cells={len(occupancy_grid)}/{MAX_OCCUPANCY_CELLS}   Path={len(path_waypoints)}/10   "
         f"Frame R={ROBOT_RADIUS_MM}mm   Stop clearance={FRONT_STOP_CLEARANCE_MM}mm   Centre trigger={FRONT_STOP_DISTANCE_MM}mm"
     )
     lidar_odom_line = (
@@ -1899,7 +1971,7 @@ def draw_lidar_screen(surface, fps):
         stop_status = f"Front stop ON: frame clearance {front_obstacle_clearance_mm:.0f} mm | limit {FRONT_STOP_CLEARANCE_MM} mm"
         stop_color = muted_text_color()
 
-    help_line = "P plan | V LiDAR odom | Q/E heading | R reset LiDAR | M map | C scan | S stop | U reset all"
+    help_line = "P plan | V LiDAR odom | Q/E heading | R reset LiDAR | M map | C scan | S stop | U reset all | Pi3 low-RAM"
 
     info_y = lidar_rect.bottom - 104
     info_x = lidar_rect.x + 12
@@ -2055,11 +2127,11 @@ try:
         status_w = status_rect.width - 30
         draw_text_fit(screen, f"Status: {last_message}", small_font, highlight_text_color(), (status_x, status_rect.y + 8), status_w)
 
-        command_line = "Arduino command format: (X,Y,wait_sec):  |  B white/dark background  |  V LiDAR odom  |  U Reset All  |  F11 fullscreen/window  |  ESC quit"
+        command_line = "Arduino command format: (X,Y,wait_sec):  |  B white/dark background  |  V LiDAR odom  |  U Reset All  |  F11 fullscreen/window  |  ESC quit  |  Pi3B low-RAM mode"
         draw_text_fit(screen, command_line, tiny_font, muted_text_color(), (status_x, status_rect.y + 34), status_w)
 
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(MAIN_FPS)
 
 except KeyboardInterrupt:
     pass
