@@ -9,23 +9,24 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     share_dir = get_package_share_directory('cspc_lidar')
-    parameter_file = LaunchConfiguration('params_file')
+    default_params = os.path.join(share_dir, 'params', 'cspc_lidar.yaml')
 
     return LaunchDescription([
-        DeclareLaunchArgument(
-            'params_file',
-            default_value=os.path.join(
-                share_dir, 'params', 'cspc_lidar.yaml'),
-            description='Path to the COIN-D6 ROS 2 parameter file.'),
+        DeclareLaunchArgument('params_file', default_value=default_params),
+        DeclareLaunchArgument('port', default_value='/dev/ttyUSB0'),
+        DeclareLaunchArgument('frame_id', default_value='laser'),
         Node(
             package='cspc_lidar',
             executable='cspc_lidar',
             name='cspc_lidar',
-            namespace='',
             output='screen',
             emulate_tty=True,
-            parameters=[parameter_file],
-            # Keep failures visible instead of creating an endless restart loop.
-            respawn=False,
+            parameters=[
+                LaunchConfiguration('params_file'),
+                {
+                    'port': LaunchConfiguration('port'),
+                    'frame_id': LaunchConfiguration('frame_id'),
+                },
+            ],
         ),
     ])

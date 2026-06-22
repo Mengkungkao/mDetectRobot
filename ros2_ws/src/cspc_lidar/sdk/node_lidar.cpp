@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <vector>
 #include <thread>
-#include <cinttypes>
 
 #include "node_lidar.h"
 #include "msg_recept.h"
@@ -51,7 +50,7 @@ void flushSerial()
 	if (len)
 	{
 		uint8_t *buffer = static_cast<uint8_t *>(alloca(len * sizeof(uint8_t)));
-		(void)node_lidar.serial_port->read_data(buffer, len);
+		size_t bytes_read = node_lidar.serial_port->read_data(buffer, len);
 	}
 
 	sleep_ms(20);
@@ -60,8 +59,10 @@ void flushSerial()
 /*激光雷达启动状态判断函数*/
 bool lidar_state_judgment()
 {
+	static bool status_judge = false;     //整体状态判断
 	static bool lidar_flush = false;      //是否已经下发雷达启动指令
 	static bool wait_speed_right = false; //是否获取到调速信息
+	static bool lidar_start_flag = false; //下发雷达启动指令后的雷达反馈标志
 
 	static uint64_t lidar_status_time = 0; //收到启动指令或者重启指令的时间
 
@@ -75,19 +76,21 @@ bool lidar_state_judgment()
 
 		lidar_flush = false;
 		wait_speed_right = false;
+		lidar_start_flag = false;
 
 		lidar_status_time = current_times();
 		flushSerial();
 	}
 	if(node_lidar.lidar_status.lidar_trap_restart)
 	{
-		printf("状态异常重新启动 %" PRIu64 "\n", lidar_status_time);
+		printf("状态异常重新启动 %lld\n",lidar_status_time);
 		
 		node_lidar.lidar_status.lidar_trap_restart = false;
 
 		
 		wait_speed_right = false;
 		lidar_flush = false;
+		lidar_start_flag = false;
 
 		lidar_status_time = current_times();
 		node_lidar.serial_port->write_data(end_lidar,4);
@@ -200,7 +203,7 @@ int read_forever()
 						node_lidar._lock.lock();
 						if((node_lidar.lidar_time.scan_time_current - node_lidar.lidar_time.scan_time_record) > 1000)
 						{
-							printf("full----- count=%zu,time=%" PRId64 ",frequence=%d\n", scan_count, current_times(), local_scan[0].scan_frequence);
+							printf("full----- count=%d,time=%lld,frequence=%d\n",scan_count,current_times(),local_scan[0].scan_frequence);
 							node_lidar.lidar_time.scan_time_record = node_lidar.lidar_time.scan_time_current;
 						}
 						node_lidar.lidar_time.scan_start_time = node_lidar.lidar_time.tim_scan_start;
@@ -306,7 +309,7 @@ void send_lidar_data(LaserScan &outscan)
 			float range = 0;
 			float angle = 0.0;
 			uint16_t intensity = 0;
-			for (std::size_t i = 0; i < count; ++i)
+			for (int i = 0; i < count; i++)
 			{
 				LaserPoint point;
 				LaserPoint point_check;

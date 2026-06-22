@@ -1,461 +1,249 @@
-# AutonomousV11 complete ROS 2 + Arduino starter system
+# mDetect ROS 2 TurtleBot3-Style Robot Project
 
-This bundle converts the robot into a three-layer autonomous system:
+This release separates the robot into a Raspberry Pi hardware layer and an Ubuntu workstation navigation layer, similar to TurtleBot3.
 
-1. **Ubuntu workstation:** RViz2, map/costmap/path monitoring, SSH, and timed waypoint input.
-2. **Raspberry Pi with Ubuntu Server and ROS 2 Humble:** LiDAR `/scan`, TF, encoder/IMU fusion, SLAM Toolbox, Nav2, A* planning, Regulated Pure Pursuit, safety supervision, and the Arduino serial bridge.
-3. **Arduino Uno:** four encoders, MPU6050, four wheel-speed PID loops, motor PWM/direction, watchdog, brake/release, and an emergency-stop latch.
+## Fixed hardware mapping
 
-The old Arduino waypoint state machine has been removed. Nav2 is now the only global navigation controller.
+| Device | Default port | Baud rate |
+|---|---:|---:|
+| COIN-D6 LiDAR | `/dev/ttyUSB0` | 230400 |
+| Arduino UNO | `/dev/ttyUSB1` | 500000 |
 
-## Important hardware assumptions
+The setup can create persistent links named `/dev/coin_d6` and `/dev/arduino_mdetect` so the devices do not swap after reboot.
 
-- Wheel diameter: **80.5 mm**
-- Encoder resolution: **4320 counts/revolution**
-- Track width: **190 mm**
-- Motors **1 and 4 are the right side**
-- Motors **2 and 3 are the left side**
-- Arduino serial speed: **500000 baud**
-- LiDAR publishes `sensor_msgs/LaserScan` on `/scan` with frame `lidar_link`
-- COIN-D6 serial defaults: `/dev/sc_mini` at **230400 baud**
+## Main improvements
 
-Change these values in:
+- The supplied `cspc_lidar` SDK is included in `ros2_ws/src/cspc_lidar` and built on the Raspberry Pi.
+- The obsolete SDK lifecycle launch file was replaced with a normal ROS 2 node launch.
+- The SDK now publishes a normalised `-pi` to `+pi` `/scan`, suitable for Nav2 and the front safety gate.
+- The Arduino forward trim compile defect was corrected.
+- Motor 4 has separate forward and reverse feed-forward trims.
+- Four independent encoder PID loops remain active.
+- MPU6050 straight-line heading hold compensates for remaining drift.
+- Verification scripts test installation, USB assignment, Arduino protocol, ROS topics, TF and network discovery.
+- Motor tests require an explicit safety confirmation before movement.
 
-- `arduino/AutonomousV11_LowLevel/AutonomousV11_LowLevel.ino`
-- `ros2_ws/src/mdetect_base/config/base.yaml`
-- `ros2_ws/src/mdetect_description/urdf/mdetect_robot.urdf.xacro`
-
-## 1. Upload the Arduino firmware
-
-Copy these folders into the Arduino library directory:
-
-```bash
-cp -r arduino/libraries/QGPMakerRobot ~/Arduino/libraries/
-cp -r arduino/libraries/PinChangeInterrupt ~/Arduino/libraries/
-```
-
-Install **MPU6050_tockn** from Arduino IDE Library Manager. Open and upload:
+## Architecture
 
 ```text
-arduino/AutonomousV11_LowLevel/AutonomousV11_LowLevel.ino
+Ubuntu workstation
+  RViz2 + SLAM Toolbox or AMCL + Nav2
+  A* global planning + Regulated Pure Pursuit
+  waypoint client and keyboard teleop
+             |
+             | ROS 2 DDS over LAN, domain 30
+             v
+Raspberry Pi Ubuntu Server 22.04
+  COIN-D6 SDK -> /scan
+  command priority and obstacle safety gate
+  Arduino serial bridge -> /odom, /imu/data, /joint_states and TF
+             |
+             | USB serial at 500000 baud
+             v
+Arduino UNO
+  MPU6050 + four encoders + four motor PID loops
+  direction trims + heading hold + watchdog + emergency stop
 ```
 
-Open Serial Monitor at `500000` baud. After gyro calibration, the Uno prints:
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for more detail.
+
+# 1. Upload the Arduino firmware
+
+Open:
 
 ```text
-READY
+arduino/autonomous_v12/autonomous_v12.ino
 ```
 
-### Direct Arduino test commands
+Install `MPU6050_tockn` from Arduino Library Manager, select **Arduino UNO**, and upload. The QGPMaker and pin-change interrupt files are already in the sketch folder.
 
-Raise the robot so its wheels are clear of the floor.
+Keep the robot completely still during power-up gyro calibration.
+
+# 2. Install the Raspberry Pi
+
+Target operating system: **Ubuntu Server 22.04, 64-bit**.
+
+From the extracted project directory:
+
+```bash
+chmod +x install_pi.sh
+./install_pi.sh
+```
+
+Log out and back in once after installation so the `dialout` group is active.
+
+Verify the installation and physical ports:
+
+```bash
+bash scripts/pi/verify_install.sh
+```
+
+The verification script expects:
 
 ```text
-V,1,50,50,50,50
-B,2,1000
-V,3,-50,-50,-50,-50
-E,4
-C,5
-R,6
+/dev/ttyUSB0 = LiDAR
+/dev/ttyUSB1 = Arduino UNO
 ```
 
-The firmware continuously returns encoder counts, wheel speeds, yaw and state using the format documented in `docs/SERIAL_PROTOCOL.md`.
-
-### Direction corrections
-
-If one motor turns the wrong way, change its entry in:
-
-```cpp
-const int8_t MOTOR_DIRECTION_SIGN[4] = {1, 1, 1, 1};
-```
-
-If one encoder decreases while its wheel moves forward, reverse that entry in:
-
-```cpp
-const int8_t ENCODER_SIGN[4] = {-1, 1, 1, -1};
-```
-
-If RViz yaw turns clockwise when the robot physically turns counter-clockwise, change:
-
-```cpp
-const float IMU_YAW_SIGN = -1.0f;
-```
-
-## 2. Install the Raspberry Pi workspace and COIN-D6 driver
-
-Copy this whole folder to the Pi, then run:
+To create stable device names manually:
 
 ```bash
-cd AutonomousV11_complete
-./scripts/install_pi.sh
+bash scripts/pi/configure_udev.sh /dev/ttyUSB0 /dev/ttyUSB1
 ```
 
-The installer now:
+# 3. Install the Ubuntu workstation
 
-- installs the PCL and ROS dependencies needed by the CSPC driver;
-- copies the bundled `cspc_lidar` package into `~/mdetect_ws/src`;
-- installs the COIN-D6 USB rule as `/etc/udev/rules.d/99-cspc-coin-d6.rules`;
-- builds the LiDAR driver together with the mDetect packages; and
-- configures the full robot launch files to start the LiDAR automatically.
-
-Log out and back in after installation so membership in the `dialout` group takes effect. Unplug and reconnect the LiDAR, then check the device link:
+Target operating system: **Ubuntu 22.04 Desktop**.
 
 ```bash
-ls -l /dev/sc_mini
-readlink -f /dev/sc_mini
+chmod +x install_workstation.sh
+./install_workstation.sh
 ```
 
-Find stable serial paths for both the Arduino and LiDAR:
+Both machines use:
 
 ```bash
-ls -l /dev/serial/by-id/
+export ROS_DOMAIN_ID=30
+export ROS_LOCALHOST_ONLY=0
 ```
 
-Set the Arduino path in:
+The installers save these values in `~/.mdetect_ros2_env`.
+
+# 4. Bring up the complete robot on the Pi
 
 ```bash
-nano ~/mdetect_ws/src/mdetect_base/config/base.yaml
-```
-
-The default COIN-D6 settings are stored in:
-
-```bash
-nano ~/mdetect_ws/src/cspc_lidar/params/cspc_lidar.yaml
-```
-
-Default LiDAR values:
-
-```yaml
-port: /dev/sc_mini
-baudrate: 230400
-frame_id: lidar_link
-version: 4
-```
-
-If you change either configuration file, rebuild:
-
-```bash
-cd ~/mdetect_ws
-colcon build --symlink-install
-source install/setup.bash
-```
-
-> The supplied vendor archive is named `cspc_lidar_sdk_ros2_D4_20250731`. It is bundled here as the CSPC driver for the project COIN-D6 unit, but the final hardware behaviour must still be verified on the actual sensor.
-
-### Installer stops at `AMENT_TRACE_SETUP_FILES: unbound variable`
-
-Older copies of the installer used `set -u` while sourcing the ROS 2 Humble environment. Some ament setup scripts read the optional `AMENT_TRACE_SETUP_FILES` variable before defining it, which causes Bash to stop. The current scripts temporarily disable nounset only while sourcing ROS setup files.
-
-For an older package, the immediate terminal workaround is:
-
-```bash
-cd ~/mDetectRobot
-sed -i '/^source \/opt\/ros\/humble\/setup.bash$/i set +u' scripts/install_pi.sh
-sed -i '/^source \/opt\/ros\/humble\/setup.bash$/a set -u' scripts/install_pi.sh
-./scripts/install_pi.sh
-```
-
-It is safe to rerun the installer. Existing apt packages, copied source files and udev rules are reused.
-
-## 3. Test the COIN-D6 LiDAR
-
-Run the supplied test launcher:
-
-```bash
-cd AutonomousV11_complete
-./scripts/test_lidar.sh
-```
-
-Or start the driver directly:
-
-```bash
-source ~/mdetect_ws/install/setup.bash
-ros2 launch cspc_lidar lidar_launch.py
-```
-
-The expected output is:
-
-```text
-Topic: /scan
-Type:  sensor_msgs/msg/LaserScan
-Frame: lidar_link
-Rate:  approximately 10 Hz
-```
-
-Check the stream in another terminal:
-
-```bash
-ros2 pkg executables cspc_lidar
-ros2 topic info /scan
-ros2 topic echo /scan --once
-ros2 topic hz /scan
-```
-
-The driver also publishes `/point_cloud` and diagnostic text on `/lsd_error`.
-
-If `/dev/sc_mini` points to the Arduino instead of the LiDAR, both devices probably use the same USB-to-serial chipset. Use the LiDAR path from `/dev/serial/by-id/` and change the `port` value in `cspc_lidar.yaml`.
-
-See `docs/COIN_D6_LIDAR.md` for detailed setup and troubleshooting.
-
-## 4. Run SLAM + Nav2 on the Pi
-
-The COIN-D6 starts automatically with the full robot launch:
-
-```bash
-source ~/mdetect_ws/install/setup.bash
-ros2 launch mdetect_bringup robot_slam.launch.py
-```
-
-To run the stack without starting the LiDAR, for example when replaying a rosbag:
-
-```bash
-ros2 launch mdetect_bringup robot_slam.launch.py start_lidar:=false
+./bringup_pi.sh
 ```
 
 This starts:
 
-- Arduino serial bridge
-- Four-wheel encoder odometry
-- MPU6050 IMU publication
-- `robot_localization` EKF
-- Robot description and TF
-- SLAM Toolbox
-- Nav2 global and local costmaps
-- SmacPlanner2D cost-aware A*
-- Regulated Pure Pursuit
-- Nav2 velocity smoother
-- Front-obstacle safety supervisor
-- Timed waypoint executor
+- `robot_state_publisher`
+- `cspc_lidar` on `/dev/ttyUSB0`
+- `mdetect_serial_bridge` on `/dev/ttyUSB1`
+- `mdetect_cmd_mux`
+- LiDAR front-obstacle safety gate
+- odometry, IMU, joint state, wheel telemetry and TF publishers
 
-## 5. Install and run the Ubuntu workstation
-
-Copy this folder to the workstation and run:
+In a second Pi terminal, verify the running robot:
 
 ```bash
-cd AutonomousV11_complete
-./scripts/install_workstation.sh
+./verify_pi.sh
 ```
 
-Both computers must use the same network settings:
-
-```bash
-export ROS_DOMAIN_ID=42
-export ROS_LOCALHOST_ONLY=0
-export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-```
-
-Open RViz2 on the workstation:
-
-```bash
-source ~/mdetect_ws/install/setup.bash
-ros2 launch mdetect_bringup workstation_rviz.launch.py
-```
-
-Verify that the workstation can see the Pi:
-
-```bash
-ros2 node list
-ros2 topic list
-ros2 topic echo /odometry/filtered --once
-```
-
-If discovery does not work, test multicast. Run this on one computer:
-
-```bash
-ros2 multicast receive
-```
-
-Then run this on the other computer:
-
-```bash
-ros2 multicast send
-```
-
-Both computers must be on the same LAN, use `ROS_DOMAIN_ID=42`, and allow DDS multicast traffic.
-
-SSH remains useful for Pi maintenance:
-
-```bash
-ssh <pi-user>@<pi-ip-address>
-```
-
-## 6. Send predefined timed waypoints
-
-The default input mode preserves your original convention:
+Expected core topics:
 
 ```text
-(x_right_mm, y_forward_mm, clockwise_heading_deg, wait_seconds)
+/scan
+/odom
+/imu/data
+/joint_states
+/base/wheel_speeds_mm_s
+/base/wheel_pwm
+/base/encoder_ticks
+/safety/front_blocked
+/safety/front_distance
 ```
 
-Example:
+# 5. Verify workstation-to-Pi ROS networking
+
+On the workstation:
 
 ```bash
-ros2 run mdetect_base send_waypoints \
-  "(0,2000,0,0) (1000,2000,0,0) (1000,0,180,5) (0,0,0,0)"
+bash scripts/workstation/verify_network.sh
 ```
 
-Meaning:
+If topics are not visible, confirm both computers are on the same network, use domain ID 30, and allow DDS multicast/UDP traffic through the firewall.
 
-- Move forward 2000 mm
-- Move to the point 1000 mm right and 2000 mm forward
-- Move to 1000 mm right, face 180°, and wait five seconds
-- Return to the origin
+# 6. Start mapping or navigation
 
-The executor converts these values into ROS coordinates and sends each pose to Nav2. It waits for the requested time only after Nav2 reports success.
-
-You can also publish directly:
+For a new map:
 
 ```bash
-ros2 topic pub --once /waypoint_input std_msgs/msg/String \
-  "{data: '(0,2000,0,0) (1000,2000,0,5)'}"
+bash scripts/workstation/bringup_slam.sh
 ```
 
-Cancel the list:
+For a saved map:
 
 ```bash
-ros2 service call /waypoints/cancel std_srvs/srv/Trigger "{}"
+bash scripts/workstation/bringup_navigation.sh /absolute/path/to/map.yaml
 ```
 
-## 7. Safety commands
-
-Latch an emergency stop:
+Keyboard teleoperation:
 
 ```bash
-ros2 service call /safety/stop std_srvs/srv/Trigger "{}"
+bash scripts/workstation/teleop.sh
 ```
 
-After the obstacle is removed and the front range is clear, reset it:
+Predefined waypoint client:
 
 ```bash
-ros2 service call /safety/clear std_srvs/srv/Trigger "{}"
+bash scripts/workstation/run_waypoints.sh
 ```
 
-The system has three independent stop layers:
+# 7. Test motors and correct straight-line motion
 
-1. Nav2 collision checking and costmaps
-2. Pi front-cone safety supervisor
-3. Arduino serial watchdog and emergency-stop latch
-
-A physical power-cut emergency-stop switch is still recommended for testing around people.
-
-## 8. First motor test through ROS 2
-
-Keep the robot raised:
+First lift the robot so all wheels are clear:
 
 ```bash
-source ~/mdetect_ws/install/setup.bash
-ros2 launch mdetect_bringup robot_bringup.launch.py
+bash scripts/pi/test_actuators_on_blocks.sh --confirm-robot-lifted
 ```
 
-This launch now starts the COIN-D6 by default. For a motor-only bench test, use:
+Then provide at least 2 m of clear floor and run the low-speed report:
 
 ```bash
-ros2 launch mdetect_bringup robot_bringup.launch.py start_lidar:=false
+bash scripts/pi/straight_line_test.sh --confirm-clear-path
 ```
 
-In a second terminal:
+Example motor 4 forward adjustment:
 
 ```bash
-./scripts/test_forward.sh 2 0.05
+bash scripts/pi/set_motor_tuning.sh trimf 4 0.80
 ```
 
-Check:
+Display current Arduino runtime tuning:
 
 ```bash
-ros2 topic echo /wheel/encoder_counts
-ros2 topic echo /wheel/speeds
-ros2 topic echo /imu/data
-ros2 topic echo /wheel/odometry
-ros2 topic echo /odometry/filtered
+bash scripts/pi/set_motor_tuning.sh show
 ```
 
-If the whole robot moves backward for positive `linear.x`, set `linear_sign: -1.0` in `base.yaml`. If positive `angular.z` turns clockwise, set `angular_sign: -1.0`.
+See [docs/STRAIGHT_LINE_TUNING.md](docs/STRAIGHT_LINE_TUNING.md).
 
-## 9. Save a map
-
-After completing mapping:
+# 8. Emergency controls
 
 ```bash
-mkdir -p ~/mdetect_ws/src/mdetect_bringup/maps
-ros2 run nav2_map_server map_saver_cli \
-  -f ~/mdetect_ws/src/mdetect_bringup/maps/tunnel_map
+ros2 service call /base/emergency_stop std_srvs/srv/Trigger {}
+ros2 service call /base/clear_emergency_stop std_srvs/srv/Trigger {}
+ros2 service call /base/reset_odometry std_srvs/srv/Trigger {}
+ros2 service call /base/zero_yaw std_srvs/srv/Trigger {}
+ros2 service call /base/calibrate_imu std_srvs/srv/Trigger {}
 ```
 
-## 10. Run navigation with a saved map
+# 9. Optional Pi auto-start
 
-Stop the SLAM launch, then run:
+After manual bringup and verification work correctly:
 
 ```bash
-ros2 launch mdetect_bringup robot_navigation.launch.py \
-  map:=$HOME/mdetect_ws/src/mdetect_bringup/maps/tunnel_map.yaml
+bash scripts/pi/enable_autostart.sh
 ```
 
-Use RViz2 **2D Pose Estimate** once to initialize AMCL, then send timed waypoints.
-
-## 11. Topic flow
-
-```text
-COIN-D6 cspc_lidar -> /scan -> SLAM Toolbox + costmaps + safety supervisor
-/wheel/odometry + /imu/data -> robot_localization
-/odometry/filtered -> Nav2
-Nav2 controller -> /cmd_vel_nav
-velocity smoother -> /cmd_vel
-safety supervisor -> /cmd_vel_safe
-serial bridge -> Arduino four wheel targets
-```
-
-## 12. Recommended test order
-
-1. Test every motor and encoder with the robot raised.
-2. Confirm positive ROS yaw is counter-clockwise.
-3. Confirm `/wheel/odometry` moves forward on the RViz X axis.
-4. Confirm the complete TF tree.
-5. Confirm `/scan` overlays correctly on the robot.
-6. Build a map manually at very low speed.
-7. Test one Nav2 goal.
-8. Test two timed waypoints.
-9. Test obstacle slowdown and the latched stop.
-10. Test USB disconnection and Wi-Fi loss; the Arduino must stop safely.
-
-## ROS 2 Humble COIN-D6 build correction
-
-The bundled CSPC vendor source has been updated for ROS 2 Humble. Its parameters
-are declared with typed default values for `port`, `baudrate`, `frame_id`, and
-`version`. This prevents the Humble compiler error:
-
-```text
-no matching function for call to rclcpp::Node::declare_parameter(...)
-```
-
-If an older copy has already been installed into `~/mdetect_ws`, update the
-project package and rerun the installer, or use `scripts/fix_coin_d6_humble.sh`.
-The installer also skips the unresolved `ament_python` rosdep key; this key is
-the package build type and does not prevent the Python package from building.
-
-After a successful build, verify the driver with:
+Check the service:
 
 ```bash
-source /opt/ros/humble/setup.bash
-source ~/mdetect_ws/install/setup.bash
-ros2 pkg executables cspc_lidar
-ros2 launch cspc_lidar lidar_launch.py
+systemctl status mdetect-robot.service
+journalctl -u mdetect-robot.service -f
 ```
 
-In another terminal:
+# ROS coordinate convention
 
-```bash
-source /opt/ros/humble/setup.bash
-source ~/mdetect_ws/install/setup.bash
-ros2 topic echo /scan --once
-```
+- `+X`: forward
+- `+Y`: left
+- positive yaw: counter-clockwise
+- mapping TF: `map -> odom -> base_footprint -> base_link -> laser`
 
-### Cleanly rebuild only the COIN-D6 driver
+# Important safety behaviour
 
-Use the bundled helper to avoid stale `AMENT_PREFIX_PATH` and `CMAKE_PREFIX_PATH` warnings:
-
-```bash
-cd ~/mDetectRobot
-./scripts/rebuild_lidar.sh
-```
-
-The vendor SDK has also been cleaned for ROS 2 Humble: parameter types, format strings, signed/unsigned loops, missing returns, unsafe object clearing, and CMake policy warnings are corrected.
+- Arduino communication watchdog stops the motors after 500 ms without commands.
+- Emergency stop remains latched until explicitly cleared.
+- Normal stop brakes for one second, then releases the H-bridge.
+- The Pi blocks positive forward velocity when an obstacle is closer than 0.30 m in the front cone.
+- Rotation remains available while blocked so the robot can turn away.

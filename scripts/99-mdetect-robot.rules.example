@@ -1,0 +1,5 @@
+# Prefer scripts/pi/configure_udev.sh, which generates rules from the currently
+# connected /dev/ttyUSB0 LiDAR and /dev/ttyUSB1 Arduino identities.
+# Manual examples:
+# SUBSYSTEM=="tty", ENV{ID_SERIAL_SHORT}=="LIDAR_SERIAL", SYMLINK+="coin_d6", GROUP="dialout", MODE="0660"
+# SUBSYSTEM=="tty", ENV{ID_SERIAL_SHORT}=="ARDUINO_SERIAL", SYMLINK+="arduino_mdetect", GROUP="dialout", MODE="0660"

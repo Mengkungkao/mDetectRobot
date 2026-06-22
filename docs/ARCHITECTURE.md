@@ -1,37 +1,33 @@
-# Runtime architecture
+# mDetect ROS 2 architecture
 
 ```text
-Ubuntu workstation
+Ubuntu workstation (ROS 2 Humble desktop)
   RViz2
-  waypoint input / monitoring
-          |
-          | ROS 2 DDS over LAN, ROS_DOMAIN_ID=42
-          v
-Raspberry Pi Ubuntu Server
-  COIN-D6 vendor driver -> /scan
+  SLAM Toolbox or AMCL
+  Nav2 A* planner
+  Regulated Pure Pursuit controller
+  keyboard teleop and waypoint client
+                |
+                | ROS 2 DDS, ROS_DOMAIN_ID=30
+                v
+Raspberry Pi Ubuntu Server 22.04
   robot_state_publisher
-  serial_bridge -> wheel odometry + IMU
-  robot_localization -> /odometry/filtered and odom->base_footprint
-  SLAM Toolbox -> /map and map->odom
-  Nav2 SmacPlanner2D A* -> global path
-  Regulated Pure Pursuit -> cmd_vel_nav
-  Nav2 velocity smoother -> /cmd_vel
-  safety_supervisor -> /cmd_vel_safe
-  serial_bridge -> four wheel targets
-          |
-          | USB serial 500000 baud
-          v
-Arduino Uno
-  four encoders + MPU6050
-  four wheel PID controllers
-  motor shield
-  watchdog + emergency-stop latch
+  cspc_lidar SDK: /dev/ttyUSB0 -> /scan
+  mdetect_cmd_mux: manual > teleop > Nav2
+  front LiDAR safety gate
+  mdetect_serial_bridge: /cmd_vel <-> /dev/ttyUSB1
+  /odom, /imu/data, /joint_states, wheel telemetry, TF
+                |
+                | USB serial, 500000 baud
+                v
+Arduino UNO
+  four encoder inputs
+  MPU6050 yaw
+  four independent motor PID controllers
+  direction-specific motor feed-forward trims
+  straight-line IMU heading hold
+  one-second brake then release
+  500 ms command watchdog and latched emergency stop
 ```
 
-TF chain:
-
-```text
-map -> odom -> base_footprint -> base_link -> lidar_link
-                                       `-> imu_link
-                                       `-> wheel links
-```
+The Pi owns the physical robot. The workstation owns mapping, localisation, planning and operator interfaces. This follows the same separation used by TurtleBot3 systems.

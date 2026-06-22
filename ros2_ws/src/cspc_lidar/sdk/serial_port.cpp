@@ -31,18 +31,8 @@ struct termios2 {
 Serial_Port::Serial_Port(const string &port, uint32_t baudrate, Timeout timeout,
                bytesize_t bytesize, parity_t parity, stopbits_t stopbits,
                flowcontrol_t flowcontrol)
-	: port_(port),
-	  baudrate_(baudrate),
-	  fd_(-1),
-	  pid(0),
-	  is_open_(false),
-	  byte_time_ns_(0),
-	  timeout_(timeout),
-	  parity_(parity),
-	  bytesize_(bytesize),
-	  stopbits_(stopbits),
-	  flowcontrol_(flowcontrol)
-{
+	:port_(port),baudrate_(baudrate),timeout_(timeout),bytesize_(bytesize),parity_(parity),stopbits_(stopbits),flowcontrol_(flowcontrol){
+
 }
 
 Serial_Port::~Serial_Port(){
@@ -578,8 +568,6 @@ bool Serial_Port::setCustomBaudRate(unsigned long baudrate) {
       return true;
     }
   }
-
-  return false;
 }
 
 bool Serial_Port::setBaudrate(unsigned long baudrate) {
@@ -587,6 +575,7 @@ bool Serial_Port::setBaudrate(unsigned long baudrate) {
   if (fd_ == -1) {
     return false;
   }
+  speed_t new_baud = static_cast<speed_t>(baudrate);
 
   return setCustomBaudRate(baudrate);
 }
