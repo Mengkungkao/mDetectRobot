@@ -1,133 +1,119 @@
-# mDetect ROS 2 TurtleBot3-Style Robot Project
+# mDetect ROS 2 TurtleBot3-Style Robot Stack
 
-This release separates the robot into a Raspberry Pi hardware layer and an Ubuntu workstation navigation layer, similar to TurtleBot3.
+This package rebuilds the working `mdetect_ros2_v1` project into a TurtleBot3-style ROS 2 Humble system with separate onboard bringup and workstation navigation packages.
 
-## Fixed hardware mapping
+## Fixed hardware assignment
 
-| Device | Default port | Baud rate |
+| Component | Device | Baud rate |
 |---|---:|---:|
 | COIN-D6 LiDAR | `/dev/ttyUSB0` | 230400 |
-| Arduino UNO | `/dev/ttyUSB1` | 500000 |
+| Arduino Uno | `/dev/ttyUSB1` | 500000 |
 
-The setup can create persistent links named `/dev/coin_d6` and `/dev/arduino_mdetect` so the devices do not swap after reboot.
-
-## Main improvements
-
-- The supplied `cspc_lidar` SDK is included in `ros2_ws/src/cspc_lidar` and built on the Raspberry Pi.
-- The obsolete SDK lifecycle launch file was replaced with a normal ROS 2 node launch.
-- The SDK now publishes a normalised `-pi` to `+pi` `/scan`, suitable for Nav2 and the front safety gate.
-- The Arduino forward trim compile defect was corrected.
-- Motor 4 has separate forward and reverse feed-forward trims.
-- Four independent encoder PID loops remain active.
-- MPU6050 straight-line heading hold compensates for remaining drift.
-- Verification scripts test installation, USB assignment, Arduino protocol, ROS topics, TF and network discovery.
-- Motor tests require an explicit safety confirmation before movement.
+The installers do **not** calculate or require a SHA256 checksum.
 
 ## Architecture
 
 ```text
 Ubuntu workstation
-  RViz2 + SLAM Toolbox or AMCL + Nav2
-  A* global planning + Regulated Pure Pursuit
-  waypoint client and keyboard teleop
-             |
-             | ROS 2 DDS over LAN, domain 30
-             v
-Raspberry Pi Ubuntu Server 22.04
-  COIN-D6 SDK -> /scan
-  command priority and obstacle safety gate
-  Arduino serial bridge -> /odom, /imu/data, /joint_states and TF
-             |
-             | USB serial at 500000 baud
-             v
-Arduino UNO
-  MPU6050 + four encoders + four motor PID loops
-  direction trims + heading hold + watchdog + emergency stop
+  RViz2 + SLAM Toolbox + Navigation2
+  A* NavFn planner + Regulated Pure Pursuit
+  waypoint and keyboard control
+                 |
+                 | ROS 2 DDS, ROS_DOMAIN_ID=30
+                 v
+Raspberry Pi / Ubuntu Server 22.04 / ROS 2 Humble
+  mdetect_bringup
+  robot_state_publisher and TF
+  CSPC vendor COIN-D6 SDK -> /scan
+  safety command mux -> /cmd_vel
+  Arduino serial bridge -> /odom, /imu/data, /joint_states
+                 |
+                 | /dev/ttyUSB1, 500000 baud
+                 v
+Arduino Uno
+  four encoders + MPU6050
+  four independent speed PID loops
+  motor 4 forward/reverse trim
+  straight-line IMU heading hold
+  motor watchdog, emergency stop, one-second stop brake
 ```
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for more detail.
+The split follows the TurtleBot3 operating pattern: essential hardware bringup runs on the SBC, while SLAM, navigation and RViz run on the remote Ubuntu computer.
 
-# 1. Upload the Arduino firmware
-
-Open:
+## Project packages
 
 ```text
-arduino/autonomous_v12/autonomous_v12.ino
+ros2_ws/src/
+  cspc_lidar/          supplied COIN-D6/D4 SDK, patched for ROS 2 Humble
+  mdetect_base/        Arduino bridge, command priority and safety, initializer
+  mdetect_description/ robot URDF and RViz model
+  mdetect_bringup/     Raspberry Pi robot.launch.py and hardware parameters
+  mdetect_navigation/ workstation SLAM, Nav2, RViz and waypoint routes
 ```
 
-Install `MPU6050_tockn` from Arduino Library Manager, select **Arduino UNO**, and upload. The QGPMaker and pin-change interrupt files are already in the sketch folder.
+## 1. Upload the Arduino firmware
 
-Keep the robot completely still during power-up gyro calibration.
+Install `MPU6050_tockn` from Arduino Library Manager, then open:
 
-# 2. Install the Raspberry Pi
+```text
+arduino/mdetect_low_level/mdetect_low_level.ino
+```
 
-Target operating system: **Ubuntu Server 22.04, 64-bit**.
+Select **Arduino Uno** and upload. The QGPMaker and pin-change interrupt sources are already kept in the same sketch folder.
 
-From the extracted project directory:
+Keep the robot still during startup IMU calibration.
+
+## 2. Install on Raspberry Pi
+
+Target: Ubuntu Server 22.04 Jammy, ROS 2 Humble.
 
 ```bash
-chmod +x install_pi.sh
+unzip mdetect_ros2_turtlebot3.zip
+cd mdetect_ros2_turtlebot3
 ./install_pi.sh
 ```
 
-Log out and back in once after installation so the `dialout` group is active.
+The script:
 
-Verify the installation and physical ports:
+- safely reuses an existing official ROS apt source;
+- removes only conflicting legacy ROS `.list` entries when `ros2.sources` already exists;
+- installs ROS Base and build dependencies;
+- copies onboard packages to `~/mdetect_ws/src`;
+- builds with one worker for Raspberry Pi memory limits;
+- adds the user to `dialout`;
+- configures `ROS_DOMAIN_ID=30` and `ROS_LOCALHOST_ONLY=0`.
 
-```bash
-bash scripts/pi/verify_install.sh
-```
+Log out and back in once after the first installation so the `dialout` group is active.
 
-The verification script expects:
+## 3. Verify and bring up the Pi
+
+Connect the hardware in this order:
 
 ```text
-/dev/ttyUSB0 = LiDAR
-/dev/ttyUSB1 = Arduino UNO
+/dev/ttyUSB0  COIN-D6 LiDAR
+/dev/ttyUSB1  Arduino Uno
 ```
 
-To create stable device names manually:
+Run:
 
 ```bash
-bash scripts/pi/configure_udev.sh /dev/ttyUSB0 /dev/ttyUSB1
+./scripts/verify_pi.sh
+./scripts/bringup_pi.sh
 ```
 
-# 3. Install the Ubuntu workstation
+`bringup_pi.sh` performs preflight checks first, then starts:
 
-Target operating system: **Ubuntu 22.04 Desktop**.
+- robot description and TF;
+- COIN-D6 vendor driver;
+- Arduino serial bridge;
+- odometry, IMU and wheel joints;
+- command priority and front obstacle stop;
+- startup initialization and `/robot/ready` monitoring.
 
-```bash
-chmod +x install_workstation.sh
-./install_workstation.sh
-```
-
-Both machines use:
-
-```bash
-export ROS_DOMAIN_ID=30
-export ROS_LOCALHOST_ONLY=0
-```
-
-The installers save these values in `~/.mdetect_ros2_env`.
-
-# 4. Bring up the complete robot on the Pi
+From a second Pi terminal, verify the live robot:
 
 ```bash
-./bringup_pi.sh
-```
-
-This starts:
-
-- `robot_state_publisher`
-- `cspc_lidar` on `/dev/ttyUSB0`
-- `mdetect_serial_bridge` on `/dev/ttyUSB1`
-- `mdetect_cmd_mux`
-- LiDAR front-obstacle safety gate
-- odometry, IMU, joint state, wheel telemetry and TF publishers
-
-In a second Pi terminal, verify the running robot:
-
-```bash
-./verify_pi.sh
+./scripts/verify_pi.sh --live
 ```
 
 Expected core topics:
@@ -137,113 +123,163 @@ Expected core topics:
 /odom
 /imu/data
 /joint_states
-/base/wheel_speeds_mm_s
-/base/wheel_pwm
-/base/encoder_ticks
-/safety/front_blocked
-/safety/front_distance
+/tf
+/cmd_vel
+/robot/ready
+/diagnostics
 ```
 
-# 5. Verify workstation-to-Pi ROS networking
+### Optional motor and encoder self-test
 
-On the workstation:
+This test is intentionally **not** run automatically because the wheels move. Lift the robot so every wheel is off the ground, then run:
 
 ```bash
-bash scripts/workstation/verify_network.sh
+./scripts/test_actuators_on_blocks.sh
 ```
 
-If topics are not visible, confirm both computers are on the same network, use domain ID 30, and allow DDS multicast/UDP traffic through the firewall.
+It drives forward and reverse through the normal ROS command path and checks the signed encoder speed from all four motors.
 
-# 6. Start mapping or navigation
+## 4. Install on the Ubuntu workstation
 
-For a new map:
+Target: Ubuntu Desktop 22.04 Jammy, ROS 2 Humble.
 
 ```bash
-bash scripts/workstation/bringup_slam.sh
+cd mdetect_ros2_turtlebot3
+./install_workstation.sh
 ```
 
-For a saved map:
+Make sure the workstation and Pi are on the same network. Then confirm discovery:
 
 ```bash
-bash scripts/workstation/bringup_navigation.sh /absolute/path/to/map.yaml
+./scripts/verify_workstation.sh --network
 ```
 
-Keyboard teleoperation:
+## 5. Start SLAM and navigation
+
+Keep Pi bringup running first.
+
+For mapping:
 
 ```bash
-bash scripts/workstation/teleop.sh
+./scripts/bringup_slam.sh
 ```
 
-Predefined waypoint client:
+For keyboard control during mapping:
 
 ```bash
-bash scripts/workstation/run_waypoints.sh
+./scripts/teleop.sh
 ```
 
-# 7. Test motors and correct straight-line motion
-
-First lift the robot so all wheels are clear:
+Save a map:
 
 ```bash
-bash scripts/pi/test_actuators_on_blocks.sh --confirm-robot-lifted
+ros2 run nav2_map_server map_saver_cli -f "$HOME/mdetect_map"
 ```
 
-Then provide at least 2 m of clear floor and run the low-speed report:
+For navigation with a saved map:
 
 ```bash
-bash scripts/pi/straight_line_test.sh --confirm-clear-path
+./scripts/bringup_navigation.sh "$HOME/mdetect_map.yaml"
 ```
 
-Example motor 4 forward adjustment:
+## 6. Straight-line movement correction
+
+The updated Arduino controller fixes the missing `PWM_FORWARD_SCALE` declaration and uses three correction layers:
+
+1. each wheel has an independent encoder speed PID;
+2. motor 4 starts with lower feed-forward PWM because it is mechanically faster;
+3. the MPU6050 holds the captured heading when `angular.z = 0`.
+
+Default motor 4 scales:
+
+```text
+forward = 0.78
+reverse = 0.66
+```
+
+Change them while ROS bringup is running:
 
 ```bash
-bash scripts/pi/set_motor_tuning.sh trimf 4 0.80
+./scripts/set_motor4_trim.sh 0.76 0.64
 ```
 
-Display current Arduino runtime tuning:
+Or send individual commands:
 
 ```bash
-bash scripts/pi/set_motor_tuning.sh show
+ros2 topic pub --once /base/raw_command std_msgs/msg/String "{data: 'TRIMF,4,0.76'}"
+ros2 topic pub --once /base/raw_command std_msgs/msg/String "{data: 'TRIMR,4,0.64'}"
 ```
 
-See [docs/STRAIGHT_LINE_TUNING.md](docs/STRAIGHT_LINE_TUNING.md).
+Use small changes of `0.02`. If motor 4 is still faster, reduce its scale. If it becomes slower, increase it.
 
-# 8. Emergency controls
+Run a controlled straight test:
 
 ```bash
-ros2 service call /base/emergency_stop std_srvs/srv/Trigger {}
-ros2 service call /base/clear_emergency_stop std_srvs/srv/Trigger {}
-ros2 service call /base/reset_odometry std_srvs/srv/Trigger {}
-ros2 service call /base/zero_yaw std_srvs/srv/Trigger {}
-ros2 service call /base/calibrate_imu std_srvs/srv/Trigger {}
+./scripts/test_straight_line.sh 0.10 3
 ```
 
-# 9. Optional Pi auto-start
+The robot will move at 0.10 m/s for 3 seconds after confirmation.
 
-After manual bringup and verification work correctly:
+Heading hold commands:
 
 ```bash
-bash scripts/pi/enable_autostart.sh
+ros2 topic pub --once /base/raw_command std_msgs/msg/String "{data: 'STRAIGHT_ON'}"
+ros2 topic pub --once /base/raw_command std_msgs/msg/String "{data: 'STRAIGHT,1.8,0.12,24'}"
+ros2 topic pub --once /base/raw_command std_msgs/msg/String "{data: 'STRAIGHT_OFF'}"
 ```
 
-Check the service:
+## 7. Predefined waypoint routes
+
+Edit:
+
+```text
+ros2_ws/src/mdetect_navigation/config/waypoints.yaml
+```
+
+Each waypoint is:
+
+```text
+[x_m, y_m, yaw_deg, wait_s]
+```
+
+Run after Navigation2 is active:
 
 ```bash
-systemctl status mdetect-robot.service
-journalctl -u mdetect-robot.service -f
+ros2 run mdetect_navigation waypoint_cli
 ```
 
-# ROS coordinate convention
+## 8. Safety behaviour
 
-- `+X`: forward
-- `+Y`: left
-- positive yaw: counter-clockwise
-- mapping TF: `map -> odom -> base_footprint -> base_link -> laser`
+- Arduino communication watchdog stops the motors if Pi commands stop arriving.
+- A normal stop actively brakes for one second and then releases the H-bridge.
+- Emergency stop remains latched until cleared.
+- Forward motion is blocked when an obstacle is inside the configured front sector.
+- Forward motion is also blocked if LiDAR data becomes stale.
 
-# Important safety behaviour
+Emergency stop:
 
-- Arduino communication watchdog stops the motors after 500 ms without commands.
-- Emergency stop remains latched until explicitly cleared.
-- Normal stop brakes for one second, then releases the H-bridge.
-- The Pi blocks positive forward velocity when an obstacle is closer than 0.30 m in the front cone.
-- Rotation remains available while blocked so the robot can turn away.
+```bash
+ros2 service call /base/emergency_stop std_srvs/srv/Trigger '{}'
+```
+
+Clear emergency stop:
+
+```bash
+ros2 service call /base/clear_emergency_stop std_srvs/srv/Trigger '{}'
+```
+
+## 9. Optional automatic startup
+
+After manual bringup works correctly:
+
+```bash
+./scripts/install_robot_service.sh
+sudo systemctl start mdetect-robot
+sudo systemctl status mdetect-robot
+```
+
+## References
+
+1. ROBOTIS, “TurtleBot3 Bringup,” TurtleBot3 e-Manual.
+2. ROBOTIS, “TurtleBot3 SLAM and Navigation,” TurtleBot3 e-Manual.
+3. Open Robotics, “ROS 2 Humble Ubuntu Installation” and “Using colcon to build packages.”

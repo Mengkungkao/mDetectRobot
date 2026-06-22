@@ -31,7 +31,7 @@ node_lidar_t::~node_lidar_t(){
 		globalRecvBuffer = NULL;
 	}
 	printf("关闭雷达");
-	node_lidar.serial_port->close();
+	if (node_lidar.serial_port) node_lidar.serial_port->close();
 	node_lidar.lidar_status.lidar_ready = false;
 	node_lidar.lidar_status.close_lidar = true;
 	flushSerial();

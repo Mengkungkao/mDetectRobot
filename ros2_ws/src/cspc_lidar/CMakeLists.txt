@@ -4,8 +4,7 @@ project(cspc_lidar)
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
@@ -13,12 +12,6 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(Threads REQUIRED)
-
-include_directories(
-  ${PROJECT_SOURCE_DIR}/include/cspc_lidar
-  ${PROJECT_SOURCE_DIR}/sdk
-)
 
 add_executable(cspc_lidar
   sdk/mtime.cpp
@@ -31,15 +24,13 @@ add_executable(cspc_lidar
   src/node_lidar_ros.cpp
 )
 
+target_include_directories(cspc_lidar PRIVATE
+  ${PROJECT_SOURCE_DIR}/include/cspc_lidar
+  ${PROJECT_SOURCE_DIR}/sdk
+)
 ament_target_dependencies(cspc_lidar rclcpp sensor_msgs std_msgs)
-target_link_libraries(cspc_lidar Threads::Threads)
 
 install(TARGETS cspc_lidar DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY launch params rviz DESTINATION share/${PROJECT_NAME})
-
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
 
 ament_package()

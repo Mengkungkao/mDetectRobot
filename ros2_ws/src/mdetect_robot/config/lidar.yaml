@@ -1,3 +1,0 @@
-# The COIN-D6 driver configuration is installed by the cspc_lidar package at:
-#   cspc_lidar/params/cspc_lidar.yaml
-# robot.launch.py overrides its port with /dev/ttyUSB0 by default.

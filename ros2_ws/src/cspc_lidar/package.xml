@@ -1,20 +1,16 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>cspc_lidar</name>
-  <version>1.1.0</version>
-  <description>ROS 2 wrapper for the CSPC COIN-D6/D4 LiDAR SDK.</description>
-  <maintainer email="meng@example.com">Meng Kung Kao</maintainer>
-  <license>Proprietary-SDK</license>
-
+  <version>0.1.0</version>
+  <description>ROS 2 wrapper for the supplied CSPC COIN-D6/D4 LiDAR SDK.</description>
+  <maintainer email="meng@example.com">mDetect integration</maintainer>
+  <license>LicenseRef-Vendor-SDK</license>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
-
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
-
-  <export>
-    <build_type>ament_cmake</build_type>
-  </export>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <export><build_type>ament_cmake</build_type></export>
 </package>
