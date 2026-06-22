@@ -1,298 +1,340 @@
-# mDetect TurtleBot3-style ROS 2 Humble Architecture
+# AutonomousV11 complete ROS 2 + Arduino starter system
 
-This starter project reorganises the existing mDetect robot into the same general split used by TurtleBot3:
+This bundle converts the robot into a three-layer autonomous system:
 
-- **Ubuntu workstation:** RViz2, SLAM Toolbox, Nav2, global/local costmaps, Smac 2D A*, Regulated Pure Pursuit, waypoint mission client.
-- **Raspberry Pi:** COIN-D6 ROS driver, robot description/TF, Arduino serial bridge, odometry publication, Pi-local Collision Monitor.
-- **Arduino Uno:** four encoder loops, four signed wheel-speed targets, individual PWM, MPU6050 yaw, command watchdog, brake hold, and emergency-stop latch.
+1. **Ubuntu workstation:** RViz2, map/costmap/path monitoring, SSH, and timed waypoint input.
+2. **Raspberry Pi with Ubuntu Server and ROS 2 Humble:** LiDAR `/scan`, TF, encoder/IMU fusion, SLAM Toolbox, Nav2, A* planning, Regulated Pure Pursuit, safety supervision, and the Arduino serial bridge.
+3. **Arduino Uno:** four encoders, MPU6050, four wheel-speed PID loops, motor PWM/direction, watchdog, brake/release, and an emergency-stop latch.
 
-## 1. Runtime data flow
+The old Arduino waypoint state machine has been removed. Nav2 is now the only global navigation controller.
 
-```text
-Waypoint input: (x_mm,y_mm,heading_deg,wait_s)
-                    |
-                    v
-Ubuntu workstation
-  waypoint_runner -> Nav2 NavigateToPose
-  SLAM Toolbox / AMCL
-  global costmap + SmacPlanner2D A*
-  local costmap + Rotation Shim + Regulated Pure Pursuit
-  velocity smoother
-                    |
-                    | ROS 2 DDS: /cmd_vel, /scan, /odom, /tf, /map
-                    v
-Raspberry Pi
-  COIN-D6 driver ------------------------------> /scan
-  Collision Monitor: /cmd_vel -> /cmd_vel_safe
-  serial_bridge: /cmd_vel_safe -> wheel speeds
-  serial_bridge: encoder + MPU telemetry -> /odom, /imu/data, TF
-                    |
-                    | USB serial 500000 baud
-                    v
-Arduino Uno
-  four encoder speed PID loops
-  individual motor PWM/direction
-  watchdog 250 ms
-  1 s brake then release
-  hardware/software E-stop latch
-```
+## Important hardware assumptions
 
-Normal obstacles enter both costmaps through `/scan`. Nav2 replans with A*. The Pi-local Collision Monitor is the final fast stop layer and does not depend on workstation processing latency.
+- Wheel diameter: **80.5 mm**
+- Encoder resolution: **4320 counts/revolution**
+- Track width: **190 mm**
+- Motors **1 and 4 are the right side**
+- Motors **2 and 3 are the left side**
+- Arduino serial speed: **500000 baud**
+- LiDAR publishes `sensor_msgs/LaserScan` on `/scan` with frame `lidar_link`
 
-## 2. Coordinate conversion
+Change these values in:
 
-The old project convention is preserved at the user interface:
+- `arduino/AutonomousV11_LowLevel/AutonomousV11_LowLevel.ino`
+- `ros2_ws/src/mdetect_base/config/base.yaml`
+- `ros2_ws/src/mdetect_description/urdf/mdetect_robot.urdf.xacro`
 
-- user `+X` = right
-- user `+Y` = forward/up
-- heading `0 deg` = `+Y`
-- positive heading = clockwise
+## 1. Upload the Arduino firmware
 
-Nav2 uses ROS REP-103 coordinates:
-
-- ROS `+X` = forward
-- ROS `+Y` = left
-- positive yaw = counter-clockwise
-
-The waypoint node applies:
-
-```text
-ros_x_m = user_y_mm / 1000
-ros_y_m = -user_x_mm / 1000
-ros_yaw = -heading_deg
-```
-
-Therefore:
-
-```text
-(0,2000,0,0)       -> ROS (2.0,  0.0, 0 deg)
-(1000,2000,0,0)    -> ROS (2.0, -1.0, 0 deg)
-(1000,0,90,5)      -> ROS (0.0, -1.0, -90 deg), wait 5 s
-```
-
-## 3. Install ROS packages on both computers
+Copy these folders into the Arduino library directory:
 
 ```bash
-sudo apt update
-sudo apt install -y \
-  ros-humble-navigation2 \
-  ros-humble-nav2-bringup \
-  ros-humble-nav2-smac-planner \
-  ros-humble-nav2-regulated-pure-pursuit-controller \
-  ros-humble-nav2-rotation-shim-controller \
-  ros-humble-nav2-collision-monitor \
-  ros-humble-slam-toolbox \
-  ros-humble-robot-state-publisher \
-  ros-humble-xacro \
-  python3-serial python3-colcon-common-extensions
+cp -r arduino/libraries/QGPMakerRobot ~/Arduino/libraries/
+cp -r arduino/libraries/PinChangeInterrupt ~/Arduino/libraries/
 ```
 
-Use the same ROS settings on the workstation and Pi:
+Install **MPU6050_tockn** from Arduino IDE Library Manager. Open and upload:
 
-```bash
-source /opt/ros/humble/setup.bash
-export ROS_DOMAIN_ID=10
-export ROS_LOCALHOST_ONLY=0
+```text
+arduino/AutonomousV11_LowLevel/AutonomousV11_LowLevel.ino
 ```
 
-Add those lines to `~/.bashrc` on both machines. Both machines must be on the same network and able to ping each other. DDS automatically transports `/scan`, `/odom`, TF, maps, costmaps and velocity topics between them.
+Open Serial Monitor at `500000` baud. After gyro calibration, the Uno prints:
 
-## 4. Build the workspace
+```text
+READY
+```
 
-Copy `ros2_ws` to both the workstation and Raspberry Pi, then build:
+### Direct Arduino test commands
+
+Raise the robot so its wheels are clear of the floor.
+
+```text
+V,1,50,50,50,50
+B,2,1000
+V,3,-50,-50,-50,-50
+E,4
+C,5
+R,6
+```
+
+The firmware continuously returns encoder counts, wheel speeds, yaw and state using the format documented in `docs/SERIAL_PROTOCOL.md`.
+
+### Direction corrections
+
+If one motor turns the wrong way, change its entry in:
+
+```cpp
+const int8_t MOTOR_DIRECTION_SIGN[4] = {1, 1, 1, 1};
+```
+
+If one encoder decreases while its wheel moves forward, reverse that entry in:
+
+```cpp
+const int8_t ENCODER_SIGN[4] = {-1, 1, 1, -1};
+```
+
+If RViz yaw turns clockwise when the robot physically turns counter-clockwise, change:
+
+```cpp
+const float IMU_YAW_SIGN = -1.0f;
+```
+
+## 2. Install the Raspberry Pi workspace
+
+Copy this whole folder to the Pi, then run:
 
 ```bash
-cd ~/mdetect_ros2_ws
-rosdep install --from-paths src --ignore-src -r -y
+cd AutonomousV11_complete
+./scripts/install_pi.sh
+```
+
+Log out and back in after installation so membership in the `dialout` group takes effect.
+
+Find stable serial device paths:
+
+```bash
+ls -l /dev/serial/by-id/
+```
+
+Edit:
+
+```bash
+nano ~/mdetect_ws/src/mdetect_base/config/base.yaml
+```
+
+Set the Arduino path, preferably using `/dev/serial/by-id/...`, then rebuild:
+
+```bash
+cd ~/mdetect_ws
 colcon build --symlink-install
 source install/setup.bash
 ```
 
-## 5. Upload the Arduino firmware
+## 3. Start the COIN-D6 LiDAR
 
-Open:
-
-```text
-arduino/mdetect_uno_nav2/mdetect_uno_nav2.ino
-```
-
-Keep the supplied QGPMaker, PinChangeInterrupt and PCA9685 files in the same Arduino project/library environment. Install `MPU6050_tockn` if it is not already installed.
-
-The firmware uses:
-
-- USB serial: `500000` baud
-- encoders: `4320` counts/revolution
-- wheel diameter: `80.5 mm`
-- motor side mapping: M1/M4 left, M2/M3 right
-- hardware E-stop: `A0`
-- watchdog: `250 ms`
-- brake hold: `1 s`, then release
-
-The physical E-stop configuration in the sketch assumes a normally-closed switch between A0 and GND. Change `ESTOP_ACTIVE_LEVEL` when using different wiring.
-
-## 6. Raspberry Pi bringup
-
-The COIN-D6 driver must run on the Pi and publish:
+The supplied files did not include the COIN-D6 packet protocol or its ROS 2 driver source, so this bundle does not replace the vendor `cspc_lidar` driver. Start your existing driver on the Pi and make sure it publishes:
 
 ```text
 Topic: /scan
-Type: sensor_msgs/msg/LaserScan
-Frame: laser_frame
-Serial: typically /dev/ttyUSB1 at 230400 baud
+Type:  sensor_msgs/msg/LaserScan
+Frame: lidar_link
 ```
 
-Keep using the existing COIN-D6/cspc ROS 2 driver that already works with the sensor. Its serial parsing should remain separate from the Arduino serial bridge.
-
-### Give both USB devices stable names
-
-Because the Arduino and LiDAR can swap between `/dev/ttyUSB0` and `/dev/ttyUSB1`, create udev links before autonomous testing. First inspect each device separately:
+Use these checks:
 
 ```bash
-udevadm info -a -n /dev/ttyUSB0 | grep -m1 -E 'idVendor|serial'
-udevadm info -a -n /dev/ttyUSB1 | grep -m1 -E 'idVendor|serial'
+ros2 pkg executables cspc_lidar
+ros2 topic hz /scan
+ros2 topic echo /scan --once
 ```
 
-Create `/etc/udev/rules.d/99-mdetect-serial.rules` using the actual vendor/product/serial values. The intended links are:
+If the driver publishes a different topic, remap it to `/scan`. If it publishes another frame name, either change the driver frame to `lidar_link` or update the URDF and configuration consistently.
+
+## 4. Run SLAM + Nav2 on the Pi
+
+After the LiDAR driver is running:
+
+```bash
+source ~/mdetect_ws/install/setup.bash
+ros2 launch mdetect_bringup robot_slam.launch.py
+```
+
+This starts:
+
+- Arduino serial bridge
+- Four-wheel encoder odometry
+- MPU6050 IMU publication
+- `robot_localization` EKF
+- Robot description and TF
+- SLAM Toolbox
+- Nav2 global and local costmaps
+- SmacPlanner2D cost-aware A*
+- Regulated Pure Pursuit
+- Nav2 velocity smoother
+- Front-obstacle safety supervisor
+- Timed waypoint executor
+
+## 5. Install and run the Ubuntu workstation
+
+Copy this folder to the workstation and run:
+
+```bash
+cd AutonomousV11_complete
+./scripts/install_workstation.sh
+```
+
+Both computers must use the same network settings:
+
+```bash
+export ROS_DOMAIN_ID=42
+export ROS_LOCALHOST_ONLY=0
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+```
+
+Open RViz2 on the workstation:
+
+```bash
+source ~/mdetect_ws/install/setup.bash
+ros2 launch mdetect_bringup workstation_rviz.launch.py
+```
+
+Verify that the workstation can see the Pi:
+
+```bash
+ros2 node list
+ros2 topic list
+ros2 topic echo /odometry/filtered --once
+```
+
+If discovery does not work, test multicast. Run this on one computer:
+
+```bash
+ros2 multicast receive
+```
+
+Then run this on the other computer:
+
+```bash
+ros2 multicast send
+```
+
+Both computers must be on the same LAN, use `ROS_DOMAIN_ID=42`, and allow DDS multicast traffic.
+
+SSH remains useful for Pi maintenance:
+
+```bash
+ssh <pi-user>@<pi-ip-address>
+```
+
+## 6. Send predefined timed waypoints
+
+The default input mode preserves your original convention:
 
 ```text
-/dev/mdetect_arduino -> Arduino Uno USB serial
-/dev/mdetect_lidar   -> COIN-D6 USB serial
+(x_right_mm, y_forward_mm, clockwise_heading_deg, wait_seconds)
 ```
 
-Then reload and verify:
+Example:
 
 ```bash
-sudo udevadm control --reload-rules
-sudo udevadm trigger
-ls -l /dev/mdetect_*
+ros2 run mdetect_base send_waypoints \
+  "(0,2000,0,0) (1000,2000,0,0) (1000,0,180,5) (0,0,0,0)"
 ```
 
-Use `/dev/mdetect_arduino` in `robot_bringup.launch.py` and `/dev/mdetect_lidar` in the COIN-D6 launch file.
+Meaning:
 
-Start the LiDAR driver first, then:
+- Move forward 2000 mm
+- Move to the point 1000 mm right and 2000 mm forward
+- Move to 1000 mm right, face 180°, and wait five seconds
+- Return to the origin
+
+The executor converts these values into ROS coordinates and sends each pose to Nav2. It waits for the requested time only after Nav2 reports success.
+
+You can also publish directly:
 
 ```bash
-source /opt/ros/humble/setup.bash
-source ~/mdetect_ros2_ws/install/setup.bash
-export ROS_DOMAIN_ID=10
-
-ros2 launch mdetect_robot robot_bringup.launch.py \
-  arduino_port:=/dev/mdetect_arduino \
-  arduino_baud:=500000
+ros2 topic pub --once /waypoint_input std_msgs/msg/String \
+  "{data: '(0,2000,0,0) (1000,2000,0,5)'}"
 ```
 
-Verify Pi topics:
+Cancel the list:
 
 ```bash
-ros2 topic hz /scan
-ros2 topic hz /odom
-ros2 topic echo /arduino/connected
-ros2 run tf2_ros tf2_echo odom base_footprint
+ros2 service call /waypoints/cancel std_srvs/srv/Trigger "{}"
 ```
 
-## 7. Workstation: build a map and navigate during SLAM
+## 7. Safety commands
+
+Latch an emergency stop:
 
 ```bash
-source /opt/ros/humble/setup.bash
-source ~/mdetect_ros2_ws/install/setup.bash
-export ROS_DOMAIN_ID=10
-
-ros2 launch mdetect_robot workstation_mapping.launch.py
+ros2 service call /safety/stop std_srvs/srv/Trigger "{}"
 ```
 
-Set RViz Fixed Frame to `map`. Add these displays when required:
-
-- Map: `/map`
-- LaserScan: `/scan`
-- Odometry: `/odom`
-- TF
-- Global Costmap: `/global_costmap/costmap`
-- Local Costmap: `/local_costmap/costmap`
-- Path: `/plan`
-- PoseArray: `/mission_waypoints`
-- RobotModel
-
-Save a completed map:
+After the obstacle is removed and the front range is clear, reset it:
 
 ```bash
-ros2 run nav2_map_server map_saver_cli -f ~/maps/mdetect_map
+ros2 service call /safety/clear std_srvs/srv/Trigger "{}"
 ```
 
-## 8. Workstation: navigate on a saved map
+The system has three independent stop layers:
+
+1. Nav2 collision checking and costmaps
+2. Pi front-cone safety supervisor
+3. Arduino serial watchdog and emergency-stop latch
+
+A physical power-cut emergency-stop switch is still recommended for testing around people.
+
+## 8. First motor test through ROS 2
+
+Keep the robot raised:
 
 ```bash
-ros2 launch mdetect_robot workstation_navigation.launch.py \
-  map:=$HOME/maps/mdetect_map.yaml
+source ~/mdetect_ws/install/setup.bash
+ros2 launch mdetect_bringup robot_bringup.launch.py
 ```
 
-Use RViz `2D Pose Estimate` once to initialise AMCL, or publish an initial pose through another node.
-
-## 9. Send predefined multiple waypoints
-
-Example requested by the project:
+In a second terminal:
 
 ```bash
-ros2 run mdetect_robot waypoint_runner --points \
-"(0,2000,0,0) (1000,2000,0,0) (1000,0,90,5) (0,0,0,0)"
+./scripts/test_forward.sh 2 0.05
 ```
 
-The node publishes the entered poses on `/mission_waypoints` for RViz, then sends one `NavigateToPose` action at a time. This is intentional: Nav2 Humble's standard `WaitAtWaypoint` plugin has one configured pause value for all waypoints, while this mission format needs a different waiting time for each point.
-
-## 10. Manual safety commands
-
-Brake immediately:
+Check:
 
 ```bash
-ros2 service call /arduino/brake std_srvs/srv/Trigger '{}'
+ros2 topic echo /wheel/encoder_counts
+ros2 topic echo /wheel/speeds
+ros2 topic echo /imu/data
+ros2 topic echo /wheel/odometry
+ros2 topic echo /odometry/filtered
 ```
 
-Latch emergency stop:
+If the whole robot moves backward for positive `linear.x`, set `linear_sign: -1.0` in `base.yaml`. If positive `angular.z` turns clockwise, set `angular_sign: -1.0`.
+
+## 9. Save a map
+
+After completing mapping:
 
 ```bash
-ros2 service call /arduino/emergency_stop std_srvs/srv/Trigger '{}'
+mkdir -p ~/mdetect_ws/src/mdetect_bringup/maps
+ros2 run nav2_map_server map_saver_cli \
+  -f ~/mdetect_ws/src/mdetect_bringup/maps/tunnel_map
 ```
 
-Clear the latch after the physical E-stop is released and velocity is zero:
+## 10. Run navigation with a saved map
+
+Stop the SLAM launch, then run:
 
 ```bash
-ros2 service call /arduino/clear_emergency_stop std_srvs/srv/Trigger '{}'
+ros2 launch mdetect_bringup robot_navigation.launch.py \
+  map:=$HOME/mdetect_ws/src/mdetect_bringup/maps/tunnel_map.yaml
 ```
 
-Reset encoder/ROS odometry only while stationary:
+Use RViz2 **2D Pose Estimate** once to initialize AMCL, then send timed waypoints.
 
-```bash
-ros2 service call /arduino/reset_odometry std_srvs/srv/Trigger '{}'
+## 11. Topic flow
+
+```text
+/scan -> SLAM Toolbox + costmaps + safety supervisor
+/wheel/odometry + /imu/data -> robot_localization
+/odometry/filtered -> Nav2
+Nav2 controller -> /cmd_vel_nav
+velocity smoother -> /cmd_vel
+safety supervisor -> /cmd_vel_safe
+serial bridge -> Arduino four wheel targets
 ```
 
-## 11. Topic ownership
+## 12. Recommended test order
 
-| Topic or TF | Publisher location | Consumer |
-|---|---|---|
-| `/scan` | Pi COIN-D6 driver | SLAM, AMCL, costmaps, collision monitor, RViz |
-| `/odom` | Pi serial bridge | Nav2, SLAM, RViz |
-| `odom -> base_footprint` | Pi serial bridge | Nav2 and SLAM |
-| robot fixed TF | Pi robot_state_publisher | all ROS nodes |
-| `map -> odom` | workstation SLAM Toolbox or AMCL | complete TF tree |
-| `/cmd_vel_nav` | workstation controller server | velocity smoother |
-| `/cmd_vel` | workstation velocity smoother | Pi collision monitor |
-| `/cmd_vel_safe` | Pi collision monitor | Pi serial bridge |
-| USB wheel commands | Pi serial bridge | Arduino Uno |
-
-Only one node should publish each transform. SLAM Toolbox or AMCL owns `map -> odom`; the serial bridge owns `odom -> base_footprint`; robot_state_publisher owns fixed robot transforms.
-
-## 12. Required tuning before autonomous testing
-
-1. Confirm M1/M4 are physically the left side and M2/M3 the right side.
-2. Lift the robot and test positive wheel commands at low speed.
-3. Correct motor direction or encoder sign constants before floor testing.
-4. Measure the real track width and update both `track_width_m` and the URDF.
-5. Measure the final robot footprint and update both local/global costmaps.
-6. Set the exact COIN-D6 position and yaw in `laser_joint`.
-7. Tune each motor PID and `MOTOR_SCALE`, especially motor 4.
-8. Begin with `desired_linear_vel: 0.12 m/s` and reduce it for confined tunnels.
-9. Test the 250 ms command watchdog by disconnecting Wi-Fi and USB data separately.
-10. Test the physical E-stop before starting Nav2.
-
-## 13. Important limitation
-
-Regulated Pure Pursuit publishes forward velocity and yaw rate; it does not use the mecanum base's lateral motion. This configuration deliberately treats the four-motor robot as a TurtleBot3-style differential/skid-steer base. It can still reach arbitrary `(x,y,heading)` goals by driving and rotating, which is the most direct path to stable Nav2 operation with the current hardware.
+1. Test every motor and encoder with the robot raised.
+2. Confirm positive ROS yaw is counter-clockwise.
+3. Confirm `/wheel/odometry` moves forward on the RViz X axis.
+4. Confirm the complete TF tree.
+5. Confirm `/scan` overlays correctly on the robot.
+6. Build a map manually at very low speed.
+7. Test one Nav2 goal.
+8. Test two timed waypoints.
+9. Test obstacle slowdown and the latched stop.
+10. Test USB disconnection and Wi-Fi loss; the Arduino must stop safely.
