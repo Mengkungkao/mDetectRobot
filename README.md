@@ -142,6 +142,21 @@ source install/setup.bash
 
 > The supplied vendor archive is named `cspc_lidar_sdk_ros2_D4_20250731`. It is bundled here as the CSPC driver for the project COIN-D6 unit, but the final hardware behaviour must still be verified on the actual sensor.
 
+### Installer stops at `AMENT_TRACE_SETUP_FILES: unbound variable`
+
+Older copies of the installer used `set -u` while sourcing the ROS 2 Humble environment. Some ament setup scripts read the optional `AMENT_TRACE_SETUP_FILES` variable before defining it, which causes Bash to stop. The current scripts temporarily disable nounset only while sourcing ROS setup files.
+
+For an older package, the immediate terminal workaround is:
+
+```bash
+cd ~/mDetectRobot
+sed -i '/^source \/opt\/ros\/humble\/setup.bash$/i set +u' scripts/install_pi.sh
+sed -i '/^source \/opt\/ros\/humble\/setup.bash$/a set -u' scripts/install_pi.sh
+./scripts/install_pi.sh
+```
+
+It is safe to rerun the installer. Existing apt packages, copied source files and udev rules are reused.
+
 ## 3. Test the COIN-D6 LiDAR
 
 Run the supplied test launcher:
@@ -401,3 +416,46 @@ serial bridge -> Arduino four wheel targets
 8. Test two timed waypoints.
 9. Test obstacle slowdown and the latched stop.
 10. Test USB disconnection and Wi-Fi loss; the Arduino must stop safely.
+
+## ROS 2 Humble COIN-D6 build correction
+
+The bundled CSPC vendor source has been updated for ROS 2 Humble. Its parameters
+are declared with typed default values for `port`, `baudrate`, `frame_id`, and
+`version`. This prevents the Humble compiler error:
+
+```text
+no matching function for call to rclcpp::Node::declare_parameter(...)
+```
+
+If an older copy has already been installed into `~/mdetect_ws`, update the
+project package and rerun the installer, or use `scripts/fix_coin_d6_humble.sh`.
+The installer also skips the unresolved `ament_python` rosdep key; this key is
+the package build type and does not prevent the Python package from building.
+
+After a successful build, verify the driver with:
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/mdetect_ws/install/setup.bash
+ros2 pkg executables cspc_lidar
+ros2 launch cspc_lidar lidar_launch.py
+```
+
+In another terminal:
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/mdetect_ws/install/setup.bash
+ros2 topic echo /scan --once
+```
+
+### Cleanly rebuild only the COIN-D6 driver
+
+Use the bundled helper to avoid stale `AMENT_PREFIX_PATH` and `CMAKE_PREFIX_PATH` warnings:
+
+```bash
+cd ~/mDetectRobot
+./scripts/rebuild_lidar.sh
+```
+
+The vendor SDK has also been cleaned for ROS 2 Humble: parameter types, format strings, signed/unsigned loops, missing returns, unsafe object clearing, and CMake policy warnings are corrected.

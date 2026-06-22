@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Source a ROS/ament setup file without allowing `set -u` to break on
+# optional environment variables such as AMENT_TRACE_SETUP_FILES.
+safe_source_setup() {
+  local setup_file="$1"
+  local restore_nounset=0
+
+  if [[ "$-" == *u* ]]; then
+    restore_nounset=1
+    set +u
+  fi
+
+  # shellcheck disable=SC1090
+  source "$setup_file"
+
+  if [ "$restore_nounset" -eq 1 ]; then
+    set -u
+  fi
+}
+
+
 if [ "${ROS_DISTRO:-}" != "humble" ] && [ ! -f /opt/ros/humble/setup.bash ]; then
   echo "ROS 2 Humble is not installed. Install ROS 2 Humble first, then rerun this script."
   exit 1
@@ -44,11 +64,13 @@ fi
 mkdir -p "$WORKSPACE/src"
 cp -a "$PROJECT_ROOT/ros2_ws/src/." "$WORKSPACE/src/"
 
-source /opt/ros/humble/setup.bash
+# Do not carry stale overlay paths into a clean package rebuild.
+unset AMENT_PREFIX_PATH CMAKE_PREFIX_PATH COLCON_PREFIX_PATH
+safe_source_setup /opt/ros/humble/setup.bash
 cd "$WORKSPACE"
 sudo rosdep init 2>/dev/null || true
 rosdep update
-rosdep install --from-paths src --ignore-src -r -y
+rosdep install --from-paths src --ignore-src -r -y --skip-keys="ament_python"
 colcon build --symlink-install
 
 if ! grep -q 'AutonomousV11 ROS environment' "$HOME/.bashrc" 2>/dev/null; then
@@ -58,8 +80,9 @@ if ! grep -q 'AutonomousV11 ROS environment' "$HOME/.bashrc" 2>/dev/null; then
 export ROS_DOMAIN_ID=42
 export ROS_LOCALHOST_ONLY=0
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+set +u
 source /opt/ros/humble/setup.bash
-source "$HOME/mdetect_ws/install/setup.bash"
+[ -f "$HOME/mdetect_ws/install/setup.bash" ] && source "$HOME/mdetect_ws/install/setup.bash"
 BASHRC
 fi
 

@@ -92,3 +92,9 @@ ros2 launch mdetect_bringup robot_slam.launch.py \
 ## Orientation check
 
 Place a clear object directly in front of the robot. In RViz2, the corresponding scan points must appear in front of `base_link`. If the scan is mirrored or rotated, first check the driver's `reversion` setting and then the fixed `lidar_joint` transform in the robot Xacro. Keep the published scan frame and URDF frame name consistent.
+
+## Clean compiler output
+
+The bundled Humble-compatible driver corrects the vendor SDK warnings for missing returns, format strings, object initialisation, signed/unsigned indexing, constructor initialisation order and CMake policy CMP0074. Use `scripts/rebuild_lidar.sh` for a package-only clean rebuild.
+
+The driver must run on the Raspberry Pi connected to the LiDAR. The workstation does not need `/dev/sc_mini`; it receives `/scan` through ROS 2 DDS.
