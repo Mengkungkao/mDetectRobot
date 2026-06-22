@@ -27,3 +27,13 @@ ros2 launch cspc_lidar lidar_launch.py \
 ```
 
 The vendor archive supplied for this project is named `cspc_lidar_sdk_ros2_D4_20250731`. Hardware behaviour must still be verified on the actual COIN-D6 unit.
+
+## Clean build
+
+From the project directory, run:
+
+```bash
+./scripts/rebuild_lidar.sh
+```
+
+The launch file does not automatically respawn a crashing driver. This keeps the original error visible instead of producing a repeated crash loop. Run the driver on the Raspberry Pi where `/dev/sc_mini` exists; RViz and other workstation tools subscribe to `/scan` over ROS 2 DDS.

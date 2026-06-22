@@ -10,7 +10,13 @@
 ******************************************/
 void Point_cloud_optimize::PointCloudFilter(LaserScan *Scan)
 {
-	int i0, i1, i2, i3, i4;
+	if (Scan == nullptr || Scan->points.size() < 5)
+	{
+		return;
+	}
+
+	const std::size_t point_count = Scan->points.size();
+	std::size_t i0, i1, i2, i3, i4;
 	float x0, y0, x1, y1, x2, y2, x3, y3, r1, r2;
 	float d01, d12, d23, d34;
 	float a, b, Adeta;
@@ -19,17 +25,14 @@ void Point_cloud_optimize::PointCloudFilter(LaserScan *Scan)
 	int DepthState;
 	float FilterRatio = 2.5;
 
-	AngDiff = 2 * PI / (Scan->points.size() - 1);
+	AngDiff = 2 * PI / static_cast<float>(point_count - 1);
 	FilterRatioAdj = FilterRatio * sin(AngDiff);
 
-	for (i0 = 0; i0 < Scan->points.size(); i0++)
+	for (i0 = 0; i0 < point_count; ++i0)
 	{
-		i1 = i0 + 1;
-		i1 = i1 < Scan->points.size() ? i1 : i1 - Scan->points.size();
-		i2 = i0 + 2;
-		i2 = i2 < Scan->points.size() ? i2 : i2 - Scan->points.size();
-		i3 = i0 + 3;
-		i3 = i3 < Scan->points.size() ? i3 : i3 - Scan->points.size();
+		i1 = (i0 + 1) % point_count;
+		i2 = (i0 + 2) % point_count;
+		i3 = (i0 + 3) % point_count;
 		DepthState = 0;
 		DepthState += (Scan->points[i0].range != 0) * 1;
 		DepthState += (Scan->points[i1].range != 0) * 2;
@@ -152,14 +155,11 @@ void Point_cloud_optimize::PointCloudFilter(LaserScan *Scan)
 		}
 	}
 
-	for (i0 = 0; i0 < Scan->points.size(); i0++)
+	for (i0 = 0; i0 < point_count; ++i0)
 	{
-		i1 = i0 + 1;
-		i1 = i1 < Scan->points.size() ? i1 : i1 - Scan->points.size();
-		i2 = i0 + 2;
-		i2 = i2 < Scan->points.size() ? i2 : i2 - Scan->points.size();
-		i3 = i0 + 3;
-		i3 = i3 < Scan->points.size() ? i3 : i3 - Scan->points.size();
+		i1 = (i0 + 1) % point_count;
+		i2 = (i0 + 2) % point_count;
+		i3 = (i0 + 3) % point_count;
 		i4 = i0 + 4;
 		i4 = i4 < Scan->points.size() ? i4 : i4 - Scan->points.size();
 		if (Scan->points[i0].range != 0 && Scan->points[i1].range != 0 && Scan->points[i2].range != 0 && Scan->points[i3].range != 0 && Scan->points[i4].range != 0)
@@ -225,8 +225,7 @@ void Point_cloud_optimize::PointCloudFilter(LaserScan *Scan)
 ******************************************/
 int Point_cloud_optimize::UltrasonicSimRanging(LaserPoint &pScan)
 {
-	int i, index;
-	short tempdep;
+	int index;
 	float target_angle = pScan.angle + node_lidar.lidar_robot_info.install_to_zero;
 
 	if(target_angle > 360.0)
@@ -250,6 +249,8 @@ int Point_cloud_optimize::UltrasonicSimRanging(LaserPoint &pScan)
 	}else{
 		pScan.range_check = 0;
 	}
+
+	return static_cast<int>(pScan.range_check);
 }
 
 /*****************************************
@@ -338,7 +339,7 @@ void Point_cloud_optimize::lidar_blocked_judge(int count)
 	}
 	if(node_lidar.lidar_block.point_check > 200)
 	{
-		printf("lidar 雷达被严重遮挡百分之七十 %d,%d\n",node_lidar.lidar_block.lidar_zero_count,node_lidar.scan_node_count);
+		printf("lidar 雷达被严重遮挡百分之七十 %d,%zu\n", node_lidar.lidar_block.lidar_zero_count, node_lidar.scan_node_count);
 		node_lidar.lidar_status.lidar_abnormal_state |= 0x04;
 		node_lidar.lidar_block.point_check = 0;
 	}
@@ -372,7 +373,7 @@ void Point_cloud_optimize::datas_clear()
 void Point_cloud_optimize::lidar_blocked_init()
 {
 	float angle,radian;
-	float r, d, temp;
+	float r, d;
 
 	r = node_lidar.lidar_robot_info.ROBOT_DIAMETER_mm / 2.0F;
 	d = node_lidar.lidar_robot_info.LIDAR_ROBOT_CENTER_DISTANCE_mm * 1.0;
@@ -401,7 +402,7 @@ void Point_cloud_optimize::lidar_blocked_init()
 			b=2*d*k;
 			c=d*d-r*r; 
 			s=b*b-4*a*c;
-			if((angle >= 0 && angle < 90)|| angle > 270 && angle <=360){
+			if ((angle >= 0 && angle < 90) || (angle > 270 && angle <= 360)) {
 				x=(-1*b+sqrt(s))/(2*a);
 			}else{
 				x=(-1*b-sqrt(s))/(2*a);

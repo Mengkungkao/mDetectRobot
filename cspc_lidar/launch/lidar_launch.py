@@ -25,7 +25,7 @@ def generate_launch_description():
             output='screen',
             emulate_tty=True,
             parameters=[parameter_file],
-            respawn=True,
-            respawn_delay=2.0,
+            # Keep failures visible instead of creating an endless restart loop.
+            respawn=False,
         ),
     ])

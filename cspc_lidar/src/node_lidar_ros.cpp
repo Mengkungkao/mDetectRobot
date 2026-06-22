@@ -82,7 +82,7 @@ int Scan_to_PointCloud(LaserScan &scan, sensor_msgs::msg::PointCloud2 &outscan)
 	cloud->points.resize(cloud->width * cloud->height);
 
 	pcl::PointXYZ pcl_point;
-	for(int i = 0;i<scan.points.size();i++)
+	for (std::size_t i = 0; i < scan.points.size(); ++i)
 	{
 		pcl_point.x = scan.points[i].range * std::cos(scan.points[i].angle*M_PI/180.0);
 		pcl_point.y = scan.points[i].range * std::sin(scan.points[i].angle*M_PI/180.0);
@@ -108,17 +108,24 @@ int main(int argc, char **argv)
 	rclcpp::init(argc, argv);
 	auto node = rclcpp::Node::make_shared("cspc_lidar");
 	
-	node->declare_parameter("port");
-  	node->get_parameter("port", node_lidar.lidar_general_info.port);
-	
-	node->declare_parameter("baudrate");
-  	node->get_parameter("baudrate", node_lidar.lidar_general_info.m_SerialBaudrate);
+	// ROS 2 Humble requires each statically typed parameter to be declared
+	// with either an explicit type or a default value. Launch/YAML overrides
+	// replace these defaults when the driver starts.
+	node_lidar.lidar_general_info.port =
+		node->declare_parameter<std::string>(
+			"port", node_lidar.lidar_general_info.port);
 
-	node->declare_parameter("frame_id");
-  	node->get_parameter("frame_id", node_lidar.lidar_general_info.frame_id);
-	
-	node->declare_parameter("version");
-  	node->get_parameter("version", node_lidar.lidar_general_info.version);
+	node_lidar.lidar_general_info.m_SerialBaudrate =
+		node->declare_parameter<int>(
+			"baudrate", node_lidar.lidar_general_info.m_SerialBaudrate);
+
+	node_lidar.lidar_general_info.frame_id =
+		node->declare_parameter<std::string>(
+			"frame_id", node_lidar.lidar_general_info.frame_id);
+
+	node_lidar.lidar_general_info.version =
+		node->declare_parameter<int>(
+			"version", node_lidar.lidar_general_info.version);
 	//std::string frame_id = "base_scan";
 	rclcpp::Publisher<std_msgs::msg::String>::SharedPtr error_pub;
 	error_pub = node->create_publisher<std_msgs::msg::String>("lsd_error", 10);
@@ -183,7 +190,7 @@ int main(int argc, char **argv)
 			scan_msg->time_increment = scan.config.time_increment;
 			scan_msg->range_min = scan.config.min_range;
 			scan_msg->range_max = scan.config.max_range;
-			for(int i=0; i < scan.points.size(); i++) {
+			for (std::size_t i = 0; i < scan.points.size(); ++i) {
 				scan_msg->ranges[i] = scan.points[i].range;
 				scan_msg->intensities[i] = scan.points[i].intensity;
 			}
