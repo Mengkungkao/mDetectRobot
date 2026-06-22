@@ -6,8 +6,15 @@ if [ "${ROS_DISTRO:-}" != "humble" ] && [ ! -f /opt/ros/humble/setup.bash ]; the
   exit 1
 fi
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+WORKSPACE="$HOME/mdetect_ws"
+LIDAR_RULE="$PROJECT_ROOT/ros2_ws/src/cspc_lidar/sc_mini.rules"
+
 sudo apt update
 sudo apt install -y \
+  build-essential \
+  libpcl-dev \
   python3-colcon-common-extensions \
   python3-rosdep \
   python3-serial \
@@ -19,23 +26,33 @@ sudo apt install -y \
   ros-humble-slam-toolbox \
   ros-humble-robot-localization \
   ros-humble-xacro \
-  ros-humble-robot-state-publisher
+  ros-humble-robot-state-publisher \
+  ros-humble-pcl-ros \
+  ros-humble-pcl-conversions
 
 sudo usermod -aG dialout "$USER"
 
-mkdir -p "$HOME/mdetect_ws/src"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-cp -a "$PROJECT_ROOT/ros2_ws/src/." "$HOME/mdetect_ws/src/"
+if [ -f "$LIDAR_RULE" ]; then
+  sudo install -m 0644 "$LIDAR_RULE" /etc/udev/rules.d/99-cspc-coin-d6.rules
+  sudo udevadm control --reload-rules
+  sudo udevadm trigger
+else
+  echo "ERROR: COIN-D6 udev rule not found at: $LIDAR_RULE"
+  exit 1
+fi
+
+mkdir -p "$WORKSPACE/src"
+cp -a "$PROJECT_ROOT/ros2_ws/src/." "$WORKSPACE/src/"
 
 source /opt/ros/humble/setup.bash
-cd "$HOME/mdetect_ws"
+cd "$WORKSPACE"
 sudo rosdep init 2>/dev/null || true
 rosdep update
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
 
-grep -q 'AutonomousV11 ROS environment' "$HOME/.bashrc" 2>/dev/null || cat >> "$HOME/.bashrc" <<'BASHRC'
+if ! grep -q 'AutonomousV11 ROS environment' "$HOME/.bashrc" 2>/dev/null; then
+  cat >> "$HOME/.bashrc" <<'BASHRC'
 
 # AutonomousV11 ROS environment
 export ROS_DOMAIN_ID=42
@@ -44,9 +61,14 @@ export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 source /opt/ros/humble/setup.bash
 source "$HOME/mdetect_ws/install/setup.bash"
 BASHRC
+fi
 
 echo
 printf '%s\n' \
   "Pi installation complete." \
+  "The bundled COIN-D6 cspc_lidar driver was copied and built." \
+  "The USB rule was installed as /etc/udev/rules.d/99-cspc-coin-d6.rules." \
+  "Unplug and reconnect the LiDAR, then check: ls -l /dev/sc_mini" \
   "Log out and back in so the dialout group applies." \
-  "Then edit ~/mdetect_ws/src/mdetect_base/config/base.yaml for the Arduino port."
+  "Edit ~/mdetect_ws/src/mdetect_base/config/base.yaml for the Arduino port if needed." \
+  "LiDAR settings are in ~/mdetect_ws/src/cspc_lidar/params/cspc_lidar.yaml."

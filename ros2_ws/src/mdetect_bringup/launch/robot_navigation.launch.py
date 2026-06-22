@@ -16,9 +16,17 @@ def generate_launch_description():
     base_config = LaunchConfiguration('base_config')
     ekf_config = LaunchConfiguration('ekf_config')
     nav2_params = LaunchConfiguration('nav2_params')
+    start_lidar = LaunchConfiguration('start_lidar')
+    lidar_params = LaunchConfiguration('lidar_params')
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
+        DeclareLaunchArgument('start_lidar', default_value='true'),
+        DeclareLaunchArgument(
+            'lidar_params',
+            default_value=os.path.join(
+                get_package_share_directory('cspc_lidar'),
+                'params', 'cspc_lidar.yaml')),
         DeclareLaunchArgument(
             'map',
             description='Absolute path to the saved Nav2 map YAML file'),
@@ -40,6 +48,8 @@ def generate_launch_description():
                 'use_sim_time': use_sim_time,
                 'base_config': base_config,
                 'ekf_config': ekf_config,
+                'start_lidar': start_lidar,
+                'lidar_params': lidar_params,
             }.items(),
         ),
         IncludeLaunchDescription(

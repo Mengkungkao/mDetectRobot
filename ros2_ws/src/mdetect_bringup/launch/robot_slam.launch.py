@@ -17,9 +17,17 @@ def generate_launch_description():
     ekf_config = LaunchConfiguration('ekf_config')
     slam_params = LaunchConfiguration('slam_params')
     nav2_params = LaunchConfiguration('nav2_params')
+    start_lidar = LaunchConfiguration('start_lidar')
+    lidar_params = LaunchConfiguration('lidar_params')
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
+        DeclareLaunchArgument('start_lidar', default_value='true'),
+        DeclareLaunchArgument(
+            'lidar_params',
+            default_value=os.path.join(
+                get_package_share_directory('cspc_lidar'),
+                'params', 'cspc_lidar.yaml')),
         DeclareLaunchArgument(
             'base_config',
             default_value=os.path.join(
@@ -41,6 +49,8 @@ def generate_launch_description():
                 'use_sim_time': use_sim_time,
                 'base_config': base_config,
                 'ekf_config': ekf_config,
+                'start_lidar': start_lidar,
+                'lidar_params': lidar_params,
             }.items(),
         ),
         IncludeLaunchDescription(

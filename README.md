@@ -17,6 +17,7 @@ The old Arduino waypoint state machine has been removed. Nav2 is now the only gl
 - Motors **2 and 3 are the left side**
 - Arduino serial speed: **500000 baud**
 - LiDAR publishes `sensor_msgs/LaserScan` on `/scan` with frame `lidar_link`
+- COIN-D6 serial defaults: `/dev/sc_mini` at **230400 baud**
 
 Change these values in:
 
@@ -80,7 +81,7 @@ If RViz yaw turns clockwise when the robot physically turns counter-clockwise, c
 const float IMU_YAW_SIGN = -1.0f;
 ```
 
-## 2. Install the Raspberry Pi workspace
+## 2. Install the Raspberry Pi workspace and COIN-D6 driver
 
 Copy this whole folder to the Pi, then run:
 
@@ -89,21 +90,49 @@ cd AutonomousV11_complete
 ./scripts/install_pi.sh
 ```
 
-Log out and back in after installation so membership in the `dialout` group takes effect.
+The installer now:
 
-Find stable serial device paths:
+- installs the PCL and ROS dependencies needed by the CSPC driver;
+- copies the bundled `cspc_lidar` package into `~/mdetect_ws/src`;
+- installs the COIN-D6 USB rule as `/etc/udev/rules.d/99-cspc-coin-d6.rules`;
+- builds the LiDAR driver together with the mDetect packages; and
+- configures the full robot launch files to start the LiDAR automatically.
+
+Log out and back in after installation so membership in the `dialout` group takes effect. Unplug and reconnect the LiDAR, then check the device link:
+
+```bash
+ls -l /dev/sc_mini
+readlink -f /dev/sc_mini
+```
+
+Find stable serial paths for both the Arduino and LiDAR:
 
 ```bash
 ls -l /dev/serial/by-id/
 ```
 
-Edit:
+Set the Arduino path in:
 
 ```bash
 nano ~/mdetect_ws/src/mdetect_base/config/base.yaml
 ```
 
-Set the Arduino path, preferably using `/dev/serial/by-id/...`, then rebuild:
+The default COIN-D6 settings are stored in:
+
+```bash
+nano ~/mdetect_ws/src/cspc_lidar/params/cspc_lidar.yaml
+```
+
+Default LiDAR values:
+
+```yaml
+port: /dev/sc_mini
+baudrate: 230400
+frame_id: lidar_link
+version: 4
+```
+
+If you change either configuration file, rebuild:
 
 ```bash
 cd ~/mdetect_ws
@@ -111,33 +140,61 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-## 3. Start the COIN-D6 LiDAR
+> The supplied vendor archive is named `cspc_lidar_sdk_ros2_D4_20250731`. It is bundled here as the CSPC driver for the project COIN-D6 unit, but the final hardware behaviour must still be verified on the actual sensor.
 
-The supplied files did not include the COIN-D6 packet protocol or its ROS 2 driver source, so this bundle does not replace the vendor `cspc_lidar` driver. Start your existing driver on the Pi and make sure it publishes:
+## 3. Test the COIN-D6 LiDAR
+
+Run the supplied test launcher:
+
+```bash
+cd AutonomousV11_complete
+./scripts/test_lidar.sh
+```
+
+Or start the driver directly:
+
+```bash
+source ~/mdetect_ws/install/setup.bash
+ros2 launch cspc_lidar lidar_launch.py
+```
+
+The expected output is:
 
 ```text
 Topic: /scan
 Type:  sensor_msgs/msg/LaserScan
 Frame: lidar_link
+Rate:  approximately 10 Hz
 ```
 
-Use these checks:
+Check the stream in another terminal:
 
 ```bash
 ros2 pkg executables cspc_lidar
-ros2 topic hz /scan
+ros2 topic info /scan
 ros2 topic echo /scan --once
+ros2 topic hz /scan
 ```
 
-If the driver publishes a different topic, remap it to `/scan`. If it publishes another frame name, either change the driver frame to `lidar_link` or update the URDF and configuration consistently.
+The driver also publishes `/point_cloud` and diagnostic text on `/lsd_error`.
+
+If `/dev/sc_mini` points to the Arduino instead of the LiDAR, both devices probably use the same USB-to-serial chipset. Use the LiDAR path from `/dev/serial/by-id/` and change the `port` value in `cspc_lidar.yaml`.
+
+See `docs/COIN_D6_LIDAR.md` for detailed setup and troubleshooting.
 
 ## 4. Run SLAM + Nav2 on the Pi
 
-After the LiDAR driver is running:
+The COIN-D6 starts automatically with the full robot launch:
 
 ```bash
 source ~/mdetect_ws/install/setup.bash
 ros2 launch mdetect_bringup robot_slam.launch.py
+```
+
+To run the stack without starting the LiDAR, for example when replaying a rosbag:
+
+```bash
+ros2 launch mdetect_bringup robot_slam.launch.py start_lidar:=false
 ```
 
 This starts:
@@ -275,6 +332,12 @@ source ~/mdetect_ws/install/setup.bash
 ros2 launch mdetect_bringup robot_bringup.launch.py
 ```
 
+This launch now starts the COIN-D6 by default. For a motor-only bench test, use:
+
+```bash
+ros2 launch mdetect_bringup robot_bringup.launch.py start_lidar:=false
+```
+
 In a second terminal:
 
 ```bash
@@ -317,7 +380,7 @@ Use RViz2 **2D Pose Estimate** once to initialize AMCL, then send timed waypoint
 ## 11. Topic flow
 
 ```text
-/scan -> SLAM Toolbox + costmaps + safety supervisor
+COIN-D6 cspc_lidar -> /scan -> SLAM Toolbox + costmaps + safety supervisor
 /wheel/odometry + /imu/data -> robot_localization
 /odometry/filtered -> Nav2
 Nav2 controller -> /cmd_vel_nav
