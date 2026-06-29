@@ -1,0 +1,45 @@
+[0.566s] Invoking command in '/home/meng/mDetectRobot/turtlebot3_ws/src/arduino_bridge': PYTHONPATH=/home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/arduino_bridge build --build-base /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build install --record /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/install.log --single-version-externally-managed install_data
+[0.716s] running egg_info
+[0.717s] creating ../../build/arduino_bridge/arduino_bridge.egg-info
+[0.717s] writing ../../build/arduino_bridge/arduino_bridge.egg-info/PKG-INFO
+[0.717s] writing dependency_links to ../../build/arduino_bridge/arduino_bridge.egg-info/dependency_links.txt
+[0.717s] writing entry points to ../../build/arduino_bridge/arduino_bridge.egg-info/entry_points.txt
+[0.717s] writing requirements to ../../build/arduino_bridge/arduino_bridge.egg-info/requires.txt
+[0.717s] writing top-level names to ../../build/arduino_bridge/arduino_bridge.egg-info/top_level.txt
+[0.717s] writing manifest file '../../build/arduino_bridge/arduino_bridge.egg-info/SOURCES.txt'
+[0.718s] reading manifest file '../../build/arduino_bridge/arduino_bridge.egg-info/SOURCES.txt'
+[0.719s] writing manifest file '../../build/arduino_bridge/arduino_bridge.egg-info/SOURCES.txt'
+[0.719s] running build
+[0.719s] running build_py
+[0.719s] creating /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build
+[0.719s] creating /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build/lib
+[0.719s] creating /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build/lib/arduino_bridge
+[0.719s] copying arduino_bridge/__init__.py -> /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build/lib/arduino_bridge
+[0.719s] copying arduino_bridge/arduino_bridge_node.py -> /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build/lib/arduino_bridge
+[0.719s] running install
+[0.719s] running install_lib
+[0.720s] creating /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge
+[0.720s] copying /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build/lib/arduino_bridge/__init__.py -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge
+[0.720s] copying /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build/lib/arduino_bridge/arduino_bridge_node.py -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge
+[0.720s] byte-compiling /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge/__init__.py to __init__.cpython-310.pyc
+[0.721s] byte-compiling /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge/arduino_bridge_node.py to arduino_bridge_node.cpython-310.pyc
+[0.722s] running install_data
+[0.722s] creating /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/ament_index
+[0.722s] creating /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/ament_index/resource_index
+[0.722s] creating /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/ament_index/resource_index/packages
+[0.722s] copying resource/arduino_bridge -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/ament_index/resource_index/packages
+[0.723s] copying package.xml -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge
+[0.723s] creating /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge/launch
+[0.723s] copying launch/robot.launch.py -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge/launch
+[0.723s] copying launch/arduino_bridge.launch.py -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge/launch
+[0.723s] copying launch/workstation.launch.py -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge/launch
+[0.723s] creating /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge/param
+[0.723s] copying param/slam_params.yaml -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge/param
+[0.723s] copying param/arduino_bridge.yaml -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge/param
+[0.723s] copying param/nav2_params.yaml -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge/param
+[0.723s] running install_egg_info
+[0.724s] Copying ../../build/arduino_bridge/arduino_bridge.egg-info to /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge-0.1.0-py3.10.egg-info
+[0.725s] running install_scripts
+[0.739s] Installing arduino_bridge_node script to /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/bin
+[0.739s] writing list of installed files to '/home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/install.log'
+[0.753s] Invoked command in '/home/meng/mDetectRobot/turtlebot3_ws/src/arduino_bridge' returned '0': PYTHONPATH=/home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/arduino_bridge build --build-base /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build install --record /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/install.log --single-version-externally-managed install_data

@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: arduino-bridge
+Version: 0.1.0
+Summary: ROS2 bridge between Raspberry Pi and Arduino motor controller via UART serial.
+Home-page: UNKNOWN
+Maintainer: M.K.
+Maintainer-email: mengkungkao@gmail.com
+License: Apache-2.0
+Platform: UNKNOWN
+
+UNKNOWN
+

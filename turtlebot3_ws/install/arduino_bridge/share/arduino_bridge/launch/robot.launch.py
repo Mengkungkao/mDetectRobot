@@ -43,4 +43,15 @@ def generate_launch_description():
             arguments=['0.0', '0.0', '0.18', '0.0', '0.0', '0.0',
                        'base_footprint', 'base_scan'],
         ),
+
+        Node(
+            package='slam_toolbox',
+            executable='async_slam_toolbox_node',
+            name='slam_toolbox',
+            parameters=[
+                os.path.join(pkg, 'param', 'slam_params.yaml'),
+                {'use_sim_time': False},
+            ],
+            output='screen',
+        ),
     ])
