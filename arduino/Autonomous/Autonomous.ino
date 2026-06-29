@@ -1,5 +1,5 @@
 /*
-  AutonomousV11 low-level controller for Arduino Uno
+  Autonomous low-level controller for Arduino Uno
 
   Responsibilities:
     - Read four QGPMaker quadrature encoders
