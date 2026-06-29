@@ -255,7 +255,8 @@ class SerialBridge(Node):
         self.last_telemetry_ns = self.now_ns()
         self.controller_state = state
         self.fault_code = fault
-        self.estop_latched = bool(fault & 0x02) or state == 3
+        arduino_estop = bool(fault & 0x02) or state == 3
+        self.estop_latched = self.estop_latched or arduino_estop
         self.publish_telemetry(sequence, arduino_ms, counts, speeds_mm_s, yaw_deg, gyro_deg_s)
 
     def publish_telemetry(
