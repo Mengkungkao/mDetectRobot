@@ -1,6 +1,0 @@
-cspc_lidar:
-  ros__parameters:
-    port: /dev/ttyUSB0
-    frame_id: laser
-    baudrate: 230400
-    version: 4
