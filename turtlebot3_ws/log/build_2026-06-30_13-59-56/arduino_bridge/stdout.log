@@ -1,0 +1,23 @@
+running egg_info
+writing ../../build/arduino_bridge/arduino_bridge.egg-info/PKG-INFO
+writing dependency_links to ../../build/arduino_bridge/arduino_bridge.egg-info/dependency_links.txt
+writing entry points to ../../build/arduino_bridge/arduino_bridge.egg-info/entry_points.txt
+writing requirements to ../../build/arduino_bridge/arduino_bridge.egg-info/requires.txt
+writing top-level names to ../../build/arduino_bridge/arduino_bridge.egg-info/top_level.txt
+reading manifest file '../../build/arduino_bridge/arduino_bridge.egg-info/SOURCES.txt'
+writing manifest file '../../build/arduino_bridge/arduino_bridge.egg-info/SOURCES.txt'
+running build
+running build_py
+copying arduino_bridge/arduino_bridge_node.py -> /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build/lib/arduino_bridge
+running install
+running install_lib
+copying /home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/build/lib/arduino_bridge/arduino_bridge_node.py -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge
+byte-compiling /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge/arduino_bridge_node.py to arduino_bridge_node.cpython-310.pyc
+running install_data
+copying launch/workstation.launch.py -> /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/share/arduino_bridge/launch
+running install_egg_info
+removing '/home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge-0.1.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/arduino_bridge/arduino_bridge.egg-info to /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/lib/python3.10/site-packages/arduino_bridge-0.1.0-py3.10.egg-info
+running install_scripts
+Installing arduino_bridge_node script to /home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge/bin
+writing list of installed files to '/home/meng/mDetectRobot/turtlebot3_ws/build/arduino_bridge/install.log'

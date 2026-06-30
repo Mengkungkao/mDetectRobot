@@ -82,6 +82,7 @@ class ArduinoBridgeNode(Node):
         self._last_odom_time = None
         self._last_cmd_time = None
         self._arduino_ready = False
+        self._running = True
 
         # ---- Serial ----
         try:
@@ -106,9 +107,11 @@ class ArduinoBridgeNode(Node):
 
     def _serial_reader(self) -> None:
         buf = b''
-        while True:
+        while self._running:
             try:
                 chunk = self._ser.read(256)
+                if not self._running:
+                    break
                 if chunk:
                     buf += chunk
                     while b'\n' in buf:
@@ -117,11 +120,13 @@ class ArduinoBridgeNode(Node):
                         if line:
                             self._recv_q.put(line.decode('ascii', errors='replace'))
             except serial.SerialException as exc:
-                self.get_logger().error(f'Serial read error: {exc}')
-                time.sleep(0.1)
+                if self._running:
+                    self.get_logger().error(f'Serial read error: {exc}')
+                break
             except Exception as exc:
-                self.get_logger().error(f'Unexpected serial error: {exc}')
-                time.sleep(0.1)
+                if self._running:
+                    self.get_logger().error(f'Unexpected serial error: {exc}')
+                break
 
     # ------------------------------------------------------------------
     # Queue processing (runs in ROS2 spin thread)
@@ -293,11 +298,18 @@ class ArduinoBridgeNode(Node):
     # ------------------------------------------------------------------
 
     def destroy_node(self) -> None:
+        self._running = False
         self.get_logger().info('Sending stop to Arduino')
         self._seq = (self._seq + 1) & 0xFFFF
-        self._serial_write(f'S,{self._seq}\n')
+        try:
+            self._serial_write(f'S,{self._seq}\n')
+        except Exception:
+            pass
         time.sleep(0.1)
-        self._ser.close()
+        try:
+            self._ser.close()
+        except Exception:
+            pass
         super().destroy_node()
 
 
