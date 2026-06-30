@@ -1,1 +1,1 @@
-/home/meng/mdetect_ws/install/mdetect_navigation:/home/meng/mdetect_ws/install/mdetect_description:/home/meng/ldlidar_ros2_ws/install/ldlidar_ros2:/opt/ros/humble
+/home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar:/home/meng/mDetectRobot/turtlebot3_ws/install/arduino_bridge:/home/meng/mdetect_ws/install/mdetect_navigation:/home/meng/mdetect_ws/install/mdetect_description:/home/meng/ldlidar_ros2_ws/install/ldlidar_ros2:/opt/ros/humble
