@@ -1,0 +1,517 @@
+[0.000000] (-) TimerEvent: {}
+[0.000195] (-) JobUnselected: {'identifier': 'arduino_bridge'}
+[0.000509] (cspc_lidar) JobQueued: {'identifier': 'cspc_lidar', 'dependencies': OrderedDict()}
+[0.000595] (cspc_lidar) JobStarted: {'identifier': 'cspc_lidar'}
+[0.007291] (cspc_lidar) JobProgress: {'identifier': 'cspc_lidar', 'progress': 'cmake'}
+[0.007504] (cspc_lidar) Command: {'cmd': ['/usr/bin/cmake', '/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar', '-DCMAKE_INSTALL_PREFIX=/home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar'], 'cwd': '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('VSCODE_CWD', '/home/meng'), ('VSCODE_ESM_ENTRYPOINT', 'vs/workbench/api/node/extensionHostProcess'), ('AI_AGENT', 'claude-code_2-1-195_agent'), ('LANGUAGE', 'en_AU:en'), ('USER', 'meng'), ('CLAUDE_CODE_ENTRYPOINT', 'claude-vscode'), ('VSCODE_NLS_CONFIG', '{"userLocale":"en-gb","osLocale":"en-au","resolvedLanguage":"en","defaultMessagesFile":"/usr/share/code/resources/app/out/nls.messages.json","locale":"en-gb","availableLanguages":{}}'), ('GIT_EDITOR', 'true'), ('VSCODE_HANDLES_UNCAUGHT_ERRORS', 'true'), ('XDG_SESSION_TYPE', 'wayland'), ('CLAUDE_AGENT_SDK_VERSION', '0.3.195'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/meng'), ('CHROME_DESKTOP', 'code.desktop'), ('OLDPWD', '/home/meng/mDetectRobot'), ('DESKTOP_SESSION', 'ubuntu'), ('VSCODE_IPC_HOOK', '/run/user/1000/vscode-98ccf409-1.12-main.sock'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/code.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('CLAUDE_CODE_CHILD_SESSION', '1'), ('MANAGERPID', '1382'), ('SYSTEMD_EXEC_PID', '1547'), ('IM_CONFIG_CHECK_ENV', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '3784'), ('_colcon_cd_root', '/opt/ros/humble/'), ('VSCODE_CRASH_REPORTER_PROCESS_TYPE', 'extensionHost'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/meng/mdetect_ws/install:/home/meng/ldlidar_ros2_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'meng'), ('JOURNAL_STREAM', '8:3514'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'meng'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('FC_FONTATIONS', '1'), ('ROS_LOCALHOST_ONLY', '0'), ('MCP_CONNECTION_NONBLOCKING', 'true'), ('PATH', '/home/meng/.local/bin:/home/meng/.local/bin:/opt/ros/humble/bin:/home/meng/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/meng-Flow-Z13-GZ301VV:@/tmp/.ICE-unix/1508,unix/meng-Flow-Z13-GZ301VV:/tmp/.ICE-unix/1508'), ('INVOCATION_ID', '0a6081c4e60a42bcbd148376e4ae6db0'), ('COREPACK_ENABLE_AUTO_PIN', '0'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('GDK_BACKEND', 'wayland'), ('CLAUDE_EFFORT', 'high'), ('DISPLAY', ':0'), ('NoDefaultCurrentDirectoryInExePath', '1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.W3NWR3'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('AMENT_PREFIX_PATH', '/home/meng/mdetect_ws/install/mdetect_navigation:/home/meng/mdetect_ws/install/mdetect_description:/home/meng/ldlidar_ros2_ws/install/ldlidar_ros2:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('ELECTRON_RUN_AS_NODE', '1'), ('GDMSESSION', 'ubuntu'), ('CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING', 'true'), ('CLAUDE_CODE_SESSION_ID', '206eb03d-537d-49af-807f-9483a02299c1'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('CLAUDECODE', '1'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar'), ('TURTLEBOT3_MODEL', 'burger_cam'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('VSCODE_CODE_CACHE_PATH', '/home/meng/.config/Code/CachedData/7e7950df89d055b5a378379db9ee14290772148a'), ('GAZEBO_PLUGIN_PATH', '/home/meng/{your_ws}/build/turtlebot3_gazebo:'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('CLAUDE_CODE_EXECPATH', '/home/meng/.vscode/extensions/anthropic.claude-code-2.1.195-linux-x64/resources/native-binary/claude'), ('PYTHONPATH', '/home/meng/mdetect_ws/build/mdetect_navigation:/home/meng/mdetect_ws/install/mdetect_navigation/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('CLAUDE_CODE_ENABLE_TASKS', '0'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/meng/mdetect_ws/install/mdetect_description:/home/meng/ldlidar_ros2_ws/install/ldlidar_ros2:/home/meng/mdetect_ws/install/mdetect_navigation:/opt/ros/humble'), ('VSCODE_PID', '3784')]), 'shell': False}
+[0.099873] (-) TimerEvent: {}
+[0.126337] (cspc_lidar) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[0.199991] (-) TimerEvent: {}
+[0.239612] (cspc_lidar) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[0.253900] (cspc_lidar) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.300160] (-) TimerEvent: {}
+[0.344072] (cspc_lidar) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.354060] (cspc_lidar) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.355067] (cspc_lidar) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.355801] (cspc_lidar) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.359539] (cspc_lidar) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.400259] (-) TimerEvent: {}
+[0.437094] (cspc_lidar) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.442199] (cspc_lidar) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.442414] (cspc_lidar) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.442745] (cspc_lidar) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.449809] (cspc_lidar) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.500399] (-) TimerEvent: {}
+[0.566683] (cspc_lidar) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[0.600466] (-) TimerEvent: {}
+[0.650697] (cspc_lidar) StdoutLine: {'line': b'-- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)\n'}
+[0.693240] (cspc_lidar) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[0.700119] (cspc_lidar) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.700524] (-) TimerEvent: {}
+[0.707963] (cspc_lidar) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[0.719230] (cspc_lidar) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.733313] (cspc_lidar) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.771694] (cspc_lidar) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[0.774342] (cspc_lidar) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[0.800719] (-) TimerEvent: {}
+[0.876020] (cspc_lidar) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  \n'}
+[0.900829] (-) TimerEvent: {}
+[0.912922] (cspc_lidar) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/humble/include  \n'}
+[0.961188] (cspc_lidar) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[0.971448] (cspc_lidar) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[1.000916] (-) TimerEvent: {}
+[1.029767] (cspc_lidar) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[1.030242] (cspc_lidar) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[1.090397] (cspc_lidar) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[1.091745] (cspc_lidar) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[1.101012] (-) TimerEvent: {}
+[1.135829] (cspc_lidar) StdoutLine: {'line': b'-- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)\n'}
+[1.160536] (cspc_lidar) StdoutLine: {'line': b'-- Found visualization_msgs: 4.9.1 (/opt/ros/humble/share/visualization_msgs/cmake)\n'}
+[1.175397] (cspc_lidar) StdoutLine: {'line': b'-- Found pcl_conversions: 2.4.5 (/opt/ros/humble/share/pcl_conversions/cmake)\n'}
+[1.201106] (-) TimerEvent: {}
+[1.209914] (cspc_lidar) StdoutLine: {'line': b"-- Checking for module 'eigen3'\n"}
+[1.224468] (cspc_lidar) StdoutLine: {'line': b'--   Found eigen3, version 3.4.0\n'}
+[1.257434] (cspc_lidar) StdoutLine: {'line': b'-- Found Eigen: /usr/include/eigen3 (Required is at least version "3.1") \n'}
+[1.257664] (cspc_lidar) StdoutLine: {'line': b'-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)\n'}
+[1.293500] (cspc_lidar) StdoutLine: {'line': b"-- Checking for module 'flann'\n"}
+[1.301279] (-) TimerEvent: {}
+[1.305696] (cspc_lidar) StdoutLine: {'line': b'--   Found flann, version 1.9.1\n'}
+[1.350736] (cspc_lidar) StdoutLine: {'line': b'-- Found FLANN: /usr/lib/x86_64-linux-gnu/libflann_cpp.so  \n'}
+[1.350979] (cspc_lidar) StdoutLine: {'line': b'-- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)\n'}
+[1.401400] (-) TimerEvent: {}
+[1.501609] (-) TimerEvent: {}
+[1.601871] (-) TimerEvent: {}
+[1.702066] (-) TimerEvent: {}
+[1.802284] (-) TimerEvent: {}
+[1.902431] (-) TimerEvent: {}
+[2.002619] (-) TimerEvent: {}
+[2.102807] (-) TimerEvent: {}
+[2.146897] (cspc_lidar) StdoutLine: {'line': b"-- Checking for module 'libusb-1.0'\n"}
+[2.158385] (cspc_lidar) StdoutLine: {'line': b'--   Found libusb-1.0, version 1.0.25\n'}
+[2.193890] (cspc_lidar) StdoutLine: {'line': b'-- Found libusb: /usr/lib/x86_64-linux-gnu/libusb-1.0.so  \n'}
+[2.195202] (cspc_lidar) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[2.202880] (-) TimerEvent: {}
+[2.245715] (cspc_lidar) StdoutLine: {'line': b'-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)\n'}
+[2.302988] (-) TimerEvent: {}
+[2.375312] (cspc_lidar) StdoutLine: {'line': b'-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)\n'}
+[2.381758] (cspc_lidar) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[2.388289] (cspc_lidar) StdoutLine: {'line': b'-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)\n'}
+[2.403061] (-) TimerEvent: {}
+[2.503266] (-) TimerEvent: {}
+[2.508684] (cspc_lidar) StdoutLine: {'line': b'-- Found Qhull version 8.0.2\n'}
+[2.603375] (-) TimerEvent: {}
+[2.622350] (cspc_lidar) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[2.703435] (-) TimerEvent: {}
+[2.732125] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_COMMON: /usr/lib/x86_64-linux-gnu/libpcl_common.so  \n'}
+[2.732666] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_KDTREE: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so  \n'}
+[2.733316] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_OCTREE: /usr/lib/x86_64-linux-gnu/libpcl_octree.so  \n'}
+[2.733736] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_SEARCH: /usr/lib/x86_64-linux-gnu/libpcl_search.so  \n'}
+[2.734285] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_SAMPLE_CONSENSUS: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so  \n'}
+[2.734788] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_FILTERS: /usr/lib/x86_64-linux-gnu/libpcl_filters.so  \n'}
+[2.735035] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_2D: /usr/include/pcl-1.12  \n'}
+[2.735260] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_GEOMETRY: /usr/include/pcl-1.12  \n'}
+[2.735889] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_IO: /usr/lib/x86_64-linux-gnu/libpcl_io.so  \n'}
+[2.736463] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_FEATURES: /usr/lib/x86_64-linux-gnu/libpcl_features.so  \n'}
+[2.737176] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_ML: /usr/lib/x86_64-linux-gnu/libpcl_ml.so  \n'}
+[2.737650] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_SEGMENTATION: /usr/lib/x86_64-linux-gnu/libpcl_segmentation.so  \n'}
+[2.738377] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_VISUALIZATION: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so  \n'}
+[2.738985] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_SURFACE: /usr/lib/x86_64-linux-gnu/libpcl_surface.so  \n'}
+[2.739568] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_REGISTRATION: /usr/lib/x86_64-linux-gnu/libpcl_registration.so  \n'}
+[2.740234] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_KEYPOINTS: /usr/lib/x86_64-linux-gnu/libpcl_keypoints.so  \n'}
+[2.740860] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_TRACKING: /usr/lib/x86_64-linux-gnu/libpcl_tracking.so  \n'}
+[2.741432] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_RECOGNITION: /usr/lib/x86_64-linux-gnu/libpcl_recognition.so  \n'}
+[2.742197] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_STEREO: /usr/lib/x86_64-linux-gnu/libpcl_stereo.so  \n'}
+[2.742781] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_APPS: /usr/lib/x86_64-linux-gnu/libpcl_apps.so  \n'}
+[2.743280] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_IN_HAND_SCANNER: /usr/include/pcl-1.12  \n'}
+[2.743474] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_MODELER: /usr/include/pcl-1.12  \n'}
+[2.743737] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_POINT_CLOUD_EDITOR: /usr/include/pcl-1.12  \n'}
+[2.744407] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_OUTOFCORE: /usr/lib/x86_64-linux-gnu/libpcl_outofcore.so  \n'}
+[2.745057] (cspc_lidar) StdoutLine: {'line': b'-- Found PCL_PEOPLE: /usr/lib/x86_64-linux-gnu/libpcl_people.so  \n'}
+[2.746300] (cspc_lidar) StderrLine: {'line': b'CMake Warning (dev) at CMakeLists.txt:20 (find_package):\n'}
+[2.746353] (cspc_lidar) StderrLine: {'line': b'  Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.\n'}
+[2.746391] (cspc_lidar) StderrLine: {'line': b'  Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy\n'}
+[2.746419] (cspc_lidar) StderrLine: {'line': b'  command to set the policy and suppress this warning.\n'}
+[2.746446] (cspc_lidar) StderrLine: {'line': b'\n'}
+[2.746473] (cspc_lidar) StderrLine: {'line': b'  CMake variable PCL_ROOT is set to:\n'}
+[2.746505] (cspc_lidar) StderrLine: {'line': b'\n'}
+[2.746532] (cspc_lidar) StderrLine: {'line': b'    /usr\n'}
+[2.746559] (cspc_lidar) StderrLine: {'line': b'\n'}
+[2.746586] (cspc_lidar) StderrLine: {'line': b'  For compatibility, CMake is ignoring the variable.\n'}
+[2.746613] (cspc_lidar) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[2.746639] (cspc_lidar) StderrLine: {'line': b'\n'}
+[2.762681] (cspc_lidar) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[2.803501] (-) TimerEvent: {}
+[2.858056] (cspc_lidar) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)\n'}
+[2.859173] (cspc_lidar) StdoutLine: {'line': b'-- Found Eigen3: TRUE (found version "3.4.0") \n'}
+[2.859219] (cspc_lidar) StdoutLine: {'line': b'-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target\n'}
+[2.903674] (-) TimerEvent: {}
+[2.934441] (cspc_lidar) StdoutLine: {'line': b"-- Added test 'copyright' to check source files copyright and LICENSE\n"}
+[2.935456] (cspc_lidar) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[2.935685] (cspc_lidar) StdoutLine: {'line': b'-- Configured cppcheck include dirs: /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/include/cspc_lidar;/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk\n'}
+[2.935764] (cspc_lidar) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[2.936492] (cspc_lidar) StdoutLine: {'line': b"-- Added test 'cpplint' to check C / C++ code against the Google style\n"}
+[2.936574] (cspc_lidar) StdoutLine: {'line': b'-- Configured cpplint exclude dirs and/or files: \n'}
+[2.937049] (cspc_lidar) StdoutLine: {'line': b"-- Added test 'flake8' to check Python code syntax and style conventions\n"}
+[2.937428] (cspc_lidar) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[2.937931] (cspc_lidar) StdoutLine: {'line': b"-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257\n"}
+[2.938736] (cspc_lidar) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[2.938819] (cspc_lidar) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[2.939279] (cspc_lidar) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[2.940532] (cspc_lidar) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.989375] (cspc_lidar) StdoutLine: {'line': b'-- Generating done\n'}
+[2.996188] (cspc_lidar) StdoutLine: {'line': b'-- Build files have been written to: /home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar\n'}
+[3.003739] (-) TimerEvent: {}
+[3.006650] (cspc_lidar) CommandEnded: {'returncode': 0}
+[3.007168] (cspc_lidar) JobProgress: {'identifier': 'cspc_lidar', 'progress': 'build'}
+[3.007754] (cspc_lidar) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar', '--', '-j20', '-l20'], 'cwd': '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('VSCODE_CWD', '/home/meng'), ('VSCODE_ESM_ENTRYPOINT', 'vs/workbench/api/node/extensionHostProcess'), ('AI_AGENT', 'claude-code_2-1-195_agent'), ('LANGUAGE', 'en_AU:en'), ('USER', 'meng'), ('CLAUDE_CODE_ENTRYPOINT', 'claude-vscode'), ('VSCODE_NLS_CONFIG', '{"userLocale":"en-gb","osLocale":"en-au","resolvedLanguage":"en","defaultMessagesFile":"/usr/share/code/resources/app/out/nls.messages.json","locale":"en-gb","availableLanguages":{}}'), ('GIT_EDITOR', 'true'), ('VSCODE_HANDLES_UNCAUGHT_ERRORS', 'true'), ('XDG_SESSION_TYPE', 'wayland'), ('CLAUDE_AGENT_SDK_VERSION', '0.3.195'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/meng'), ('CHROME_DESKTOP', 'code.desktop'), ('OLDPWD', '/home/meng/mDetectRobot'), ('DESKTOP_SESSION', 'ubuntu'), ('VSCODE_IPC_HOOK', '/run/user/1000/vscode-98ccf409-1.12-main.sock'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/code.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('CLAUDE_CODE_CHILD_SESSION', '1'), ('MANAGERPID', '1382'), ('SYSTEMD_EXEC_PID', '1547'), ('IM_CONFIG_CHECK_ENV', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '3784'), ('_colcon_cd_root', '/opt/ros/humble/'), ('VSCODE_CRASH_REPORTER_PROCESS_TYPE', 'extensionHost'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/meng/mdetect_ws/install:/home/meng/ldlidar_ros2_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'meng'), ('JOURNAL_STREAM', '8:3514'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'meng'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('FC_FONTATIONS', '1'), ('ROS_LOCALHOST_ONLY', '0'), ('MCP_CONNECTION_NONBLOCKING', 'true'), ('PATH', '/home/meng/.local/bin:/home/meng/.local/bin:/opt/ros/humble/bin:/home/meng/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/meng-Flow-Z13-GZ301VV:@/tmp/.ICE-unix/1508,unix/meng-Flow-Z13-GZ301VV:/tmp/.ICE-unix/1508'), ('INVOCATION_ID', '0a6081c4e60a42bcbd148376e4ae6db0'), ('COREPACK_ENABLE_AUTO_PIN', '0'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('GDK_BACKEND', 'wayland'), ('CLAUDE_EFFORT', 'high'), ('DISPLAY', ':0'), ('NoDefaultCurrentDirectoryInExePath', '1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.W3NWR3'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('AMENT_PREFIX_PATH', '/home/meng/mdetect_ws/install/mdetect_navigation:/home/meng/mdetect_ws/install/mdetect_description:/home/meng/ldlidar_ros2_ws/install/ldlidar_ros2:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('ELECTRON_RUN_AS_NODE', '1'), ('GDMSESSION', 'ubuntu'), ('CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING', 'true'), ('CLAUDE_CODE_SESSION_ID', '206eb03d-537d-49af-807f-9483a02299c1'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('CLAUDECODE', '1'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar'), ('TURTLEBOT3_MODEL', 'burger_cam'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('VSCODE_CODE_CACHE_PATH', '/home/meng/.config/Code/CachedData/7e7950df89d055b5a378379db9ee14290772148a'), ('GAZEBO_PLUGIN_PATH', '/home/meng/{your_ws}/build/turtlebot3_gazebo:'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('CLAUDE_CODE_EXECPATH', '/home/meng/.vscode/extensions/anthropic.claude-code-2.1.195-linux-x64/resources/native-binary/claude'), ('PYTHONPATH', '/home/meng/mdetect_ws/build/mdetect_navigation:/home/meng/mdetect_ws/install/mdetect_navigation/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('CLAUDE_CODE_ENABLE_TASKS', '0'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/meng/mdetect_ws/install/mdetect_description:/home/meng/ldlidar_ros2_ws/install/ldlidar_ros2:/home/meng/mdetect_ws/install/mdetect_navigation:/opt/ros/humble'), ('VSCODE_PID', '3784')]), 'shell': False}
+[3.066565] (cspc_lidar) StdoutLine: {'line': b'[ 11%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/node_lidar.cpp.o\n'}
+[3.066951] (cspc_lidar) StdoutLine: {'line': b'[ 22%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/point_cloud_optimize.cpp.o\n'}
+[3.067078] (cspc_lidar) StdoutLine: {'line': b'[ 33%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/calibration.cpp.o\n'}
+[3.067274] (cspc_lidar) StdoutLine: {'line': b'[ 44%] Building CXX object CMakeFiles/cspc_lidar.dir/src/node_lidar_ros.cpp.o\n'}
+[3.067647] (cspc_lidar) StdoutLine: {'line': b'[ 55%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/mtime.cpp.o\n'}
+[3.067922] (cspc_lidar) StdoutLine: {'line': b'[ 66%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/serial_port.cpp.o\n'}
+[3.068410] (cspc_lidar) StdoutLine: {'line': b'[ 88%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/lidar_data_processing.cpp.o\n'}
+[3.068551] (cspc_lidar) StdoutLine: {'line': b'[ 88%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/timer.cpp.o\n'}
+[3.103950] (-) TimerEvent: {}
+[3.204304] (-) TimerEvent: {}
+[3.304669] (-) TimerEvent: {}
+[3.344929] (cspc_lidar) StderrLine: {'line': b'In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp:12:\n'}
+[3.345168] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h: In constructor \xe2\x80\x98Serial_Port::Serial_Port(const string&, uint32_t, Timeout, bytesize_t, parity_t, stopbits_t, flowcontrol_t)\xe2\x80\x99:\n'}
+[3.345287] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:102:14: warning: \xe2\x80\x98Serial_Port::bytesize_\xe2\x80\x99 will be initialized after [-Wreorder]\n'}
+[3.345389] (cspc_lidar) StderrLine: {'line': b'  102 |   bytesize_t bytesize_;       // Size of the bytes\n'}
+[3.345486] (cspc_lidar) StderrLine: {'line': b'      |              ^~~~~~~~~\n'}
+[3.345569] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:101:12: warning:   \xe2\x80\x98parity_t Serial_Port::parity_\xe2\x80\x99 [-Wreorder]\n'}
+[3.345653] (cspc_lidar) StderrLine: {'line': b'  101 |   parity_t parity_;           // Parity\n'}
+[3.345734] (cspc_lidar) StderrLine: {'line': b'      |            ^~~~~~~\n'}
+[3.345815] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp:31:1: warning:   when initialized here [-Wreorder]\n'}
+[3.345896] (cspc_lidar) StderrLine: {'line': b'   31 | Serial_Port::Serial_Port(const string &port, uint32_t baudrate, Timeout timeout,\n'}
+[3.345977] (cspc_lidar) StderrLine: {'line': b'      | ^~~~~~~~~~~\n'}
+[3.350523] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp: In member function \xe2\x80\x98bool Serial_Port::setBaudrate(long unsigned int)\xe2\x80\x99:\n'}
+[3.350711] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp:578:11: warning: unused variable \xe2\x80\x98new_baud\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.350806] (cspc_lidar) StderrLine: {'line': b'  578 |   speed_t new_baud = static_cast<speed_t>(baudrate);\n'}
+[3.350893] (cspc_lidar) StderrLine: {'line': b'      |           ^~~~~~~~\n'}
+[3.384021] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp: In member function \xe2\x80\x98void Point_cloud_optimize::PointCloudFilter(LaserScan*)\xe2\x80\x99:\n'}
+[3.384215] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:25:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.384307] (cspc_lidar) StderrLine: {'line': b'   25 |         for (i0 = 0; i0 < Scan->points.size(); i0++)\n'}
+[3.384401] (cspc_lidar) StderrLine: {'line': b'      |                      ~~~^~~~~~~~~~~~~~~~~~~~~\n'}
+[3.384489] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:28:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.384574] (cspc_lidar) StderrLine: {'line': b'   28 |                 i1 = i1 < Scan->points.size() ? i1 : i1 - Scan->points.size();\n'}
+[3.384658] (cspc_lidar) StderrLine: {'line': b'      |                      ~~~^~~~~~~~~~~~~~~~~~~~~\n'}
+[3.384739] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:30:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.384823] (cspc_lidar) StderrLine: {'line': b'   30 |                 i2 = i2 < Scan->points.size() ? i2 : i2 - Scan->points.size();\n'}
+[3.384904] (cspc_lidar) StderrLine: {'line': b'      |                      ~~~^~~~~~~~~~~~~~~~~~~~~\n'}
+[3.384986] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:32:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.385405] (cspc_lidar) StderrLine: {'line': b'   32 |                 i3 = i3 < Scan->points.size() ? i3 : i3 - Scan->points.size();\n'}
+[3.385499] (cspc_lidar) StderrLine: {'line': b'      |                      ~~~^~~~~~~~~~~~~~~~~~~~~\n'}
+[3.385583] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:155:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.385669] (cspc_lidar) StderrLine: {'line': b'  155 |         for (i0 = 0; i0 < Scan->points.size(); i0++)\n'}
+[3.385755] (cspc_lidar) StderrLine: {'line': b'      |                      ~~~^~~~~~~~~~~~~~~~~~~~~\n'}
+[3.385839] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:158:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.385932] (cspc_lidar) StderrLine: {'line': b'  158 |                 i1 = i1 < Scan->points.size() ? i1 : i1 - Scan->points.size();\n'}
+[3.386015] (cspc_lidar) StderrLine: {'line': b'      |                      ~~~^~~~~~~~~~~~~~~~~~~~~\n'}
+[3.386097] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:160:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.386181] (cspc_lidar) StderrLine: {'line': b'  160 |                 i2 = i2 < Scan->points.size() ? i2 : i2 - Scan->points.size();\n'}
+[3.386263] (cspc_lidar) StderrLine: {'line': b'      |                      ~~~^~~~~~~~~~~~~~~~~~~~~\n'}
+[3.386345] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:162:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.386444] (cspc_lidar) StderrLine: {'line': b'  162 |                 i3 = i3 < Scan->points.size() ? i3 : i3 - Scan->points.size();\n'}
+[3.386534] (cspc_lidar) StderrLine: {'line': b'      |                      ~~~^~~~~~~~~~~~~~~~~~~~~\n'}
+[3.386618] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:164:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.386704] (cspc_lidar) StderrLine: {'line': b'  164 |                 i4 = i4 < Scan->points.size() ? i4 : i4 - Scan->points.size();\n'}
+[3.386786] (cspc_lidar) StderrLine: {'line': b'      |                      ~~~^~~~~~~~~~~~~~~~~~~~~\n'}
+[3.387162] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp: In member function \xe2\x80\x98int Point_cloud_optimize::UltrasonicSimRanging(LaserPoint&)\xe2\x80\x99:\n'}
+[3.387325] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:228:13: warning: unused variable \xe2\x80\x98i\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.387451] (cspc_lidar) StderrLine: {'line': b'  228 |         int i, index;\n'}
+[3.387553] (cspc_lidar) StderrLine: {'line': b'      |             ^\n'}
+[3.387644] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:229:15: warning: unused variable \xe2\x80\x98tempdep\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.387893] (cspc_lidar) StderrLine: {'line': b'  229 |         short tempdep;\n'}
+[3.388087] (cspc_lidar) StderrLine: {'line': b'      |               ^~~~~~~\n'}
+[3.388176] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:253:1: warning: no return statement in function returning non-void [-Wreturn-type]\n'}
+[3.388265] (cspc_lidar) StderrLine: {'line': b'  253 | }\n'}
+[3.388351] (cspc_lidar) StderrLine: {'line': b'      | ^\n'}
+[3.388456] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp: In member function \xe2\x80\x98void Point_cloud_optimize::lidar_blocked_judge(int)\xe2\x80\x99:\n'}
+[3.388544] (cspc_lidar) StderrLine: {'line': b"/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:341:44: warning: ' ' flag used with \xe2\x80\x98%s\xe2\x80\x99 gnu_printf format [-Wformat=]\n"}
+[3.388628] (cspc_lidar) StderrLine: {'line': b'  341 |                 printf("lidar Lidar is 70% seriously blocked %d,%d\\n",node_lidar.lidar_block.lidar_zero_count,node_lidar.scan_node_count);\n'}
+[3.388712] (cspc_lidar) StderrLine: {'line': b'      |                                            ^\n'}
+[3.388997] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp: In member function \xe2\x80\x98bool Serial_Port::setCustomBaudRate(long unsigned int)\xe2\x80\x99:\n'}
+[3.389082] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp:571:1: warning: control reaches end of non-void function [-Wreturn-type]\n'}
+[3.389166] (cspc_lidar) StderrLine: {'line': b'  571 | }\n'}
+[3.389405] (cspc_lidar) StderrLine: {'line': b'      | ^\n'}
+[3.389503] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:341:44: warning: format \xe2\x80\x98%s\xe2\x80\x99 expects argument of type \xe2\x80\x98char*\xe2\x80\x99, but argument 2 has type \xe2\x80\x98int\xe2\x80\x99 [-Wformat=]\n'}
+[3.389603] (cspc_lidar) StderrLine: {'line': b'  341 |                 printf("lidar Lidar is 70% seriously blocked %d,%d\\n",node_lidar.lidar_block.lidar_zero_count,node_lidar.scan_node_count);\n'}
+[3.389688] (cspc_lidar) StderrLine: {'line': b'      |                                          ~~^                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.389773] (cspc_lidar) StderrLine: {'line': b'      |                                            |                                                 |\n'}
+[3.389857] (cspc_lidar) StderrLine: {'line': b'      |                                            char*                                             int\n'}
+[3.389940] (cspc_lidar) StderrLine: {'line': b'      |                                          % d\n'}
+[3.390023] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:341:63: warning: format \xe2\x80\x98%d\xe2\x80\x99 expects argument of type \xe2\x80\x98int\xe2\x80\x99, but argument 3 has type \xe2\x80\x98size_t\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wformat=]\n'}
+[3.390115] (cspc_lidar) StderrLine: {'line': b'  341 |                 printf("lidar Lidar is 70% seriously blocked %d,%d\\n",node_lidar.lidar_block.lidar_zero_count,node_lidar.scan_node_count);\n'}
+[3.390205] (cspc_lidar) StderrLine: {'line': b'      |                                                              ~^                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.390288] (cspc_lidar) StderrLine: {'line': b'      |                                                               |                                                          |\n'}
+[3.390376] (cspc_lidar) StderrLine: {'line': b'      |                                                               int                                                        size_t {aka long unsigned int}\n'}
+[3.390473] (cspc_lidar) StderrLine: {'line': b'      |                                                              %ld\n'}
+[3.390556] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:341:66: warning: format \xe2\x80\x98%d\xe2\x80\x99 expects a matching \xe2\x80\x98int\xe2\x80\x99 argument [-Wformat=]\n'}
+[3.390645] (cspc_lidar) StderrLine: {'line': b'  341 |                 printf("lidar Lidar is 70% seriously blocked %d,%d\\n",node_lidar.lidar_block.lidar_zero_count,node_lidar.scan_node_count);\n'}
+[3.390731] (cspc_lidar) StderrLine: {'line': b'      |                                                                 ~^\n'}
+[3.390812] (cspc_lidar) StderrLine: {'line': b'      |                                                                  |\n'}
+[3.390893] (cspc_lidar) StderrLine: {'line': b'      |                                                                  int\n'}
+[3.390975] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp: In member function \xe2\x80\x98void Point_cloud_optimize::lidar_blocked_init()\xe2\x80\x99:\n'}
+[3.391057] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:404:69: warning: suggest parentheses around \xe2\x80\x98&&\xe2\x80\x99 within \xe2\x80\x98||\xe2\x80\x99 [-Wparentheses]\n'}
+[3.391139] (cspc_lidar) StderrLine: {'line': b'  404 |                         if((angle >= 0 && angle < 90)|| angle > 270 && angle <=360){\n'}
+[3.391233] (cspc_lidar) StderrLine: {'line': b'      |                                                         ~~~~~~~~~~~~^~~~~~~~~~~~~~\n'}
+[3.391316] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:375:21: warning: unused variable \xe2\x80\x98temp\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.391407] (cspc_lidar) StderrLine: {'line': b'  375 |         float r, d, temp;\n'}
+[3.391492] (cspc_lidar) StderrLine: {'line': b'      |                     ^~~~\n'}
+[3.404742] (-) TimerEvent: {}
+[3.412520] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function \xe2\x80\x98void pcloud_build_by_scan(LaserScan&, pcloud_t&)\xe2\x80\x99:\n'}
+[3.412661] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:44:21: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.412750] (cspc_lidar) StderrLine: {'line': b'   44 |   for (int i = 0; i < outscan.points.size(); i++)\n'}
+[3.412945] (cspc_lidar) StderrLine: {'line': b'      |                   ~~^~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.413029] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:46:11: warning: \xe2\x80\x98void* memset(void*, int, size_t)\xe2\x80\x99 clearing an object of non-trivial type \xe2\x80\x98point_t\xe2\x80\x99 {aka \xe2\x80\x98struct _point_\xe2\x80\x99}; use assignment or value-initialization instead [-Wclass-memaccess]\n'}
+[3.413117] (cspc_lidar) StderrLine: {'line': b'   46 |     memset(&point, 0, sizeof(point_t));\n'}
+[3.413203] (cspc_lidar) StderrLine: {'line': b'      |     ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.413353] (cspc_lidar) StderrLine: {'line': b'In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:8:\n'}
+[3.413459] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.h:52:16: note: \xe2\x80\x98point_t\xe2\x80\x99 {aka \xe2\x80\x98struct _point_\xe2\x80\x99} declared here\n'}
+[3.413554] (cspc_lidar) StderrLine: {'line': b'   52 | typedef struct _point_\n'}
+[3.413692] (cspc_lidar) StderrLine: {'line': b'      |                ^~~~~~~\n'}
+[3.413779] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function \xe2\x80\x98int find_index(point_t, pcloud_t&)\xe2\x80\x99:\n'}
+[3.413863] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:105:9: warning: \xe2\x80\x98void* memset(void*, int, size_t)\xe2\x80\x99 clearing an object of non-trivial type \xe2\x80\x98point_t\xe2\x80\x99 {aka \xe2\x80\x98struct _point_\xe2\x80\x99}; use assignment or value-initialization instead [-Wclass-memaccess]\n'}
+[3.413957] (cspc_lidar) StderrLine: {'line': b'  105 |   memset(&point_min, 0, sizeof(point_t));\n'}
+[3.414039] (cspc_lidar) StderrLine: {'line': b'      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.414121] (cspc_lidar) StderrLine: {'line': b'In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:8:\n'}
+[3.414204] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.h:52:16: note: \xe2\x80\x98point_t\xe2\x80\x99 {aka \xe2\x80\x98struct _point_\xe2\x80\x99} declared here\n'}
+[3.414293] (cspc_lidar) StderrLine: {'line': b'   52 | typedef struct _point_\n'}
+[3.414379] (cspc_lidar) StderrLine: {'line': b'      |                ^~~~~~~\n'}
+[3.414468] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:124:23: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.414552] (cspc_lidar) StderrLine: {'line': b'  124 |   if (point_min.index > pcloud.data.size())\n'}
+[3.414640] (cspc_lidar) StderrLine: {'line': b'      |       ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~\n'}
+[3.414801] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function \xe2\x80\x98bool intersect(LineSegment, LineSegment, Vector2D&)\xe2\x80\x99:\n'}
+[3.414888] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:167:10: warning: unused variable \xe2\x80\x98cross1\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.414978] (cspc_lidar) StderrLine: {'line': b'  167 |   double cross1 = position1.x * direction1.y - position1.y * direction1.x;\n'}
+[3.415062] (cspc_lidar) StderrLine: {'line': b'      |          ^~~~~~\n'}
+[3.415143] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp: In member function \xe2\x80\x98bool Lidar_Data_Processing::wait_start_reply(uint64_t)\xe2\x80\x99:\n'}
+[3.415227] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:107:49: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int64_t\xe2\x80\x99 {aka \xe2\x80\x98long int\xe2\x80\x99} and \xe2\x80\x98uint64_t\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.415319] (cspc_lidar) StderrLine: {'line': b'  107 |   while ((waitTime = current_times() - startTs) <= timeout){\n'}
+[3.415412] (cspc_lidar) StderrLine: {'line': b'      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~\n'}
+[3.415809] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp: In member function \xe2\x80\x98result_t Lidar_Data_Processing::waitSpeedRight(uint8_t, uint64_t)\xe2\x80\x99:\n'}
+[3.415900] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:209:56: warning: unused parameter \xe2\x80\x98cmd\xe2\x80\x99 [-Wunused-parameter]\n'}
+[3.415984] (cspc_lidar) StderrLine: {'line': b'  209 | result_t Lidar_Data_Processing::waitSpeedRight(uint8_t cmd,uint64_t timeout)\n'}
+[3.416068] (cspc_lidar) StderrLine: {'line': b'      |                                                ~~~~~~~~^~~\n'}
+[3.416547] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp: In member function \xe2\x80\x98result_t Lidar_Data_Processing::waitResponseHeader(uint8_t, uint64_t)\xe2\x80\x99:\n'}
+[3.416650] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:481:28: warning: format \xe2\x80\x98%d\xe2\x80\x99 expects argument of type \xe2\x80\x98int\xe2\x80\x99, but argument 4 has type \xe2\x80\x98size_t\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wformat=]\n'}
+[3.416736] (cspc_lidar) StderrLine: {'line': b'  481 |       printf("data**%d,%d,%d\\n",check_sum_cal,recvBuffer[remainSize-1],remainSize);\n'}
+[3.416890] (cspc_lidar) StderrLine: {'line': b'      |                           ~^                                           ~~~~~~~~~~\n'}
+[3.417111] (cspc_lidar) StderrLine: {'line': b'      |                            |                                           |\n'}
+[3.417197] (cspc_lidar) StderrLine: {'line': b'      |                            int                                         size_t {aka long unsigned int}\n'}
+[3.417279] (cspc_lidar) StderrLine: {'line': b'      |                           %ld\n'}
+[3.417366] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function \xe2\x80\x98double pointToLineDist(point_t, double, double)\xe2\x80\x99:\n'}
+[3.417457] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:439:10: warning: unused variable \xe2\x80\x98y0\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.417564] (cspc_lidar) StderrLine: {'line': b'  439 |   double y0 = k * x0 + b;\n'}
+[3.417648] (cspc_lidar) StderrLine: {'line': b'      |          ^~\n'}
+[3.417731] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function \xe2\x80\x98bool line_judgment(std::vector<_point_>, point_t)\xe2\x80\x99:\n'}
+[3.417813] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:462:19: warning: comparison of integer expressions of different signedness: \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} and \xe2\x80\x98int\xe2\x80\x99 [-Wsign-compare]\n'}
+[3.417903] (cspc_lidar) StderrLine: {'line': b'  462 |   if (line.size() <= reference)\n'}
+[3.417987] (cspc_lidar) StderrLine: {'line': b'      |       ~~~~~~~~~~~~^~~~~~~~~~~~\n'}
+[3.418069] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:467:19: warning: comparison of integer expressions of different signedness: \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} and \xe2\x80\x98int\xe2\x80\x99 [-Wsign-compare]\n'}
+[3.418154] (cspc_lidar) StderrLine: {'line': b'  467 |   if (line.size() <= reference)\n'}
+[3.418236] (cspc_lidar) StderrLine: {'line': b'      |       ~~~~~~~~~~~~^~~~~~~~~~~~\n'}
+[3.418326] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:471:23: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.418424] (cspc_lidar) StderrLine: {'line': b'  471 |     for (int i = 1; i < line.size() - 1; i++)\n'}
+[3.418510] (cspc_lidar) StderrLine: {'line': b'      |                     ~~^~~~~~~~~~~~~~~~~\n'}
+[3.419709] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp: In member function \xe2\x80\x98result_t Lidar_Data_Processing::waitPackage_coin(node_info*, uint32_t)\xe2\x80\x99:\n'}
+[3.419907] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:973:9: warning: unused variable \xe2\x80\x98k\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.420001] (cspc_lidar) StderrLine: {'line': b'  973 |     int k;\n'}
+[3.420302] (cspc_lidar) StderrLine: {'line': b'      |         ^\n'}
+[3.420447] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:873:11: warning: variable \xe2\x80\x98AngleCorrectForDistance\xe2\x80\x99 set but not used [-Wunused-but-set-variable]\n'}
+[3.420628] (cspc_lidar) StderrLine: {'line': b'  873 |   int32_t AngleCorrectForDistance = 0;\n'}
+[3.420714] (cspc_lidar) StderrLine: {'line': b'      |           ^~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.420799] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:875:11: warning: unused variable \xe2\x80\x98package_type\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.420927] (cspc_lidar) StderrLine: {'line': b'  875 |   uint8_t package_type = 0;\n'}
+[3.421011] (cspc_lidar) StderrLine: {'line': b'      |           ^~~~~~~~~~~~\n'}
+[3.421092] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:877:12: warning: unused variable \xe2\x80\x98start\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.421174] (cspc_lidar) StderrLine: {'line': b'  877 |   uint16_t start;\n'}
+[3.421256] (cspc_lidar) StderrLine: {'line': b'      |            ^~~~~\n'}
+[3.421344] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:878:12: warning: unused variable \xe2\x80\x98stop\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.421438] (cspc_lidar) StderrLine: {'line': b'  878 |   uint16_t stop;\n'}
+[3.421520] (cspc_lidar) StderrLine: {'line': b'      |            ^~~~\n'}
+[3.421602] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function \xe2\x80\x98void fitting_line(pcloud_t&)\xe2\x80\x99:\n'}
+[3.421691] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:542:25: warning: comparison of integer expressions of different signedness: \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} and \xe2\x80\x98int\xe2\x80\x99 [-Wsign-compare]\n'}
+[3.421775] (cspc_lidar) StderrLine: {'line': b'  542 |         if (line.size() >= calibration_params.line_judgment_point_num)\n'}
+[3.421857] (cspc_lidar) StderrLine: {'line': b'      |             ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.422054] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:560:63: warning: comparison of integer expressions of different signedness: \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} and \xe2\x80\x98int\xe2\x80\x99 [-Wsign-compare]\n'}
+[3.422145] (cspc_lidar) StderrLine: {'line': b'  560 |         if(point.index == point_last_one.index && line.size() >= calibration_params.line_judgment_point_num)\n'}
+[3.422227] (cspc_lidar) StderrLine: {'line': b'      |                                                   ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.422317] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:571:26: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.422415] (cspc_lidar) StderrLine: {'line': b'  571 |   if(point_record2.index < pcloud.data.size()\n'}
+[3.422500] (cspc_lidar) StderrLine: {'line': b'      |      ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~\n'}
+[3.422582] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:572:28: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.422676] (cspc_lidar) StderrLine: {'line': b'  572 |   &&  point_last_one.index < pcloud.data.size()\n'}
+[3.422760] (cspc_lidar) StderrLine: {'line': b'      |       ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~\n'}
+[3.422841] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:573:27: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.422926] (cspc_lidar) StderrLine: {'line': b'  573 |   &&  point_record1.index < pcloud.data.size())\n'}
+[3.423015] (cspc_lidar) StderrLine: {'line': b'      |       ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~\n'}
+[3.423096] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:597:28: warning: comparison of integer expressions of different signedness: \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} and \xe2\x80\x98int\xe2\x80\x99 [-Wsign-compare]\n'}
+[3.423178] (cspc_lidar) StderrLine: {'line': b'  597 |     if (line_append.size() >= calibration_params.line_judgment_point_num)\n'}
+[3.423264] (cspc_lidar) StderrLine: {'line': b'      |         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.423348] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:606:29: warning: comparison of integer expressions of different signedness: \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} and \xe2\x80\x98int\xe2\x80\x99 [-Wsign-compare]\n'}
+[3.423447] (cspc_lidar) StderrLine: {'line': b'  606 |             if (line.size() >= calibration_params.line_judgment_point_num)\n'}
+[3.423531] (cspc_lidar) StderrLine: {'line': b'      |                 ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.423617] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:617:68: warning: comparison of integer expressions of different signedness: \xe2\x80\x98std::vector<_point_>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} and \xe2\x80\x98int\xe2\x80\x99 [-Wsign-compare]\n'}
+[3.423700] (cspc_lidar) StderrLine: {'line': b'  617 |           if(point.index == point_append_last.index && line.size() >= calibration_params.line_judgment_point_num)\n'}
+[3.423788] (cspc_lidar) StderrLine: {'line': b'      |                                                        ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.423870] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:632:23: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<std::vector<_point_> >::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.423958] (cspc_lidar) StderrLine: {'line': b'  632 |     for (int i = 0; i < lines.size() - 1; i++)\n'}
+[3.424040] (cspc_lidar) StderrLine: {'line': b'      |                     ~~^~~~~~~~~~~~~~~~~~\n'}
+[3.424124] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function \xe2\x80\x98void lidar_calibration(LaserScan&)\xe2\x80\x99:\n'}
+[3.424212] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:662:11: warning: \xe2\x80\x98void* memset(void*, int, size_t)\xe2\x80\x99 clearing an object of type \xe2\x80\x98struct LaserPoint\xe2\x80\x99 with no trivial copy-assignment; use assignment or value-initialization instead [-Wclass-memaccess]\n'}
+[3.424306] (cspc_lidar) StderrLine: {'line': b'  662 |     memset(&outscan_point, 0, sizeof(LaserPoint));\n'}
+[3.424405] (cspc_lidar) StderrLine: {'line': b'      |     ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[3.424500] (cspc_lidar) StderrLine: {'line': b'In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.h:4,\n'}
+[3.424586] (cspc_lidar) StderrLine: {'line': b'                 from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:8:\n'}
+[3.424669] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:210:8: note: \xe2\x80\x98struct LaserPoint\xe2\x80\x99 declared here\n'}
+[3.424764] (cspc_lidar) StderrLine: {'line': b'  210 | struct LaserPoint\n'}
+[3.424850] (cspc_lidar) StderrLine: {'line': b'      |        ^~~~~~~~~~\n'}
+[3.427486] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function \xe2\x80\x98void flushSerial()\xe2\x80\x99:\n'}
+[3.427731] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:53:24: warning: unused variable \xe2\x80\x98bytes_read\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.427902] (cspc_lidar) StderrLine: {'line': b'   53 |                 size_t bytes_read = node_lidar.serial_port->read_data(buffer, len);\n'}
+[3.427992] (cspc_lidar) StderrLine: {'line': b'      |                        ^~~~~~~~~~\n'}
+[3.428076] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function \xe2\x80\x98bool lidar_state_judgment()\xe2\x80\x99:\n'}
+[3.428158] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:86:52: warning: format \xe2\x80\x98%lld\xe2\x80\x99 expects argument of type \xe2\x80\x98long long int\xe2\x80\x99, but argument 2 has type \xe2\x80\x98uint64_t\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wformat=]\n'}
+[3.428241] (cspc_lidar) StderrLine: {'line': b'   86 |                 printf("Status abnormal restart %lld\\n",lidar_status_time);\n'}
+[3.428325] (cspc_lidar) StderrLine: {'line': b'      |                                                 ~~~^    ~~~~~~~~~~~~~~~~~\n'}
+[3.428554] (cspc_lidar) StderrLine: {'line': b'      |                                                    |    |\n'}
+[3.428640] (cspc_lidar) StderrLine: {'line': b'      |                                                    |    uint64_t {aka long unsigned int}\n'}
+[3.428724] (cspc_lidar) StderrLine: {'line': b'      |                                                    long long int\n'}
+[3.428806] (cspc_lidar) StderrLine: {'line': b'      |                                                 %ld\n'}
+[3.428887] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:62:21: warning: unused variable \xe2\x80\x98status_judge\xe2\x80\x99 [-Wunused-variable]\n'}
+[3.428971] (cspc_lidar) StderrLine: {'line': b'   62 |         static bool status_judge = false;     //Overall status judgment\n'}
+[3.429052] (cspc_lidar) StderrLine: {'line': b'      |                     ^~~~~~~~~~~~\n'}
+[3.429228] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:65:21: warning: variable \xe2\x80\x98lidar_start_flag\xe2\x80\x99 set but not used [-Wunused-but-set-variable]\n'}
+[3.429312] (cspc_lidar) StderrLine: {'line': b'   65 |         static bool lidar_start_flag = false; //Lidar feedback flag after issuing the lidar startup command\n'}
+[3.429405] (cspc_lidar) StderrLine: {'line': b'      |                     ^~~~~~~~~~~~~~~~\n'}
+[3.429490] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function \xe2\x80\x98int read_forever()\xe2\x80\x99:\n'}
+[3.429580] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:205:82: warning: format \xe2\x80\x98%d\xe2\x80\x99 expects argument of type \xe2\x80\x98int\xe2\x80\x99, but argument 2 has type \xe2\x80\x98size_t\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wformat=]\n'}
+[3.429670] (cspc_lidar) StderrLine: {'line': b'  205 |                                                         printf("full----- count=%d,time=%lld,frequence=%d\\n",scan_count,current_times(),local_scan[0].scan_frequence);\n'}
+[3.429754] (cspc_lidar) StderrLine: {'line': b'      |                                                                                 ~^                           ~~~~~~~~~~\n'}
+[3.429835] (cspc_lidar) StderrLine: {'line': b'      |                                                                                  |                           |\n'}
+[3.429917] (cspc_lidar) StderrLine: {'line': b'      |                                                                                  int                         size_t {aka long unsigned int}\n'}
+[3.430003] (cspc_lidar) StderrLine: {'line': b'      |                                                                                 %ld\n'}
+[3.430084] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:205:92: warning: format \xe2\x80\x98%lld\xe2\x80\x99 expects argument of type \xe2\x80\x98long long int\xe2\x80\x99, but argument 3 has type \xe2\x80\x98int64_t\xe2\x80\x99 {aka \xe2\x80\x98long int\xe2\x80\x99} [-Wformat=]\n'}
+[3.430180] (cspc_lidar) StderrLine: {'line': b'  205 |                                                         printf("full----- count=%d,time=%lld,frequence=%d\\n",scan_count,current_times(),local_scan[0].scan_frequence);\n'}
+[3.430263] (cspc_lidar) StderrLine: {'line': b'      |                                                                                         ~~~^                            ~~~~~~~~~~~~~~~\n'}
+[3.430346] (cspc_lidar) StderrLine: {'line': b'      |                                                                                            |                                         |\n'}
+[3.430438] (cspc_lidar) StderrLine: {'line': b'      |                                                                                            long long int                             int64_t {aka long int}\n'}
+[3.430532] (cspc_lidar) StderrLine: {'line': b'      |                                                                                         %ld\n'}
+[3.430614] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function \xe2\x80\x98void send_lidar_data(LaserScan&)\xe2\x80\x99:\n'}
+[3.430696] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:311:43: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98size_t\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[3.430779] (cspc_lidar) StderrLine: {'line': b'  311 |                         for (int i = 0; i < count; i++)\n'}
+[3.430870] (cspc_lidar) StderrLine: {'line': b'      |                                         ~~^~~~~~~\n'}
+[3.504862] (-) TimerEvent: {}
+[3.510287] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: At global scope:\n'}
+[3.510481] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:62:21: warning: \xe2\x80\x98status_judge\xe2\x80\x99 defined but not used [-Wunused-variable]\n'}
+[3.510578] (cspc_lidar) StderrLine: {'line': b'   62 |         static bool status_judge = false;     //Overall status judgment\n'}
+[3.510656] (cspc_lidar) StderrLine: {'line': b'      |                     ^~~~~~~~~~~~\n'}
+[3.604963] (-) TimerEvent: {}
+[3.705298] (-) TimerEvent: {}
+[3.805557] (-) TimerEvent: {}
+[3.905753] (-) TimerEvent: {}
+[4.005982] (-) TimerEvent: {}
+[4.106291] (-) TimerEvent: {}
+[4.206498] (-) TimerEvent: {}
+[4.306814] (-) TimerEvent: {}
+[4.407133] (-) TimerEvent: {}
+[4.507473] (-) TimerEvent: {}
+[4.607794] (-) TimerEvent: {}
+[4.708122] (-) TimerEvent: {}
+[4.808450] (-) TimerEvent: {}
+[4.908783] (-) TimerEvent: {}
+[5.009113] (-) TimerEvent: {}
+[5.109434] (-) TimerEvent: {}
+[5.209638] (-) TimerEvent: {}
+[5.309983] (-) TimerEvent: {}
+[5.410227] (-) TimerEvent: {}
+[5.510546] (-) TimerEvent: {}
+[5.610772] (-) TimerEvent: {}
+[5.711002] (-) TimerEvent: {}
+[5.811207] (-) TimerEvent: {}
+[5.911534] (-) TimerEvent: {}
+[6.011863] (-) TimerEvent: {}
+[6.112094] (-) TimerEvent: {}
+[6.212391] (-) TimerEvent: {}
+[6.312586] (-) TimerEvent: {}
+[6.402601] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp: In function \xe2\x80\x98int Scan_to_PointCloud(LaserScan&, sensor_msgs::msg::PointCloud2&)\xe2\x80\x99:\n'}
+[6.402786] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp:87:24: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[6.402870] (cspc_lidar) StderrLine: {'line': b'   87 |         for(int i = 0;i<scan.points.size();i++)\n'}
+[6.402946] (cspc_lidar) StderrLine: {'line': b'      |                       ~^~~~~~~~~~~~~~~~~~~\n'}
+[6.403017] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp:97:1: warning: no return statement in function returning non-void [-Wreturn-type]\n'}
+[6.403091] (cspc_lidar) StderrLine: {'line': b'   97 | }\n'}
+[6.403162] (cspc_lidar) StderrLine: {'line': b'      | ^\n'}
+[6.404505] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp: In function \xe2\x80\x98int topic_thread()\xe2\x80\x99:\n'}
+[6.404593] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp:102:1: warning: no return statement in function returning non-void [-Wreturn-type]\n'}
+[6.404668] (cspc_lidar) StderrLine: {'line': b'  102 | }\n'}
+[6.404741] (cspc_lidar) StderrLine: {'line': b'      | ^\n'}
+[6.412649] (-) TimerEvent: {}
+[6.413839] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp: In function \xe2\x80\x98int main(int, char**)\xe2\x80\x99:\n'}
+[6.413942] (cspc_lidar) StderrLine: {'line': b'/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp:185:40: warning: comparison of integer expressions of different signedness: \xe2\x80\x98int\xe2\x80\x99 and \xe2\x80\x98std::vector<LaserPoint>::size_type\xe2\x80\x99 {aka \xe2\x80\x98long unsigned int\xe2\x80\x99} [-Wsign-compare]\n'}
+[6.414021] (cspc_lidar) StderrLine: {'line': b'  185 |                         for(int i=0; i < scan.points.size(); i++) {\n'}
+[6.414096] (cspc_lidar) StderrLine: {'line': b'      |                                      ~~^~~~~~~~~~~~~~~~~~~~\n'}
+[6.512797] (-) TimerEvent: {}
+[6.613111] (-) TimerEvent: {}
+[6.713453] (-) TimerEvent: {}
+[6.813650] (-) TimerEvent: {}
+[6.913978] (-) TimerEvent: {}
+[7.014296] (-) TimerEvent: {}
+[7.114641] (-) TimerEvent: {}
+[7.214889] (-) TimerEvent: {}
+[7.315218] (-) TimerEvent: {}
+[7.415543] (-) TimerEvent: {}
+[7.515804] (-) TimerEvent: {}
+[7.616099] (-) TimerEvent: {}
+[7.716421] (-) TimerEvent: {}
+[7.816614] (-) TimerEvent: {}
+[7.916922] (-) TimerEvent: {}
+[8.017188] (-) TimerEvent: {}
+[8.117513] (-) TimerEvent: {}
+[8.217789] (-) TimerEvent: {}
+[8.318083] (-) TimerEvent: {}
+[8.418565] (-) TimerEvent: {}
+[8.518751] (-) TimerEvent: {}
+[8.618944] (-) TimerEvent: {}
+[8.719126] (-) TimerEvent: {}
+[8.819317] (-) TimerEvent: {}
+[8.919508] (-) TimerEvent: {}
+[9.019675] (-) TimerEvent: {}
+[9.119875] (-) TimerEvent: {}
+[9.220073] (-) TimerEvent: {}
+[9.320261] (-) TimerEvent: {}
+[9.420528] (-) TimerEvent: {}
+[9.520689] (-) TimerEvent: {}
+[9.620881] (-) TimerEvent: {}
+[9.721063] (-) TimerEvent: {}
+[9.821269] (-) TimerEvent: {}
+[9.921454] (-) TimerEvent: {}
+[10.021730] (-) TimerEvent: {}
+[10.121920] (-) TimerEvent: {}
+[10.222070] (-) TimerEvent: {}
+[10.322255] (-) TimerEvent: {}
+[10.422450] (-) TimerEvent: {}
+[10.522604] (-) TimerEvent: {}
+[10.622793] (-) TimerEvent: {}
+[10.723079] (-) TimerEvent: {}
+[10.823317] (-) TimerEvent: {}
+[10.923488] (-) TimerEvent: {}
+[10.969408] (cspc_lidar) StdoutLine: {'line': b'[100%] Linking CXX executable cspc_lidar\n'}
+[11.023625] (-) TimerEvent: {}
+[11.123886] (-) TimerEvent: {}
+[11.224157] (-) TimerEvent: {}
+[11.324372] (-) TimerEvent: {}
+[11.424682] (-) TimerEvent: {}
+[11.524882] (-) TimerEvent: {}
+[11.613514] (cspc_lidar) StdoutLine: {'line': b'[100%] Built target cspc_lidar\n'}
+[11.624055] (cspc_lidar) CommandEnded: {'returncode': 0}
+[11.624528] (cspc_lidar) JobProgress: {'identifier': 'cspc_lidar', 'progress': 'install'}
+[11.624972] (-) TimerEvent: {}
+[11.631637] (cspc_lidar) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar'], 'cwd': '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('VSCODE_CWD', '/home/meng'), ('VSCODE_ESM_ENTRYPOINT', 'vs/workbench/api/node/extensionHostProcess'), ('AI_AGENT', 'claude-code_2-1-195_agent'), ('LANGUAGE', 'en_AU:en'), ('USER', 'meng'), ('CLAUDE_CODE_ENTRYPOINT', 'claude-vscode'), ('VSCODE_NLS_CONFIG', '{"userLocale":"en-gb","osLocale":"en-au","resolvedLanguage":"en","defaultMessagesFile":"/usr/share/code/resources/app/out/nls.messages.json","locale":"en-gb","availableLanguages":{}}'), ('GIT_EDITOR', 'true'), ('VSCODE_HANDLES_UNCAUGHT_ERRORS', 'true'), ('XDG_SESSION_TYPE', 'wayland'), ('CLAUDE_AGENT_SDK_VERSION', '0.3.195'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/meng'), ('CHROME_DESKTOP', 'code.desktop'), ('OLDPWD', '/home/meng/mDetectRobot'), ('DESKTOP_SESSION', 'ubuntu'), ('VSCODE_IPC_HOOK', '/run/user/1000/vscode-98ccf409-1.12-main.sock'), ('GIO_LAUNCHED_DESKTOP_FILE', '/usr/share/applications/code.desktop'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('CLAUDE_CODE_CHILD_SESSION', '1'), ('MANAGERPID', '1382'), ('SYSTEMD_EXEC_PID', '1547'), ('IM_CONFIG_CHECK_ENV', '1'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '3784'), ('_colcon_cd_root', '/opt/ros/humble/'), ('VSCODE_CRASH_REPORTER_PROCESS_TYPE', 'extensionHost'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/meng/mdetect_ws/install:/home/meng/ldlidar_ros2_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'meng'), ('JOURNAL_STREAM', '8:3514'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'meng'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('FC_FONTATIONS', '1'), ('ROS_LOCALHOST_ONLY', '0'), ('MCP_CONNECTION_NONBLOCKING', 'true'), ('PATH', '/home/meng/.local/bin:/home/meng/.local/bin:/opt/ros/humble/bin:/home/meng/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/meng-Flow-Z13-GZ301VV:@/tmp/.ICE-unix/1508,unix/meng-Flow-Z13-GZ301VV:/tmp/.ICE-unix/1508'), ('INVOCATION_ID', '0a6081c4e60a42bcbd148376e4ae6db0'), ('COREPACK_ENABLE_AUTO_PIN', '0'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('GDK_BACKEND', 'wayland'), ('CLAUDE_EFFORT', 'high'), ('DISPLAY', ':0'), ('NoDefaultCurrentDirectoryInExePath', '1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.W3NWR3'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('AMENT_PREFIX_PATH', '/home/meng/mdetect_ws/install/mdetect_navigation:/home/meng/mdetect_ws/install/mdetect_description:/home/meng/ldlidar_ros2_ws/install/ldlidar_ros2:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('ELECTRON_RUN_AS_NODE', '1'), ('GDMSESSION', 'ubuntu'), ('CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING', 'true'), ('CLAUDE_CODE_SESSION_ID', '206eb03d-537d-49af-807f-9483a02299c1'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('CLAUDECODE', '1'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar'), ('TURTLEBOT3_MODEL', 'burger_cam'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('VSCODE_CODE_CACHE_PATH', '/home/meng/.config/Code/CachedData/7e7950df89d055b5a378379db9ee14290772148a'), ('GAZEBO_PLUGIN_PATH', '/home/meng/{your_ws}/build/turtlebot3_gazebo:'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('CLAUDE_CODE_EXECPATH', '/home/meng/.vscode/extensions/anthropic.claude-code-2.1.195-linux-x64/resources/native-binary/claude'), ('PYTHONPATH', '/home/meng/mdetect_ws/build/mdetect_navigation:/home/meng/mdetect_ws/install/mdetect_navigation/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('CLAUDE_CODE_ENABLE_TASKS', '0'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/meng/mdetect_ws/install/mdetect_description:/home/meng/ldlidar_ros2_ws/install/ldlidar_ros2:/home/meng/mdetect_ws/install/mdetect_navigation:/opt/ros/humble'), ('VSCODE_PID', '3784')]), 'shell': False}
+[11.638984] (cspc_lidar) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[11.639156] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/lib/cspc_lidar/cspc_lidar\n'}
+[11.643738] (cspc_lidar) StdoutLine: {'line': b'-- Set runtime path of "/home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/lib/cspc_lidar/cspc_lidar" to ""\n'}
+[11.643869] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/launch\n'}
+[11.644100] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/launch/cspc_lidar.launch.py\n'}
+[11.644247] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/params\n'}
+[11.644307] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/params/cspc_lidar.yaml\n'}
+[11.644370] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/ament_index/resource_index/package_run_dependencies/cspc_lidar\n'}
+[11.644580] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/ament_index/resource_index/parent_prefix_path/cspc_lidar\n'}
+[11.644614] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/environment/ament_prefix_path.sh\n'}
+[11.644716] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/environment/ament_prefix_path.dsv\n'}
+[11.644804] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/environment/path.sh\n'}
+[11.644926] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/environment/path.dsv\n'}
+[11.645047] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/local_setup.bash\n'}
+[11.645172] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/local_setup.sh\n'}
+[11.645297] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/local_setup.zsh\n'}
+[11.645502] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/local_setup.dsv\n'}
+[11.645662] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/package.dsv\n'}
+[11.645842] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/ament_index/resource_index/packages/cspc_lidar\n'}
+[11.646034] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/cmake/cspc_lidarConfig.cmake\n'}
+[11.646133] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/cmake/cspc_lidarConfig-version.cmake\n'}
+[11.646164] (cspc_lidar) StdoutLine: {'line': b'-- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/package.xml\n'}
+[11.647577] (cspc_lidar) CommandEnded: {'returncode': 0}
+[11.668978] (cspc_lidar) JobEnded: {'identifier': 'cspc_lidar', 'rc': 0}
+[11.669414] (-) EventReactorShutdown: {}
