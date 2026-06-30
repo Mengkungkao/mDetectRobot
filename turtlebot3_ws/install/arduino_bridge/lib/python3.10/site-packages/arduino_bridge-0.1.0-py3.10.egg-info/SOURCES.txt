@@ -16,3 +16,4 @@ param/arduino_bridge.yaml
 param/nav2_params.yaml
 param/slam_params.yaml
 resource/arduino_bridge
+scripts/arduino_bridge_node
