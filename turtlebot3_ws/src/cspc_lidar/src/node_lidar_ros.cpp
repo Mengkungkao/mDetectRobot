@@ -12,7 +12,7 @@ class MinimalSubscriber : public rclcpp::Node
 {
   public:
     MinimalSubscriber()
-    : Node("cspc_lidar")
+    : Node("cspc_lidar_status")
     {
       subscription_ = this->create_subscription<std_msgs::msg::UInt16>(
       "lidar_status", 10, std::bind(&MinimalSubscriber::topic_callback, this,std::placeholders::_1));

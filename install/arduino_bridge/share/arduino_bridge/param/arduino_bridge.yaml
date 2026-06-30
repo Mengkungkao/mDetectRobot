@@ -1,0 +1,27 @@
+arduino_bridge:
+  ros__parameters:
+    # Serial port connected to Arduino (USB)
+    port: /dev/ttyUSB1
+    baud_rate: 500000
+
+    # Physical dimensions — must match the real robot
+    # wheel_separation: distance between left and right wheel contact patches (m)
+    # wheel_radius: radius of each wheel (m) — 80.5 mm diameter / 2
+    wheel_separation: 0.235
+    wheel_radius: 0.04025
+
+    # TF frames
+    odom_frame: odom
+    base_frame: base_footprint
+    imu_frame: imu_link
+
+    # Set false if another node already publishes odom → base_footprint TF
+    publish_tf: true
+
+    # Seconds of silence on /cmd_vel before sending a stop command to Arduino
+    cmd_vel_timeout: 0.5
+
+    # Publish lidar_status 1 (start) when Arduino connects and 2 (stop) when
+    # it disconnects, so the cspc_lidar node follows the Arduino lifecycle.
+    # Set false if you want the LiDAR to run independently.
+    control_lidar: true

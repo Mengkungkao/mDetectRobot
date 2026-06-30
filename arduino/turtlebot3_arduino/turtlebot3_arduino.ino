@@ -1,464 +1,588 @@
-/*******************************************************************************
- * turtlebot3_style_core.ino
- *
- * A TurtleBot3 / OpenCR-style "core" firmware, rebuilt for an Arduino Uno/Nano
- * with the QGPMaker motor shield + QGPMaker quadrature encoders.
- *
- * It keeps the same skeleton ROBOTIS uses in turtlebot3_core.ino:
- *   - a fixed-rate control loop driven by a small software-timer table (tTime[])
- *   - read encoders  -> calcOdometry() -> integrate (x, y, theta)   [dead reckoning]
- *   - updateGoalVelocity() decides where the robot should go
- *   - controlMotor() closes the loop on each wheel
- *
- * What is DIFFERENT from OpenCR (and why):
- *   - OpenCR drives DYNAMIXEL servos that run their own internal velocity PID.
- *     Here we have plain DC motors over PWM, so we add a per-wheel PID ourselves.
- *   - OpenCR is commanded by ROS /cmd_vel (continuous velocity). Your robot_v12.py
- *     instead streams *waypoints* "(X_mm,Y_mm,wait_s)" and expects pose back as
- *     "X>Y>Heading". So updateGoalVelocity() is a go-to-goal planner over a
- *     waypoint queue rather than a cmd_vel callback.
- *
- * SERIAL PROTOCOL (must match robot_v12.py):
- *   Baud           : 500000
- *   Robot <- Host  : "(X1,Y1,W1) (X2,Y2,W2) ... :\n"   route, X/Y in mm, W in s
- *                    "STOP:\n"                          halt now, clear the queue
- *                    "RESET:\n"                         zero odometry + clear queue
- *   Robot -> Host  : "X>Y>Heading\n"   X,Y in mm (1 dp), Heading in deg (2 dp)
- *
- * >>> CALIBRATE THESE THREE before expecting accurate odometry <<<
- *   WHEEL_DIAMETER_MM, WHEEL_SEPARATION_MM, ENCODER_CPR
- *******************************************************************************/
+/*
+  Autonomous low-level controller for Arduino Uno
+
+  Responsibilities:
+    - Read four QGPMaker quadrature encoders
+    - Read MPU6050 yaw and yaw rate
+    - Run four independent wheel-speed PID controllers
+    - Drive four motors through the QGPMaker motor shield
+    - Enforce command watchdog and latched emergency stop
+    - Brake for a configurable time, then release without blocking
+
+  Serial protocol at 500000 baud
+  Pi -> Arduino:
+    O,seq                    open/reconnect: full state reset, replies A,seq,0 then READY
+    V,seq,m1,m2,m3,m4       wheel targets in mm/s
+    B,seq,hold_ms            brake, then release
+    S,seq                    normal stop: brake 1 s, then release
+    E,seq                    latch emergency stop
+    C,seq                    clear emergency stop
+    R,seq                    reset encoder counts and yaw zero
+    P,seq,motor,kp,ki,kd     update PID gains, motor is 1..4
+    Q,seq                    request immediate telemetry
+    X,seq                    close: stop motors cleanly, enter RELEASED
+
+  Arduino -> Pi:
+    T,seq,millis,e1,e2,e3,e4,v1,v2,v3,v4,yaw_cdeg,gyro_cdeg_s,state,fault
+    A,seq,code               ack (0=ok, 1=parse err, 2=estop rejected)
+    READY                    sent on boot and after O command
+*/
 
 #include <Wire.h>
+#include <avr/pgmspace.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "QGPMaker_MotorShield.h"
 #include "QGPMaker_Encoder.h"
+#include <MPU6050_tockn.h>
 
-/* ============================================================================
- *  CONFIG  (the equivalent of turtlebot3_core_config.h + turtlebot3_burger.h)
- * ========================================================================== */
+// ---------------- Hardware and timing ----------------
 
-// ---- Loop rates (Hz). OpenCR uses 30 Hz motor control, 30 Hz drive info. ----
-#define CONTROL_FREQUENCY        30      // navigation + wheel PID
-#define POSE_PUBLISH_FREQUENCY   20      // how often we send "X>Y>Heading"
+const uint32_t SERIAL_BAUD         = 500000UL;
+const uint8_t  MOTOR_COUNT         = 4;
+const uint16_t CONTROL_PERIOD_MS   = 20;    // 50 Hz
+const uint16_t TELEMETRY_PERIOD_MS = 20;    // 50 Hz
+const uint16_t COMMAND_WATCHDOG_MS = 250;
+const uint16_t DEFAULT_BRAKE_HOLD_MS = 1000;
+const uint8_t  LINE_BUFFER_SIZE    = 96;
 
-// ---- Wheel indices, same naming convention as OpenCR ----
-#define LEFT   0
-#define RIGHT  1
+const float WHEEL_DIAMETER_MM    = 80.5f;
+const float COUNTS_PER_REV       = 4320.0f;
+const float MM_PER_COUNT         = (PI * WHEEL_DIAMETER_MM) / COUNTS_PER_REV;
+const float MAX_TARGET_SPEED_MM_S = 300.0f;
 
-// ---- Robot geometry  (MEASURE THESE on your own chassis) ----
-#define WHEEL_DIAMETER_MM     65.0f      // wheel outer diameter
-#define WHEEL_SEPARATION_MM   170.0f     // distance between the two wheel contact points
-#define ENCODER_CPR           4320       // encoder counts per WHEEL revolution (x4 decoded)
+const uint8_t MIN_MOVING_PWM = 45;
+const uint8_t MAX_PWM        = 220;
 
-// ---- Motor shield wiring: which M port is which wheel ----
-#define MOTOR_LEFT_PORT   1              // M1
-#define MOTOR_RIGHT_PORT  2              // M2
+// Tune after verifying all encoder signs and directions.
+const float MOTOR_FEEDFORWARD_SCALE[MOTOR_COUNT] PROGMEM = {
+  0.9069f, 1.0630f, 1.0987f, 0.6170f
+};
 
-// ---- Direction fixups. Flip a +1 to -1 instead of rewiring/swapping leads. ----
-// A wheel is "correct" when driving it forward makes its encoder count UP.
-#define MOTOR_LEFT_SIGN    (+1)
-#define MOTOR_RIGHT_SIGN   (+1)
-#define ENC_LEFT_SIGN      (+1)
-#define ENC_RIGHT_SIGN     (+1)
+// Makes corrected encoder counts positive when the robot drives forward.
+const int8_t ENCODER_SIGN[MOTOR_COUNT] PROGMEM = { 1, 1, 1, 1 };
 
-// ---- Speed / approach limits ----
-#define MAX_LIN_SPEED_MM_S    250.0f     // forward speed cap
-#define MAX_ANG_SPEED_RAD_S   2.5f       // turn-rate cap
-#define POSITION_TOLERANCE_MM 25.0f      // "close enough" radius for a waypoint
-#define HEADING_GATE_DEG      30.0f      // if heading error is bigger, turn in place first
+// Set an entry to -1 if that motor turns opposite to the requested direction.
+const int8_t MOTOR_DIRECTION_SIGN[MOTOR_COUNT] PROGMEM = { -1, 1, 1, -1 };
 
-// ---- Go-to-goal gains ----
-#define KP_LINEAR   1.2f                 // mm/s of forward speed per mm of distance error
-#define KP_ANGULAR  3.0f                 // rad/s of turn per rad of heading error
+// Set to -1.0 if positive ROS yaw appears clockwise in RViz.
+const float IMU_YAW_SIGN = 1.0f;
 
-// ---- Per-wheel speed PID (target & measurement in mm/s, output in PWM counts) ----
-#define MAX_WHEEL_SPEED_MM_S  400.0f     // reference for the feed-forward term
-#define WHEEL_KFF   (255.0f / MAX_WHEEL_SPEED_MM_S)   // open-loop guess
-#define WHEEL_KP    0.6f
-#define WHEEL_KI    0.0f                 // start at 0; add a little once Kp tracks
-#define WHEEL_KD    0.0f
-#define MOTOR_MIN_PWM   30               // beats static friction so small commands still move
-#define MOTOR_MAX_PWM   255
+QGPMaker_MotorShield AFMS;
+QGPMaker_Encoder enc1(1), enc2(2), enc3(3), enc4(4);
+QGPMaker_DCMotor *motors[MOTOR_COUNT];
+MPU6050 mpu6050(Wire);
 
-// ---- Derived constants ----
-const float WHEEL_CIRCUM_MM = (float)PI * WHEEL_DIAMETER_MM;
-const float MM_PER_TICK     = WHEEL_CIRCUM_MM / (float)ENCODER_CPR;   // linear mm per encoder count
-const float TICK2RAD        = (2.0f * (float)PI) / (float)ENCODER_CPR; // OpenCR's TICK2RAD analogue
-const float HEADING_GATE_RAD = HEADING_GATE_DEG * 0.01745329252f;
+// ---------------- Controller types ----------------
 
-// ---- Waypoint queue ----
-#define MAX_WAYPOINTS  12                // robot_v12.py caps routes at 10
+struct SpeedPID {
+  float kp, ki, kd;
+  float integral;
+  float previousError;
 
-/* ============================================================================
- *  GLOBALS
- * ========================================================================== */
-
-// Motors + encoders. Encoder "1" = pins D8/D9, "2" = pins D6/D7 (fixed by the library).
-QGPMaker_MotorShield AFMS = QGPMaker_MotorShield();
-QGPMaker_DCMotor *motorLeft;
-QGPMaker_DCMotor *motorRight;
-QGPMaker_Encoder  encLeft (1, ENCODER_CPR);   // D8, D9
-QGPMaker_Encoder  encRight(2, ENCODER_CPR);   // D6, D7
-
-// Pose (the thing we publish). Internal heading is radians; we output degrees.
-float pose_x  = 0.0f;   // mm
-float pose_y  = 0.0f;   // mm
-float pose_th = 0.0f;   // rad
-
-// Goal wheel speeds set by the planner, consumed by the wheel PID (mm/s).
-float goal_wheel[2] = {0.0f, 0.0f};
-
-// Per-wheel PID memory.
-float pid_integral[2] = {0.0f, 0.0f};
-float pid_prev_err[2] = {0.0f, 0.0f};
-
-// Waypoint queue + navigation state machine.
-long  wp_x[MAX_WAYPOINTS];
-long  wp_y[MAX_WAYPOINTS];
-long  wp_wait[MAX_WAYPOINTS];
-int   wp_count = 0;
-int   wp_index = 0;
-
-enum NavState { NAV_IDLE, NAV_DRIVE, NAV_WAIT };
-NavState nav_state = NAV_IDLE;
-unsigned long wait_started_ms = 0;
-
-bool motion_enabled = false;            // false after STOP, true after a fresh route
-
-// Software timers, exactly like OpenCR's tTime[].
-uint32_t tTime[2];
-
-// Serial line assembly.
-char rxbuf[200];
-int  rxlen = 0;
-
-/* ============================================================================
- *  SETUP
- * ========================================================================== */
-void setup() {
-  Serial.begin(500000);
-
-  AFMS.begin();                          // brings up I2C + the PCA9685 PWM driver
-  motorLeft  = AFMS.getMotor(MOTOR_LEFT_PORT);
-  motorRight = AFMS.getMotor(MOTOR_RIGHT_PORT);
-  stopMotors();
-
-  initOdom();
-
-  uint32_t now = millis();
-  tTime[0] = now;
-  tTime[1] = now;
-
-  Serial.println(F("READY"));            // ignored by the Python parser, handy on the monitor
-}
-
-/* ============================================================================
- *  MAIN LOOP  (mirror of turtlebot3_core.ino's timed blocks)
- * ========================================================================== */
-void loop() {
-  uint32_t t = millis();
-
-  // Always service incoming commands as fast as possible.
-  readSerial();
-
-  // Block 1: navigation + odometry + wheel control at CONTROL_FREQUENCY.
-  if ((t - tTime[0]) >= (1000UL / CONTROL_FREQUENCY)) {
-    float dt = (t - tTime[0]) / 1000.0f;
-    if (dt <= 0.0f) dt = 1.0f / CONTROL_FREQUENCY;
-
-    long dL, dR;
-    readEncoders(dL, dR);                // ticks since last control step (atomic)
-
-    float vL_meas = (dL * MM_PER_TICK) / dt;   // measured wheel speed, mm/s
-    float vR_meas = (dR * MM_PER_TICK) / dt;
-
-    calcOdometry(dL, dR);                // update pose_x / pose_y / pose_th
-    updateGoalVelocity();                // go-to-goal -> goal_wheel[LEFT/RIGHT]
-    controlMotor(vL_meas, vR_meas, dt);  // per-wheel PID -> PWM
-
-    tTime[0] = t;
+  void configure(float p, float i, float d) {
+    kp = p; ki = i; kd = d;
+    reset();
   }
 
-  // Block 2: publish pose "X>Y>Heading" at POSE_PUBLISH_FREQUENCY.
-  if ((t - tTime[1]) >= (1000UL / POSE_PUBLISH_FREQUENCY)) {
-    publishPose();
-    tTime[1] = t;
+  void reset() {
+    integral = 0.0f;
+    previousError = 0.0f;
+  }
+
+  float update(float target, float measured, float dt) {
+    if (dt <= 0.0f) return 0.0f;
+    const float error = target - measured;
+    integral += error * dt;
+    integral = constrain(integral, -800.0f, 800.0f);
+    const float derivative = (error - previousError) / dt;
+    previousError = error;
+    return kp * error + ki * integral + kd * derivative;
+  }
+};
+
+struct ScalarKalman {
+  float x, p;
+  bool ready;
+
+  void reset() {
+    x = 0.0f; p = 1.0f; ready = false;
+  }
+
+  float update(float measurement) {
+    const float q = 30.0f;
+    const float r = 180.0f;
+    if (!ready) {
+      x = measurement; p = 1.0f; ready = true;
+      return x;
+    }
+    // Limit large jumps rather than discarding the sample.
+    const float innovation = constrain(measurement - x, -500.0f, 500.0f);
+    p += q;
+    const float k = p / (p + r);
+    x += k * innovation;
+    p *= (1.0f - k);
+    return x;
+  }
+};
+
+enum ControllerState : uint8_t {
+  STATE_RELEASED = 0,
+  STATE_RUNNING  = 1,
+  STATE_BRAKING  = 2,
+  STATE_ESTOP    = 3,
+  STATE_WATCHDOG = 4,
+  STATE_FAULT    = 5
+};
+
+enum FaultBits : uint8_t {
+  FAULT_NONE     = 0,
+  FAULT_WATCHDOG = 1 << 0,
+  FAULT_ESTOP    = 1 << 1,
+  FAULT_PARSE    = 1 << 2
+};
+
+SpeedPID    pid[MOTOR_COUNT];
+ScalarKalman speedFilter[MOTOR_COUNT];
+
+float   targetSpeedMMs[MOTOR_COUNT]      = {0, 0, 0, 0};
+float   measuredSpeedMMs[MOTOR_COUNT]    = {0, 0, 0, 0};
+int32_t correctedEncoderCounts[MOTOR_COUNT] = {0, 0, 0, 0};
+int32_t previousEncoderCounts[MOTOR_COUNT]  = {0, 0, 0, 0};
+
+uint16_t lastSequence      = 0;
+uint32_t lastControlMs     = 0;
+uint32_t lastTelemetryMs   = 0;
+uint32_t lastValidCommandMs = 0;
+uint32_t brakeUntilMs      = 0;
+
+bool    commandSeen   = false;
+bool    brakeActive   = false;
+bool    estopLatched  = false;
+uint8_t stateCode     = STATE_RELEASED;
+uint8_t faultCode     = FAULT_NONE;
+
+float   yawZeroRawDeg = 0.0f;
+char    serialLine[LINE_BUFFER_SIZE];
+uint8_t serialIndex   = 0;
+
+// ---------------- Utility ----------------
+
+bool timeReached(uint32_t now, uint32_t deadline) {
+  return (int32_t)(now - deadline) >= 0;
+}
+
+float normalizeDegrees(float angle) {
+  while (angle >  180.0f) angle -= 360.0f;
+  while (angle < -180.0f) angle += 360.0f;
+  return angle;
+}
+
+float getRosYawDeg()   { return normalizeDegrees((mpu6050.getAngleZ() - yawZeroRawDeg) * IMU_YAW_SIGN); }
+float getRosGyroDegS() { return mpu6050.getGyroZ() * IMU_YAW_SIGN; }
+
+bool targetsAreZero() {
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i)
+    if (fabs(targetSpeedMMs[i]) > 0.5f) return false;
+  return true;
+}
+
+void resetControllers() {
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    pid[i].reset();
+    speedFilter[i].reset();
+    measuredSpeedMMs[i] = 0.0f;
   }
 }
 
-/* ============================================================================
- *  ENCODERS
- * ========================================================================== */
-// Read-and-reset both encoders atomically so an interrupt can't land mid-read.
-void readEncoders(long &dL, long &dR) {
+void releaseMotors() {
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    motors[i]->setSpeed(0);
+    motors[i]->run(RELEASE);
+  }
+}
+
+void applyBrake() {
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    motors[i]->setSpeed(0);
+    motors[i]->run(BRAKE);
+  }
+}
+
+void setTargetsZero() {
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) targetSpeedMMs[i] = 0.0f;
+}
+
+void beginBrake(uint16_t holdMs, uint8_t stopState) {
+  setTargetsZero();
+  resetControllers();
+  applyBrake();
+  brakeActive  = true;
+  brakeUntilMs = millis() + holdMs;
+  stateCode    = stopState;
+}
+
+void updateBrakeState(uint32_t now) {
+  if (!brakeActive || !timeReached(now, brakeUntilMs)) return;
+  brakeActive = false;
+  releaseMotors();
+
+  if      (estopLatched)              stateCode = STATE_ESTOP;
+  else if (faultCode & FAULT_WATCHDOG) stateCode = STATE_WATCHDOG;
+  else                                 stateCode = STATE_RELEASED;
+}
+
+void readEncoderCountsAtomic() {
+  int32_t raw[MOTOR_COUNT];
   noInterrupts();
-  dL = encLeft.readAndReset();
-  dR = encRight.readAndReset();
+  raw[0] = enc1.read();
+  raw[1] = enc2.read();
+  raw[2] = enc3.read();
+  raw[3] = enc4.read();
   interrupts();
-  dL *= ENC_LEFT_SIGN;
-  dR *= ENC_RIGHT_SIGN;
+
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    const int8_t sign = (int8_t)pgm_read_byte(&ENCODER_SIGN[i]);
+    correctedEncoderCounts[i] = raw[i] * sign;
+  }
 }
 
-/* ============================================================================
- *  ODOMETRY  (same midpoint integration as OpenCR's calcOdometry, but in mm)
- * ========================================================================== */
-void initOdom() {
-  pose_x = pose_y = pose_th = 0.0f;
-  long junkL, junkR;
-  readEncoders(junkL, junkR);            // clear any startup counts
+void resetSensorReference() {
+  noInterrupts();
+  enc1.write(0); enc2.write(0); enc3.write(0); enc4.write(0);
+  interrupts();
+
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    correctedEncoderCounts[i] = 0;
+    previousEncoderCounts[i]  = 0;
+  }
+  yawZeroRawDeg = mpu6050.getAngleZ();
+  resetControllers();
 }
 
-void calcOdometry(long dL, long dR) {
-  // OpenCR does: wheel_l = TICK2RAD * dL;  delta_s = R*(wheel_r+wheel_l)/2; etc.
-  // With MM_PER_TICK = R * TICK2RAD, that collapses to the lines below.
-  float dl_mm = dL * MM_PER_TICK;        // left wheel arc length  (mm)
-  float dr_mm = dR * MM_PER_TICK;        // right wheel arc length (mm)
-
-  float delta_s  = 0.5f * (dl_mm + dr_mm);                  // robot forward travel (mm)
-  float delta_th = (dr_mm - dl_mm) / WHEEL_SEPARATION_MM;   // heading change (rad)
-
-  // Integrate about the midpoint heading for second-order accuracy.
-  pose_x += delta_s * cos(pose_th + 0.5f * delta_th);
-  pose_y += delta_s * sin(pose_th + 0.5f * delta_th);
-  pose_th = normalizeAngle(pose_th + delta_th);
+// Full reset used by the O command — clears all flags and faults.
+void fullStateReset() {
+  setTargetsZero();
+  releaseMotors();
+  resetSensorReference();
+  estopLatched  = false;
+  faultCode     = FAULT_NONE;
+  commandSeen   = false;
+  brakeActive   = false;
+  stateCode     = STATE_RELEASED;
+  lastValidCommandMs = millis();
 }
 
-/* ============================================================================
- *  GO-TO-GOAL PLANNER  (stands in for OpenCR's updateGoalVelocity/cmd_vel)
- * ========================================================================== */
-void updateGoalVelocity() {
-  // Nothing to do, or told to stop: hold still.
-  if (!motion_enabled || nav_state == NAV_IDLE || wp_count == 0) {
-    goal_wheel[LEFT]  = 0.0f;
-    goal_wheel[RIGHT] = 0.0f;
+float feedForwardPWM(float targetAbs, uint8_t motorIndex) {
+  if (targetAbs < 0.5f) return 0.0f;
+  const float ratio = constrain(targetAbs / MAX_TARGET_SPEED_MM_S, 0.0f, 1.0f);
+  float pwm = MIN_MOVING_PWM + ratio * (MAX_PWM - MIN_MOVING_PWM);
+  pwm *= pgm_read_float(&MOTOR_FEEDFORWARD_SCALE[motorIndex]);
+  return constrain(pwm, 0.0f, 255.0f);
+}
+
+void driveMotorSigned(uint8_t index, float signedPWM) {
+  signedPWM *= (int8_t)pgm_read_byte(&MOTOR_DIRECTION_SIGN[index]);
+  const uint8_t pwm = (uint8_t)constrain((int)(fabs(signedPWM) + 0.5f), 0, 255);
+  if (pwm == 0) {
+    motors[index]->setSpeed(0);
+    motors[index]->run(RELEASE);
+    return;
+  }
+  motors[index]->setSpeed(pwm);
+  motors[index]->run(signedPWM >= 0.0f ? FORWARD : BACKWARD);
+}
+
+void runSpeedControl(float dt) {
+  if (brakeActive || estopLatched || (faultCode & FAULT_WATCHDOG)) return;
+
+  if (targetsAreZero()) {
+    releaseMotors();
+    resetControllers();
+    stateCode = STATE_RELEASED;
     return;
   }
 
-  // Dwell at a waypoint for its requested "wait" seconds.
-  if (nav_state == NAV_WAIT) {
-    goal_wheel[LEFT]  = 0.0f;
-    goal_wheel[RIGHT] = 0.0f;
-    unsigned long wait_ms = (unsigned long)wp_wait[wp_index] * 1000UL;
-    if (millis() - wait_started_ms >= wait_ms) advanceWaypoint();
-    return;
-  }
-
-  // NAV_DRIVE: steer toward the active waypoint.
-  float gx = (float)wp_x[wp_index];
-  float gy = (float)wp_y[wp_index];
-  float dx = gx - pose_x;
-  float dy = gy - pose_y;
-  float dist = sqrt(dx * dx + dy * dy);
-
-  if (dist <= POSITION_TOLERANCE_MM) {   // arrived
-    if (wp_wait[wp_index] > 0) {
-      nav_state = NAV_WAIT;
-      wait_started_ms = millis();
-    } else {
-      advanceWaypoint();
+  stateCode = STATE_RUNNING;
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    const float target = constrain(targetSpeedMMs[i], -MAX_TARGET_SPEED_MM_S, MAX_TARGET_SPEED_MM_S);
+    if (fabs(target) < 0.5f) {
+      driveMotorSigned(i, 0.0f);
+      pid[i].reset();
+      continue;
     }
-    goal_wheel[LEFT]  = 0.0f;
-    goal_wheel[RIGHT] = 0.0f;
+    const float sign   = target >= 0.0f ? 1.0f : -1.0f;
+    const float ff     = sign * feedForwardPWM(fabs(target), i);
+    const float trim   = pid[i].update(target, measuredSpeedMMs[i], dt);
+    const float output = constrain(ff + trim, -255.0f, 255.0f);
+    driveMotorSigned(i, output);
+  }
+}
+
+void updateSpeedMeasurement(float dt) {
+  readEncoderCountsAtomic();
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    const int32_t delta = correctedEncoderCounts[i] - previousEncoderCounts[i];
+    previousEncoderCounts[i] = correctedEncoderCounts[i];
+    const float rawSpeed = (delta * MM_PER_COUNT) / dt;
+    measuredSpeedMMs[i] = speedFilter[i].update(rawSpeed);
+  }
+}
+
+// ---------------- Serial output ----------------
+
+void sendAck(uint16_t sequence, uint8_t code) {
+  Serial.print(F("A,"));
+  Serial.print(sequence);
+  Serial.print(',');
+  Serial.println(code);
+}
+
+void sendTelemetry() {
+  readEncoderCountsAtomic();
+  Serial.print(F("T,"));
+  Serial.print(lastSequence);
+  Serial.print(',');
+  Serial.print(millis());
+
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    Serial.print(','); Serial.print(correctedEncoderCounts[i]);
+  }
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    Serial.print(','); Serial.print((int)round(measuredSpeedMMs[i]));
+  }
+
+  Serial.print(','); Serial.print((int)round(getRosYawDeg()   * 100.0f));
+  Serial.print(','); Serial.print((int)round(getRosGyroDegS() * 100.0f));
+  Serial.print(','); Serial.print(stateCode);
+  Serial.print(','); Serial.println(faultCode);
+}
+
+// ---------------- Serial parser ----------------
+
+char *nextToken(char **context) {
+  return strtok_r(NULL, ",", context);
+}
+
+bool parseLongToken(char **context, long &value) {
+  char *token = nextToken(context);
+  if (token == NULL) return false;
+  char *endPtr = NULL;
+  value = strtol(token, &endPtr, 10);
+  return endPtr != token && *endPtr == '\0';
+}
+
+bool parseFloatToken(char **context, float &value) {
+  char *token = nextToken(context);
+  if (token == NULL) return false;
+  char *endPtr = NULL;
+  value = strtod(token, &endPtr);
+  return endPtr != token && *endPtr == '\0';
+}
+
+void handleVelocityCommand(char **context) {
+  long seq;
+  if (!parseLongToken(context, seq)) { faultCode |= FAULT_PARSE; return; }
+
+  float incoming[MOTOR_COUNT];
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    if (!parseFloatToken(context, incoming[i])) { faultCode |= FAULT_PARSE; return; }
+  }
+
+  lastSequence       = (uint16_t)seq;
+  commandSeen        = true;
+  lastValidCommandMs = millis();
+
+  if (estopLatched) { sendAck(lastSequence, 2); return; }
+
+  faultCode &= ~FAULT_WATCHDOG;
+  faultCode &= ~FAULT_PARSE;
+
+  bool incomingIsZero = true;
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    targetSpeedMMs[i] = constrain(incoming[i], -MAX_TARGET_SPEED_MM_S, MAX_TARGET_SPEED_MM_S);
+    if (fabs(targetSpeedMMs[i]) > 0.5f) incomingIsZero = false;
+  }
+  // Continuous zero commands from the Pi must not cancel a requested brake hold.
+  if (!incomingIsZero) brakeActive = false;
+  sendAck(lastSequence, 0);
+}
+
+void handleLine(char *line) {
+  char *context = NULL;
+  char *command = strtok_r(line, ",", &context);
+  if (command == NULL) return;
+
+  if (strcmp(command, "V") == 0) {
+    handleVelocityCommand(&context);
     return;
   }
 
-  float target_th = atan2(dy, dx);
-  float err_th    = normalizeAngle(target_th - pose_th);
+  long seqLong = 0;
+  if (!parseLongToken(&context, seqLong)) { faultCode |= FAULT_PARSE; return; }
+  lastSequence = (uint16_t)seqLong;
 
-  // Forward speed: scale with distance, but back off (and gate) when pointed wrong.
-  float v;
-  if (fabs(err_th) > HEADING_GATE_RAD) {
-    v = 0.0f;                            // turn in place until roughly aligned
-  } else {
-    v = KP_LINEAR * dist;
-    if (v > MAX_LIN_SPEED_MM_S) v = MAX_LIN_SPEED_MM_S;
-    v *= cos(err_th);                    // gentle taper as alignment improves
+  if (strcmp(command, "O") == 0) {
+    // Host has opened or reopened the port — reset everything cleanly.
+    fullStateReset();
+    sendAck(lastSequence, 0);
+    Serial.println(F("READY"));
   }
-
-  // Turn rate: proportional to heading error, clamped.
-  float w = KP_ANGULAR * err_th;
-  if (w >  MAX_ANG_SPEED_RAD_S) w =  MAX_ANG_SPEED_RAD_S;
-  if (w < -MAX_ANG_SPEED_RAD_S) w = -MAX_ANG_SPEED_RAD_S;
-
-  // Differential-drive mixing: wheel speeds in mm/s.
-  float half_track = WHEEL_SEPARATION_MM * 0.5f;
-  goal_wheel[LEFT]  = v - w * half_track;
-  goal_wheel[RIGHT] = v + w * half_track;
-}
-
-void advanceWaypoint() {
-  wp_index++;
-  if (wp_index >= wp_count) {            // whole route finished
-    nav_state = NAV_IDLE;
-    wp_count = 0;
-    wp_index = 0;
-    motion_enabled = false;
-  } else {
-    nav_state = NAV_DRIVE;
+  else if (strcmp(command, "X") == 0) {
+    // Host is closing the port — stop motors and idle.
+    setTargetsZero();
+    beginBrake(DEFAULT_BRAKE_HOLD_MS, STATE_BRAKING);
+    commandSeen = false;
+    sendAck(lastSequence, 0);
   }
-}
-
-/* ============================================================================
- *  WHEEL CONTROL  (the DC-motor PID that OpenCR delegates to DYNAMIXEL)
- * ========================================================================== */
-void controlMotor(float vL_meas, float vR_meas, float dt) {
-  if (!motion_enabled || nav_state == NAV_IDLE) {
-    stopMotors();
-    pid_integral[LEFT] = pid_integral[RIGHT] = 0.0f;
-    return;
+  else if (strcmp(command, "B") == 0) {
+    long hold = DEFAULT_BRAKE_HOLD_MS;
+    char *holdToken = nextToken(&context);
+    if (holdToken != NULL) hold = strtol(holdToken, NULL, 10);
+    hold = constrain(hold, 50L, 5000L);
+    beginBrake((uint16_t)hold, STATE_BRAKING);
+    lastValidCommandMs = millis();
+    commandSeen = true;
+    sendAck(lastSequence, 0);
   }
-  int pwmL = wheelPID(LEFT,  goal_wheel[LEFT],  vL_meas, dt);
-  int pwmR = wheelPID(RIGHT, goal_wheel[RIGHT], vR_meas, dt);
-  setMotor(motorLeft,  MOTOR_LEFT_SIGN,  pwmL);
-  setMotor(motorRight, MOTOR_RIGHT_SIGN, pwmR);
-}
-
-int wheelPID(int side, float target, float measured, float dt) {
-  if (fabs(target) < 1.0f) {             // commanded stop -> release, no creep
-    pid_integral[side] = 0.0f;
-    pid_prev_err[side] = 0.0f;
-    return 0;
+  else if (strcmp(command, "S") == 0) {
+    beginBrake(DEFAULT_BRAKE_HOLD_MS, STATE_BRAKING);
+    lastValidCommandMs = millis();
+    commandSeen = true;
+    sendAck(lastSequence, 0);
   }
-
-  float err = target - measured;
-  pid_integral[side] += err * dt;
-  // Anti-windup: keep the integral term from exploding.
-  float i_clamp = (WHEEL_KI > 0.0f) ? (MOTOR_MAX_PWM / WHEEL_KI) : 0.0f;
-  if (i_clamp > 0.0f) {
-    if (pid_integral[side] >  i_clamp) pid_integral[side] =  i_clamp;
-    if (pid_integral[side] < -i_clamp) pid_integral[side] = -i_clamp;
+  else if (strcmp(command, "E") == 0) {
+    estopLatched = true;
+    faultCode |= FAULT_ESTOP;
+    beginBrake(DEFAULT_BRAKE_HOLD_MS, STATE_ESTOP);
+    sendAck(lastSequence, 0);
   }
-  float deriv = (err - pid_prev_err[side]) / dt;
-  pid_prev_err[side] = err;
-
-  float out = WHEEL_KFF * target          // feed-forward (does most of the work)
-            + WHEEL_KP  * err
-            + WHEEL_KI  * pid_integral[side]
-            + WHEEL_KD  * deriv;
-
-  // Clamp and apply a minimum to overcome stiction.
-  int pwm = (int)out;
-  if (pwm >  MOTOR_MAX_PWM) pwm =  MOTOR_MAX_PWM;
-  if (pwm < -MOTOR_MAX_PWM) pwm = -MOTOR_MAX_PWM;
-  if (pwm > 0 && pwm < MOTOR_MIN_PWM) pwm = MOTOR_MIN_PWM;
-  if (pwm < 0 && pwm > -MOTOR_MIN_PWM) pwm = -MOTOR_MIN_PWM;
-  return pwm;
-}
-
-// Drive one motor with a signed PWM value in [-255, 255].
-void setMotor(QGPMaker_DCMotor *m, int sign, int pwm) {
-  pwm *= sign;
-  if (pwm > 0) {
-    m->run(FORWARD);
-    m->setSpeed(pwm > MOTOR_MAX_PWM ? MOTOR_MAX_PWM : pwm);
-  } else if (pwm < 0) {
-    m->run(BACKWARD);
-    int s = -pwm;
-    m->setSpeed(s > MOTOR_MAX_PWM ? MOTOR_MAX_PWM : s);
-  } else {
-    m->setSpeed(0);
-    m->run(RELEASE);
+  else if (strcmp(command, "C") == 0) {
+    setTargetsZero();
+    estopLatched = false;
+    faultCode   &= ~FAULT_ESTOP;
+    faultCode   &= ~FAULT_WATCHDOG;
+    brakeActive  = false;
+    releaseMotors();
+    stateCode    = STATE_RELEASED;
+    commandSeen  = false;
+    sendAck(lastSequence, 0);
+  }
+  else if (strcmp(command, "R") == 0) {
+    setTargetsZero();
+    releaseMotors();
+    resetSensorReference();
+    faultCode  &= ~FAULT_WATCHDOG;
+    commandSeen = false;
+    stateCode   = estopLatched ? STATE_ESTOP : STATE_RELEASED;
+    sendAck(lastSequence, 0);
+  }
+  else if (strcmp(command, "P") == 0) {
+    long motorNumber;
+    float kp, ki, kd;
+    if (!parseLongToken(&context, motorNumber) ||
+        !parseFloatToken(&context, kp)         ||
+        !parseFloatToken(&context, ki)         ||
+        !parseFloatToken(&context, kd)         ||
+        motorNumber < 1 || motorNumber > 4) {
+      faultCode |= FAULT_PARSE;
+      sendAck(lastSequence, 1);
+      return;
+    }
+    pid[motorNumber - 1].configure(kp, ki, kd);
+    sendAck(lastSequence, 0);
+  }
+  else if (strcmp(command, "Q") == 0) {
+    sendTelemetry();
+  }
+  else {
+    faultCode |= FAULT_PARSE;
+    sendAck(lastSequence, 1);
   }
 }
 
-void stopMotors() {
-  motorLeft->setSpeed(0);
-  motorRight->setSpeed(0);
-  motorLeft->run(RELEASE);
-  motorRight->run(RELEASE);
-}
-
-/* ============================================================================
- *  POSE OUTPUT  -> "X>Y>Heading\n"  (what read_arduino_lines() parses)
- * ========================================================================== */
-void publishPose() {
-  float heading_deg = pose_th * 57.2957795131f;   // RAD2DEG
-  Serial.print(pose_x, 1);
-  Serial.print('>');
-  Serial.print(pose_y, 1);
-  Serial.print('>');
-  Serial.println(heading_deg, 2);
-}
-
-/* ============================================================================
- *  SERIAL COMMAND PARSING
- * ========================================================================== */
-void readSerial() {
-  while (Serial.available()) {
-    char c = Serial.read();
+void readSerialCommands() {
+  while (Serial.available() > 0) {
+    const char c = (char)Serial.read();
     if (c == '\n' || c == '\r') {
-      if (rxlen > 0) {
-        rxbuf[rxlen] = '\0';
-        processLine(rxbuf);
-        rxlen = 0;
-      }
-    } else if (rxlen < (int)sizeof(rxbuf) - 1) {
-      rxbuf[rxlen++] = c;
+      if (serialIndex == 0) continue;
+      serialLine[serialIndex] = '\0';
+      serialIndex = 0;
+      handleLine(serialLine);
+      continue;
+    }
+    if (serialIndex < LINE_BUFFER_SIZE - 1) {
+      serialLine[serialIndex++] = c;
     } else {
-      rxlen = 0;                         // overflow guard: drop the garbled line
+      serialIndex = 0;
+      faultCode |= FAULT_PARSE;
     }
   }
 }
 
-void processLine(char *line) {
-  if (strncmp(line, "STOP", 4) == 0)  { emergencyStop(); return; }
-  if (strncmp(line, "RESET", 5) == 0) { resetAll();      return; }
-  if (strchr(line, '(') != NULL)      { parseRoute(line); return; }
-  // anything else: ignore
+void checkWatchdog(uint32_t now) {
+  if (!commandSeen || estopLatched) return;
+  if ((uint32_t)(now - lastValidCommandMs) <= COMMAND_WATCHDOG_MS) return;
+  commandSeen = false;
+  faultCode  |= FAULT_WATCHDOG;
+  beginBrake(DEFAULT_BRAKE_HOLD_MS, STATE_WATCHDOG);
 }
 
-// Parse "(x,y,w) (x,y,w) ... :" into the waypoint queue and start driving.
-void parseRoute(char *s) {
-  wp_count = 0;
-  wp_index = 0;
+void setupPID() {
+  pid[0].configure(0.25f,  0.034f, 0.003f);
+  pid[1].configure(0.239f, 0.034f, 0.003f);
+  pid[2].configure(0.23f,  0.015f, 0.003f);
+  pid[3].configure(0.25f,  0.034f, 0.003f);
+}
 
-  char *p = s;
-  while ((p = strchr(p, '(')) != NULL) {
-    long x = 0, y = 0, w = 0;
-    if (sscanf(p, "(%ld,%ld,%ld", &x, &y, &w) >= 2) {
-      if (wp_count < MAX_WAYPOINTS) {
-        wp_x[wp_count]    = x;
-        wp_y[wp_count]    = y;
-        wp_wait[wp_count] = (w < 0) ? 0 : w;
-        wp_count++;
-      }
-    }
-    char *close = strchr(p, ')');
-    p = (close != NULL) ? close + 1 : p + 1;
+// ---------------- Setup / Loop ----------------
+
+void setup() {
+  Serial.begin(SERIAL_BAUD);
+  Wire.begin();
+  Wire.setClock(400000UL);
+  AFMS.begin(500);
+
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i)
+    motors[i] = AFMS.getMotor(i + 1);
+
+  releaseMotors();
+  mpu6050.begin();
+  mpu6050.calcGyroOffsets(false, 1000, 1000);
+  mpu6050.update();
+  yawZeroRawDeg = mpu6050.getAngleZ();
+
+  setupPID();
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) speedFilter[i].reset();
+  readEncoderCountsAtomic();
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i)
+    previousEncoderCounts[i] = correctedEncoderCounts[i];
+
+  lastControlMs   = millis();
+  lastTelemetryMs = millis();
+  Serial.println(F("READY"));
+}
+
+void loop() {
+  mpu6050.update();
+  readSerialCommands();
+
+  const uint32_t now = millis();
+  checkWatchdog(now);
+  updateBrakeState(now);
+
+  if ((uint32_t)(now - lastControlMs) >= CONTROL_PERIOD_MS) {
+    float dt = (now - lastControlMs) * 0.001f;
+    lastControlMs = now;
+    dt = constrain(dt, 0.005f, 0.100f);
+    updateSpeedMeasurement(dt);
+    runSpeedControl(dt);
   }
 
-  if (wp_count > 0) {
-    motion_enabled = true;
-    nav_state = NAV_DRIVE;
-  } else {
-    motion_enabled = false;
-    nav_state = NAV_IDLE;
+  if ((uint32_t)(now - lastTelemetryMs) >= TELEMETRY_PERIOD_MS) {
+    lastTelemetryMs = now;
+    sendTelemetry();
   }
-}
-
-// "STOP:" -> halt immediately and drop the route. Stays stopped until a new route.
-void emergencyStop() {
-  motion_enabled = false;
-  nav_state = NAV_IDLE;
-  wp_count = 0;
-  wp_index = 0;
-  goal_wheel[LEFT] = goal_wheel[RIGHT] = 0.0f;
-  pid_integral[LEFT] = pid_integral[RIGHT] = 0.0f;
-  stopMotors();
-}
-
-// "RESET:" -> zero the odometry frame and clear everything.
-void resetAll() {
-  emergencyStop();
-  initOdom();
-}
-
-/* ============================================================================
- *  UTILITY
- * ========================================================================== */
-// Wrap an angle to (-PI, PI].
-float normalizeAngle(float a) {
-  while (a >   (float)PI) a -= 2.0f * (float)PI;
-  while (a <= -(float)PI) a += 2.0f * (float)PI;
-  return a;
 }
