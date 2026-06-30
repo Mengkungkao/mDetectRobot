@@ -44,7 +44,7 @@ const uint32_t SERIAL_BAUD         = 500000UL;
 const uint8_t  MOTOR_COUNT         = 4;
 const uint16_t CONTROL_PERIOD_MS   = 20;    // 50 Hz
 const uint16_t TELEMETRY_PERIOD_MS = 20;    // 50 Hz
-const uint16_t COMMAND_WATCHDOG_MS = 250;
+const uint16_t COMMAND_WATCHDOG_MS = 1000;  // must be > Pi cmd_vel_timeout (500 ms)
 const uint16_t DEFAULT_BRAKE_HOLD_MS = 1000;
 const uint8_t  LINE_BUFFER_SIZE    = 96;
 

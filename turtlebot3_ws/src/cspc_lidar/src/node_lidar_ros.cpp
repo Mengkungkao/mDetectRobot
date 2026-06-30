@@ -21,6 +21,7 @@ class MinimalSubscriber : public rclcpp::Node
   private:
     void topic_callback(const std_msgs::msg::UInt16::SharedPtr msg) const
     {
+		if (!node_lidar.serial_port) return;
 		switch (msg->data)
 		{
 
@@ -158,6 +159,9 @@ int main(int argc, char **argv)
 			laser_pub->publish(*scan_msg);
       	}
 	}
-	node_lidar.serial_port->write_data(end_lidar,4);
+	if (node_lidar.serial_port) {
+		node_lidar.serial_port->write_data(end_lidar,4);
+	}
+	rclcpp::shutdown();
 	return 0;
 }
