@@ -6,7 +6,7 @@
 
 
 /*****************************************
-*             点云滤波函数                 *
+*             Point cloud filtering function                 *
 ******************************************/
 void Point_cloud_optimize::PointCloudFilter(LaserScan *Scan)
 {
@@ -221,7 +221,7 @@ void Point_cloud_optimize::PointCloudFilter(LaserScan *Scan)
 }
 
 /*****************************************
-* 雷达实际测距距离-雷达安装位置到扫地机边缘的距离*
+* Lidar actual ranging distance - distance from lidar installation position to sweeper edge*
 ******************************************/
 int Point_cloud_optimize::UltrasonicSimRanging(LaserPoint &pScan)
 {
@@ -253,7 +253,7 @@ int Point_cloud_optimize::UltrasonicSimRanging(LaserPoint &pScan)
 }
 
 /*****************************************
-*         获取结构缺口剔除的角度             *
+*         Get the angle to remove structural gaps             *
 ******************************************/
 void Point_cloud_optimize::getLidarCoverAngle(char *charbuf)
 {
@@ -323,7 +323,7 @@ void Point_cloud_optimize::lidar_blocked_count(LaserPoint &pScan,int count_lidar
 
 
 /*****************************************
-*         雷达被遮挡判断             		*
+*         Lidar occlusion judgment             		*
 ******************************************/
 void Point_cloud_optimize::lidar_blocked_judge(int count)
 {
@@ -338,7 +338,7 @@ void Point_cloud_optimize::lidar_blocked_judge(int count)
 	}
 	if(node_lidar.lidar_block.point_check > 200)
 	{
-		printf("lidar 雷达被严重遮挡百分之七十 %d,%d\n",node_lidar.lidar_block.lidar_zero_count,node_lidar.scan_node_count);
+		printf("lidar Lidar is 70% seriously blocked %d,%d\n",node_lidar.lidar_block.lidar_zero_count,node_lidar.scan_node_count);
 		node_lidar.lidar_status.lidar_abnormal_state |= 0x04;
 		node_lidar.lidar_block.point_check = 0;
 	}
@@ -347,7 +347,7 @@ void Point_cloud_optimize::lidar_blocked_judge(int count)
 
 
 /*****************************************
-*         雷达点云缺口剔除             		*
+*         Lidar point cloud gap elimination             		*
 ******************************************/
 void Point_cloud_optimize::lidar_cover_cut(float &range,float &angle)
 {

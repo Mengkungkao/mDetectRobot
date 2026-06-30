@@ -13,6 +13,6 @@ Linux:
 
 6. ./cspc_lidar /dev/sc_mini -version 4
 
-7. 备注:
-Linux版本没有标准的数据通讯格式，在main函数的while循环中，会一直接收数据，数据存储在LaserScan结构体中，可根据整体项目情况，使用该数据。
+7. Note:
+Linux version has no standard data communication format. In the while loop of the main function, it will keep receiving data. The data is stored in the LaserScan structure. You can use this data according to your project requirements.
 

@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 		LaserScan scan;
 		if(data_handling(scan))
 		{
-			//根据自定义需求使用数据
+			//Use data according to custom requirements
       	}
 	}
 }                                                                                                           

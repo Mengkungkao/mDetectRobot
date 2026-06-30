@@ -8,27 +8,27 @@ using namespace std;
 
 const int map_ratio = 40;
 
-// 定义二维向量结构体
+// Define 2D vector structure
 struct Vector2D {
     double x;
     double y;
 
-    // 计算向量的模长
+    // Calculate the modulus (length) of the vector
     double Length() {
         return sqrt(x * x + y * y);
     }
 
-    // 计算向量的点积
+    // Calculate the dot product of the vector
     double Dot(Vector2D v) {
         return x * v.x + y * v.y;
     }
 
-    // 计算向量的叉积
+    // Calculate the cross product of the vector
     double Cross(Vector2D v) {
         return x * v.y - y * v.x;
     }
 
-    // 计算向量的夹角（单位：弧度）
+    // Calculate the angle between vectors (unit: radians)
     double Angle(Vector2D v) {
         double dot = Dot(v);
         double cross = Cross(v);
@@ -36,7 +36,7 @@ struct Vector2D {
     }
 };
 
-// 定义线段结构体
+// Define line segment structure
 struct LineSegment {
     Vector2D p1;
     Vector2D p2;
@@ -93,7 +93,7 @@ struct Line_new {
     double intercept;
 };
 
-//栅格坐标
+//Grid coordinates
 typedef struct grid
 {
     int x,y;
@@ -127,36 +127,36 @@ typedef struct _calibration_params_
  
   point_t origin_point;
 
-  int calibration_type = 0;   //0:剔除畸变 1：拉直畸变
+  int calibration_type = 0;   //0: Remove distortion 1: Straighten distortion
 
-  int line_judgment_point_num;//判断提取一条直线的最小点数
+  int line_judgment_point_num;//Minimum number of points to determine and extract a line
 }calibration_params_t;
 
 extern calibration_params_t calibration_params;
 
-/*畸变处理入口函数*/
+/*Distortion processing entry function*/
 void lidar_calibration(LaserScan &outscan);
 
 /*获取直线的斜率和截距*/
 void getLineKB(point_t start_point, point_t end_point, double &k, double &b);
 
-/*点到直线的距离*/
+/*Distance from point to line*/
 double pointToLineDist(point_t point, double k, double b);
 
-/*雷达数据转换为点云数据*/
+/*Convert lidar data to point cloud data*/
 void pcloud_build_by_pos_scan(LaserScan &outscan ,pcloud_t &pcloud);
 
 /*拟合直线进行畸变处理的入口*/
 void fitting_line(pcloud_t &pcloud);
 
 
-/*直线的过程判断*/
+/*Line process judgment*/
 bool line_judgment(std::vector<point_t> line, point_t point);
 
-/*求相邻线段的夹角*/
+/*Calculate angle between adjacent line segments*/
 void neighbor_lines_new(std::vector<point_t> line_first, std::vector<point_t> line_second, pcloud_t &pcloud);
 
-/*进行直角畸变处理*/
+/*Perform right angle distortion processing*/
 void Point_cloud_straightening_new(std::vector<point_t> line_first, std::vector<point_t> line_second, pcloud_t &pcloud);
 
 /*求两点间距离*/

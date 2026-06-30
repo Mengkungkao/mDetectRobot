@@ -19,25 +19,25 @@ private:
     
 public:
 
-    /*点云滤波*/
+    /*Point cloud filtering*/
     void PointCloudFilter(LaserScan *Scan);
 
-    /*当前点的距离减去相同角度下雷达到扫地机边缘的距离*/
+    /*Distance of current point minus the distance from lidar to sweeper edge at the same angle*/
     int UltrasonicSimRanging(LaserPoint &pScan);
 
-    /*获取需要剔除的角度信息*/
+    /*Get the angle information to be removed*/
     void getLidarCoverAngle(char *charbuf);
 
-    /*雷达被遮挡的判断*/
+    /*Judgment of lidar occlusion*/
     void lidar_blocked_judge(int count);
 
-    /*雷达被遮挡计数*/
+    /*Lidar occlusion counting*/
     void lidar_blocked_count(LaserPoint &pScan,int count_lidar);
 
-    /*点云缺口剔除*/
+    /*Point cloud gap elimination*/
     void lidar_cover_cut(float &,float &);
 
-    /*数据重置*/
+    /*Data reset*/
     void datas_clear();
 
     void lidar_blocked_init();

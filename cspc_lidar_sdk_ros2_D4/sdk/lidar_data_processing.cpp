@@ -14,19 +14,19 @@ bool has_device_header = false;
 
 Lidar_Data_Processing::Lidar_Data_Processing(){
   CheckSumCal = 0;
-  CheckSum = 0;	//校验和
+  CheckSum = 0;	//Checksum
   SampleNumlAndCTCal = 0;
   LastSampleAngleCal = 0;
   Valu8Tou16 = 0;
   package_Sample_Index = 0;
-  FirstSampleAngle = 0; //< 起始采样角
-	LastSampleAngle = 0;  //< 结束采样角
-  scan_frequence = 0;	      //协议中雷达转速
+  FirstSampleAngle = 0; //< Starting sample angle
+	LastSampleAngle = 0;  //< Ending sample angle
+  scan_frequence = 0;	      //Lidar rotation speed in protocol
   CheckSumResult = false;
   has_package_error = false;
   IntervalSampleAngle = 0.0;
 	IntervalSampleAngle_LastPackage = 0.0;
-  PackageSampleBytes = 2; //< 一个包包含的激光点数
+  PackageSampleBytes = 2; //< Number of laser points contained in one package
   package_index = 0;
   recvNodeCount = 0;
   start_t = 0;
@@ -213,12 +213,12 @@ result_t Lidar_Data_Processing::waitSpeedRight(uint8_t cmd,uint64_t timeout)
     uint8_t  recvBuffer[100];
     uint32_t waitTime = 0;
     //uint16_t data_count = 0;
-    uint16_t check_sum_cal = 0;  //校验和
-    uint16_t data_check_sum = 0; //累加数据
+    uint16_t check_sum_cal = 0;  //Checksum
+    uint16_t data_check_sum = 0; //Accumulated data
     //uint8_t check_data[4];
     bool head_right = false;
 
-    uint16_t data_lenth = 0; //数据长度
+    uint16_t data_lenth = 0; //Data length
 
     while ((waitTime = getms() - startTs) <= timeout){
       size_t remainSize = 9;
@@ -800,7 +800,7 @@ result_t Lidar_Data_Processing::waitPackage(node_info *node, uint32_t timeout)
     
     if ((*node).distance_q2 != 0)
     {
-      //结构引起的补偿
+      //Compensation caused by structure
       /*
       AngleCorrectForDistance = (int32_t)(((atan(((21.8 * (155.3 - ((*node).distance_q2 / 4.0))) / 155.3) /
                                                  ((*node).distance_q2 / 4.0))) *180.0 / 3.1415) * 64.0);*/
@@ -909,7 +909,7 @@ result_t Lidar_Data_Processing::waitPackage_coin(node_info *node,uint32_t timeou
         case 0:
           if (currentByte == 0x55)
           {
-            //printf("收到头数据帧\n");
+            //printf("Received header data frame\n");
           }
           else{
             continue;
@@ -1199,7 +1199,7 @@ result_t Lidar_Data_Processing::waitScanData(node_info *nodebuffer, size_t &coun
   uint32_t startTs = getms();
   uint32_t waitTime = 0;
   result_t ans = RESULT_FAIL;
-  /*超时处理及点数判断*/
+  /*Timeout handling and point count judgment*/
   while ((waitTime = getms() - startTs) <= timeout && recvNodeCount < count)
   {
     node_info node;
@@ -1220,10 +1220,10 @@ result_t Lidar_Data_Processing::waitScanData(node_info *nodebuffer, size_t &coun
 
     if (node.sync_flag & LIDAR_RESP_MEASUREMENT_SYNCBIT)
     {
-      /*检查缓冲区中的字节数*/
+      /*Check number of bytes in buffer*/
       size_t size = node_lidar.serial_port->available();
       uint64_t delayTime = 0;
-      /*数据包的数据量*/
+      /*Data volume of the data packet*/
       size_t PackageSize = (node_lidar.lidar_general_info.m_intensities ? INTENSITY_NORMAL_PACKAGE_SIZE :
                             NORMAL_PACKAGE_SIZE);
 

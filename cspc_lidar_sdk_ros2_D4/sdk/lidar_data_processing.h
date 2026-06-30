@@ -9,14 +9,14 @@ class Lidar_Data_Processing
 
 private:
   uint16_t CheckSumCal;
-  uint16_t CheckSum;		         //校验和
+  uint16_t CheckSum;		         //Checksum
   uint16_t SampleNumlAndCTCal;
   uint16_t LastSampleAngleCal;
   uint16_t Valu8Tou16;
-  uint16_t package_Sample_Index; //包采样点索引
-  uint16_t FirstSampleAngle;     //起始采样角
-  uint16_t LastSampleAngle;      //结束采样角
-  uint8_t scan_frequence;	       //协议中雷达转速
+  uint16_t package_Sample_Index; //Package sample point index
+  uint16_t FirstSampleAngle;     //Starting sample angle
+  uint16_t LastSampleAngle;      //Ending sample angle
+  uint8_t scan_frequence;	       //Lidar rotation speed in protocol
   bool CheckSumResult;
   bool has_package_error;
   float IntervalSampleAngle;
@@ -39,27 +39,27 @@ public:
   Lidar_Data_Processing();
   ~Lidar_Data_Processing();
 
-  int PackageSampleBytes;   //一个包包含的激光点数
+  int PackageSampleBytes;   //Number of laser points contained in one package
 
-  /*向激光雷达发布指令*/
+  /*Send command to laser lidar*/
   //result_t sendCommand(uint8_t cmd,const void *payload = NULL,size_t payloadsize = 0);
   result_t sendCommand(uint8_t cmd);
-  /*向激光雷达写数据*/
+  /*Write data to laser lidar*/
   result_t sendData(const uint8_t *data, size_t size);
 
-  /*接收激光雷达回复的消息*/
+  /*Receive message from laser lidar*/
   result_t waitResponseHeader(uint8_t cmd,uint64_t timeout = DEFAULT_TIMEOUT);
 
-  /*等待激光雷达调速完成*/
+  /*Wait for laser lidar speed adjustment to complete*/
   result_t waitSpeedRight(uint8_t cmd,uint64_t timeout = DEFAULT_TIMEOUT);
 
-  /*接收串口上传的雷达数据*/
+  /*Receive lidar data uploaded from serial port*/
   result_t waitScanData(node_info *nodebuffer, size_t &count,uint32_t timeout = DEFAULT_TIMEOUT);
 
-  /*解析接收到的雷达数据点（v1及v2版本）*/
+  /*Parse received lidar data points (v1 and v2 versions)*/
   result_t waitPackage(node_info *node,uint32_t timeout = DEFAULT_TIMEOUT);
 
-  /*解析接收到的雷达数据点（M1CT_coin_plus）*/
+  /*Parse received lidar data points (M1CT_coin_plus)*/
   result_t waitPackage_coin(node_info *node,uint32_t timeout = DEFAULT_TIMEOUT);
 
   bool wait_start_reply(uint64_t timeout = DEFAULT_TIMEOUT);

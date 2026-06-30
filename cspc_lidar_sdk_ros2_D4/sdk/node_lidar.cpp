@@ -30,7 +30,7 @@ node_lidar_t::~node_lidar_t(){
 		delete[] globalRecvBuffer;
 		globalRecvBuffer = NULL;
 	}
-	printf("关闭雷达");
+	printf("Closing lidar");
 	node_lidar.serial_port->close();
 	node_lidar.lidar_status.lidar_ready = false;
 	node_lidar.lidar_status.close_lidar = true;
@@ -38,7 +38,7 @@ node_lidar_t::~node_lidar_t(){
 
 }
 
-/*清空缓存区数据*/
+/*Clear buffer data*/
 void flushSerial()
 {
 	if (!node_lidar.lidar_status.isConnected){
@@ -56,20 +56,20 @@ void flushSerial()
 	sleep_ms(20);
 }
 
-/*激光雷达启动状态判断函数*/
+/*Laser lidar startup status judgment function*/
 bool lidar_state_judgment()
 {
-	static bool status_judge = false;     //整体状态判断
-	static bool lidar_flush = false;      //是否已经下发雷达启动指令
-	static bool wait_speed_right = false; //是否获取到调速信息
-	static bool lidar_start_flag = false; //下发雷达启动指令后的雷达反馈标志
+	static bool status_judge = false;     //Overall status judgment
+	static bool lidar_flush = false;      //Whether the lidar startup command has been issued
+	static bool wait_speed_right = false; //Whether speed adjustment information is obtained
+	static bool lidar_start_flag = false; //Lidar feedback flag after issuing the lidar startup command
 
-	static uint64_t lidar_status_time = 0; //收到启动指令或者重启指令的时间
+	static uint64_t lidar_status_time = 0; //Time of receiving startup command or restart command
 
 
 	if(node_lidar.lidar_status.lidar_ready != node_lidar.lidar_status.lidar_last_status || node_lidar.lidar_status.close_lidar)
 	{
-		printf("状态切换\n");
+		printf("Status switch\n");
 
 		node_lidar.lidar_status.close_lidar = false;
 		node_lidar.lidar_status.lidar_last_status = node_lidar.lidar_status.lidar_ready;
@@ -83,7 +83,7 @@ bool lidar_state_judgment()
 	}
 	if(node_lidar.lidar_status.lidar_trap_restart)
 	{
-		printf("状态异常重新启动 %lld\n",lidar_status_time);
+		printf("Status abnormal restart %lld\n",lidar_status_time);
 		
 		node_lidar.lidar_status.lidar_trap_restart = false;
 
@@ -103,24 +103,23 @@ bool lidar_state_judgment()
 			switch (node_lidar.lidar_general_info.version)
 			{
 				case M1C1_Mini_v1:
-					printf("V1版本启动雷达\n");
+				printf("V1 version start lidar\n");
 					node_lidar.serial_port->write_data(start_lidar,4);
 					wait_speed_right = true;
 					break;
 				
 				case M1C1_Mini_v2:
-					printf("V2 X2版本启动雷达\n");
+				printf("V2 X2 version start lidar\n");
 					node_lidar.serial_port->write_data(start_lidar,4);
 					wait_speed_right = true;
 					break;
 				
 				case M1CT_TOF:
-					printf("TOF雷达启动\n");
-					node_lidar.serial_port->write_data(start_lidar,4);
-					if(!node_lidar.lidar_data_processing.wait_start_reply())
-					{
-						printf("未读取到启动反馈指令-->再发一次\n");
-						node_lidar.serial_port->write_data(start_lidar,4);
+				printf("TOF lidar startup\n");
+				node_lidar.serial_port->write_data(start_lidar,4);
+				if(!node_lidar.lidar_data_processing.wait_start_reply())
+				{
+					printf("Did not read startup feedback command --> send again\n");
 						
 					}
 					wait_speed_right = true;
@@ -137,7 +136,7 @@ bool lidar_state_judgment()
 }
 
 /************************************************************************/
-/*  激光数据解析线程　Laser data analysis thread                           */
+/*  Laser data analysis thread                                            */
 /************************************************************************/
 int read_forever()
 {	
@@ -164,11 +163,11 @@ int read_forever()
 				{
 					if(!node_lidar.lidar_status.lidar_restart_try)
 					{
-						printf("尝试重启雷达\n");
+						printf("Try to restart lidar\n");
 						node_lidar.lidar_status.lidar_restart_try = true;
 						node_lidar.lidar_status.lidar_trap_restart = true;
 					}else{
-						printf("@@@雷达被卡住\n");
+						printf("@@@Lidar stuck\n");
 						node_lidar.lidar_status.lidar_abnormal_state |= 0x01;
 						usleep(100);
 					}
@@ -185,8 +184,8 @@ int read_forever()
 					{
 						local_scan[0].stamp = local_buf[pos].stamp;
 						local_scan[0].scan_frequence = local_buf[pos].scan_frequence;
-		
-						/*频率异常超过30秒，触发异常状态*/
+	
+						/*Frequency abnormal exceeds 30 seconds, trigger abnormal state*/
 						if(node_lidar.lidar_general_info.version == M1CT_TOF)
 						{
 							if(local_scan[0].scan_frequence > 200 || local_scan[0].scan_frequence < 10)
@@ -237,7 +236,7 @@ int read_forever()
 	return RESULT_OK;
 }
 
-/*线程事件同步函数*/
+/*Thread event synchronization function*/
 result_t grabScanData(uint32_t timeout) {
 	switch (node_lidar._dataEvent.wait(timeout)) {
 		case Event::EVENT_TIMEOUT:
@@ -258,7 +257,7 @@ result_t grabScanData(uint32_t timeout) {
 	}
 }
 
-/*处理雷达的线程*/
+/*Thread for handling lidar data*/
 bool data_handling(LaserScan &outscan)
 {
 
@@ -274,7 +273,7 @@ bool data_handling(LaserScan &outscan)
 }
 
 
-/*处理最新一圈雷达的数据*/
+/*Process the latest round of lidar data*/
 void send_lidar_data(LaserScan &outscan)
 {
 	node_lidar._lock.lock();
@@ -295,7 +294,7 @@ void send_lidar_data(LaserScan &outscan)
 		outscan.config.min_angle = 0;
 		outscan.config.max_angle = 2*M_PI;
 		outscan.config.min_range = 0.10;
-		outscan.config.max_range = 10.0; //测量的最远距离是10m
+		outscan.config.max_range = 10.0; //Maximum measurement distance is 10m
 		outscan.config.scan_time =  static_cast<float>(scan_time * 1.0 / 1e9);
     	outscan.config.time_increment = outscan.config.scan_time / (double)(count - 1);
 		outscan.stamp = node_lidar.lidar_time.scan_start_time;
@@ -361,7 +360,7 @@ void send_lidar_data(LaserScan &outscan)
 
 			node_lidar._lock.unlock();
 
-			/*雷达被遮挡判断*/
+			/*Lidar occlusion judgment*/
 			
 			node_lidar.optimize_lidar.lidar_blocked_judge(count);
 
@@ -377,7 +376,7 @@ void send_lidar_data(LaserScan &outscan)
 	node_lidar._lock.unlock();
 }
 
-/*设置串口信息的函数*/
+/*Function to set serial port information*/
 bool lidar_set_port()
 {
 	if (node_lidar.lidar_status.isConnected)
@@ -398,12 +397,12 @@ bool lidar_set_port()
 	return true;
 }
 
-/*初始化函数*/
+/*Initialization function*/
 bool initialize()
 {
 	if(node_lidar.lidar_status.optimize_enable)
 	{
-		//求雷达安装位置到扫地机边缘的距离
+		//Calculate the distance from the lidar installation location to the edge of the sweeper
 		node_lidar.optimize_lidar.lidar_blocked_init();
 	}
 
@@ -439,13 +438,13 @@ bool initialize()
 		break;
 	}
 
-	//设置通信串口
+	//Set communication serial port
 	if(!lidar_set_port()){
 		printf("lidar_set_port wrong\n");
 		return false;
 	}
 
-	//获取串口获取每个byte所用的时间
+	//Get the time used by the serial port to get each byte
 	node_lidar.lidar_general_info.trans_delay = node_lidar.serial_port->getByteTime();
 	node_lidar.scan_node_buf = new node_info[1000];
 	node_lidar.globalRecvBuffer = new uint8_t[sizeof(node_packages)];
@@ -464,12 +463,12 @@ int node_start()
 		printf("node_lidar init error\n");
 		return -1;
 	}
-	/*读取激光雷达数据的线程*/
+	/*Thread for reading laser lidar data*/
 	thread t1(read_forever);
 	t1.detach();
 
 
-	/*处理雷达数据的线程*/
+	/*Thread for handling lidar data*/
 	/*
 	thread t2(data_handling(node));
 	t2.detach();*/

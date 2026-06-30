@@ -58,21 +58,21 @@ struct LaserConfig
 struct node_info
 {
   uint8_t sync_flag;          //sync flag
-  uint16_t sync_quality;      //! 信号质量
-  uint16_t angle_q6_checkbit; //! 测距点角度
-  uint16_t distance_q2;       //! 当前测距点距离
-  uint64_t stamp;             //! 时间戳
-  uint8_t scan_frequence;     //! 特定版本此值才有效,无效值是0
-  uint8_t exp_m;              //! 当前是否为高反光材质
+  uint16_t sync_quality;      //! Signal quality
+  uint16_t angle_q6_checkbit; //! Ranging point angle
+  uint16_t distance_q2;       //! Current ranging point distance
+  uint64_t stamp;             //! Timestamp
+  uint8_t scan_frequence;     //! This value is only valid for specific versions, invalid value is 0
+  uint8_t exp_m;              //! Whether it is high-reflectivity material
   uint8_t debug_info[12];
   uint8_t index;
 };
 
 typedef enum
 {
-  DEFAULT_TIMEOUT = 2000,    /**< 默认超时时间. */
-  DEFAULT_HEART_BEAT = 1000, /**< 默认检测掉电功能时间. */
-  MAX_SCAN_NODES = 800,     /**< 最大扫描点数. */
+  DEFAULT_TIMEOUT = 2000,    /**< Default timeout. */
+  DEFAULT_HEART_BEAT = 1000, /**< Default time for detecting power-off function. */
+  MAX_SCAN_NODES = 800,     /**< Maximum number of scan points. */
   DEFAULT_TIMEOUT_COUNT = 10,
 }TIME_CHECK;
 
@@ -108,7 +108,7 @@ typedef enum
   CT_Tail,
 } CT;
 
-/*激光雷达对应的版本*/
+/*Laser lidar corresponding version*/
 typedef enum{
   M1C1_Mini_v1 = 1,
   M1C1_Mini_v2,
@@ -126,7 +126,7 @@ typedef enum{
 #define NORMAL_PACKAGE_SIZE 90
 #define INTENSITY_NORMAL_PACKAGE_SIZE 130
 
-/*对应M1C1_Mini v2版本*/
+/*Corresponding to M1C1_Mini v2 version*/
 struct node_package
 {
   uint16_t package_Head;
@@ -138,7 +138,7 @@ struct node_package
   uint8_t packageSampleDistance[PackageSampleMaxLngth];
 } __attribute__((packed));
 
-/*对应M1C1_Mini v1版本*/
+/*Corresponding to M1C1_Mini v1 version*/
 struct node_packages
 {
   uint16_t package_Head;
@@ -150,7 +150,7 @@ struct node_packages
   uint16_t packageSampleDistance[PackageSampleMaxLngth];
 } __attribute__((packed));
 
-/*对应M1CT_Coin_Plus 版本*/
+/*Corresponding to M1CT_Coin_Plus version*/
 struct node_package_coin
 {
   uint8_t headL;

@@ -4,9 +4,9 @@
 bool get_version_t()
 {
     printf("encry check version\n");
-    //下发获取版本的指令
+    //Send command to get version
     node_lidar.serial_port->write_data(get_version,4);
-    //获取回复
+    //Get response
     if(node_lidar.lidar_data_processing.waitResponseHeader(0x64)==RESULT_OK)
     {
         printf("version=%d,%d\n",node_lidar.lidar_version[0],node_lidar.lidar_version[1]);

@@ -57,7 +57,7 @@ struct tm localdate(int time_zone)
 }
 
 
-//休眠多少毫秒
+//Sleep for how many milliseconds
 void sleep_ms(int ms)
 {
     int ts = ms / 1000;
@@ -66,7 +66,7 @@ void sleep_ms(int ms)
     nanosleep(&r, NULL);
 }
 
-//返回时间字符串
+//Return time string
 char *time_str(const char *fmt)
 {
     static char str[256];

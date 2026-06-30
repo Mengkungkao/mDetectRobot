@@ -96,7 +96,7 @@ result_t Serial_Port::waitForData(size_t data_count, uint64_t timeout, size_t *r
 
 	if (is_open_)
 	{
-    	/*得到缓冲区里有多少字节*/
+    	/*Get how many bytes in the buffer*/
 		if (ioctl(fd_, FIONREAD, returned_size) == -1)
 		{
 			return RESULT_FAIL;
@@ -108,9 +108,9 @@ result_t Serial_Port::waitForData(size_t data_count, uint64_t timeout, size_t *r
 	}
 	
 	fd_set readfds;
-	/*将set清零使集合中不含任何fd*/
+	/*Clear set so the set contains no fd*/
 	FD_ZERO(&readfds);
-	/*将fd_加入set集合*/
+	/*Add fd_ to set collection*/
 	FD_SET(fd_, &readfds);
 
 	MillisecondTimer total_timeout(timeout);
@@ -126,7 +126,7 @@ result_t Serial_Port::waitForData(size_t data_count, uint64_t timeout, size_t *r
 		
 		timespec timeout_val(timespec_from_ms(timeout_remaining_ms));
 
-		/*检查文件描述符是否就绪*/
+		/*Check if the file descriptor is ready*/
 		int n = pselect(fd_+1, &readfds, NULL, NULL, &timeout_val,NULL);
 
 		if (n < 0)
@@ -143,7 +143,7 @@ result_t Serial_Port::waitForData(size_t data_count, uint64_t timeout, size_t *r
 		}
 		else
 		{
-			/*调用select后，检查fd_是否在set集合中*/
+			/*After calling select, check if fd_ is in set collection*/
 			if(FD_ISSET(fd_, &readfds)){
 				if(ioctl(fd_, FIONREAD, returned_size)<0){
 					return RESULT_FAIL;
@@ -677,7 +677,7 @@ bool Serial_Port::setDTR(bool level) {
   return true;
 }
 
-/*关闭串口*/
+/*Close serial port*/
 void Serial_Port::close() 
 {
   if (is_open_ == true) 

@@ -117,16 +117,16 @@ public:
   void close();
   bool getTermios(termios *tio);
 
-  /*设置数据位数*/
+  /*Set number of data bits*/
   void set_databits(termios *tio, bytesize_t databits);
 
-  /*设置奇偶性*/
+  /*Set parity*/
   void set_parity(termios *tio, parity_t parity);
 
-  /*设置停止位*/
+  /*Set stop bits*/
   void set_stopbits(termios *tio, stopbits_t stopbits);
 
-  /*流量控制*/
+  /*Flow control*/
   void set_flowcontrol(termios *tio,flowcontrol_t flowcontrol);
 
   void set_common_props(termios *tio);
@@ -138,7 +138,7 @@ public:
   size_t available();
   bool setDTR(bool level);
 
-  /*获取串口传输一个byte时间*/
+  /*Get the time to transmit one byte over serial port*/
   uint32_t getByteTime();
 
   bool setBaudrate(unsigned long baudrate);
