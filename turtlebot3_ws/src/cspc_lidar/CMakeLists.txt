@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(cspc_lidar)
 
-# Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
@@ -16,21 +15,22 @@ find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(pcl_conversions REQUIRED)
-find_package(PCL 1.10 REQUIRED)
-#find_package(rosidl_default_generators REQUIRED)
 
 include_directories(
   ${PROJECT_SOURCE_DIR}/include/cspc_lidar
   ${PROJECT_SOURCE_DIR}/sdk
-  ${PCL_INCLUDE_DIRS}
 )
 
-link_directories(${PCL_LIBRARY_DIRS})
-add_definitions(${PCL_DEFINITIONS})
-
-
-add_executable(cspc_lidar sdk/mtime.cpp sdk/node_lidar.cpp sdk/serial_port.cpp sdk/timer.cpp sdk/lidar_data_processing.cpp sdk/point_cloud_optimize.cpp sdk/calibration.cpp src/node_lidar_ros.cpp)
+add_executable(cspc_lidar
+  sdk/mtime.cpp
+  sdk/node_lidar.cpp
+  sdk/serial_port.cpp
+  sdk/timer.cpp
+  sdk/lidar_data_processing.cpp
+  sdk/point_cloud_optimize.cpp
+  sdk/calibration.cpp
+  src/node_lidar_ros.cpp
+)
 
 ament_target_dependencies(cspc_lidar
   "rclcpp"
@@ -38,7 +38,6 @@ ament_target_dependencies(cspc_lidar
   "sensor_msgs"
   "visualization_msgs"
   "geometry_msgs"
-  "pcl_conversions"
 )
 
 install(TARGETS

@@ -1,0 +1,438 @@
+[0.008s] Invoking command in '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/meng/mdetect_ws/install/mdetect_navigation:/opt/ros/humble /usr/bin/cmake /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar
+[0.020s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.113s] -- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)
+[0.134s] -- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.136s] -- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.139s] -- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.146s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.154s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.174s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.175s] -- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.261s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.293s] -- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)
+[0.311s] -- Found visualization_msgs: 4.9.1 (/opt/ros/humble/share/visualization_msgs/cmake)
+[0.325s] -- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[0.403s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[0.427s] -- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+[0.673s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[0.679s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[0.817s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[0.825s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[0.835s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[0.949s] -- Found Qhull version 8.0.2
+[1.072s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[1.218s] -- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)
+[1.219s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[1.272s] -- Added test 'copyright' to check source files copyright and LICENSE
+[1.273s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[1.273s] -- Configured cppcheck include dirs: /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/include/cspc_lidar;/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk
+[1.273s] -- Configured cppcheck exclude dirs and/or files: 
+[1.274s] -- Added test 'cpplint' to check C / C++ code against the Google style
+[1.274s] -- Configured cpplint exclude dirs and/or files: 
+[1.274s] -- Added test 'flake8' to check Python code syntax and style conventions
+[1.274s] -- Added test 'lint_cmake' to check CMake code style
+[1.274s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[1.275s] -- Added test 'uncrustify' to check C / C++ code style
+[1.275s] -- Configured uncrustify additional arguments: 
+[1.275s] -- Added test 'xmllint' to check XML markup files
+[1.276s] -- Configuring done
+[1.284s] -- Generating done
+[1.287s] -- Build files have been written to: /home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar
+[1.296s] Invoked command in '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/meng/mdetect_ws/install/mdetect_navigation:/opt/ros/humble /usr/bin/cmake /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar
+[1.298s] Invoking command in '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/meng/mdetect_ws/install/mdetect_navigation:/opt/ros/humble /usr/bin/cmake --build /home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar -- -j20 -l20
+[1.352s] Consolidate compiler generated dependencies of target cspc_lidar
+[1.364s] [ 11%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/lidar_data_processing.cpp.o
+[1.365s] [ 22%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/point_cloud_optimize.cpp.o
+[1.365s] [ 33%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/calibration.cpp.o
+[1.366s] [ 44%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/mtime.cpp.o
+[1.366s] [ 55%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/node_lidar.cpp.o
+[1.367s] [ 66%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/serial_port.cpp.o
+[1.367s] [ 77%] Building CXX object CMakeFiles/cspc_lidar.dir/sdk/timer.cpp.o
+[1.369s] [ 88%] Building CXX object CMakeFiles/cspc_lidar.dir/src/node_lidar_ros.cpp.o
+[1.627s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp:12:
+[1.627s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h: In constructor ‘Serial_Port::Serial_Port(const string&, uint32_t, Timeout, bytesize_t, parity_t, stopbits_t, flowcontrol_t)’:
+[1.628s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:102:14: warning: ‘Serial_Port::bytesize_’ will be initialized after [-Wreorder]
+[1.628s]   102 |   bytesize_t bytesize_;       // Size of the bytes
+[1.628s]       |              ^~~~~~~~~
+[1.628s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:101:12: warning:   ‘parity_t Serial_Port::parity_’ [-Wreorder]
+[1.628s]   101 |   parity_t parity_;           // Parity
+[1.628s]       |            ^~~~~~~
+[1.628s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp:31:1: warning:   when initialized here [-Wreorder]
+[1.628s]    31 | Serial_Port::Serial_Port(const string &port, uint32_t baudrate, Timeout timeout,
+[1.628s]       | ^~~~~~~~~~~
+[1.630s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp: In member function ‘bool Serial_Port::setBaudrate(long unsigned int)’:
+[1.630s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp:578:11: warning: unused variable ‘new_baud’ [-Wunused-variable]
+[1.630s]   578 |   speed_t new_baud = static_cast<speed_t>(baudrate);
+[1.630s]       |           ^~~~~~~~
+[1.645s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function ‘void pcloud_build_by_scan(LaserScan&, pcloud_t&)’:
+[1.645s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:44:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.645s]    44 |   for (int i = 0; i < outscan.points.size(); i++)
+[1.645s]       |                   ~~^~~~~~~~~~~~~~~~~~~~~~~
+[1.645s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:46:11: warning: ‘void* memset(void*, int, size_t)’ clearing an object of non-trivial type ‘point_t’ {aka ‘struct _point_’}; use assignment or value-initialization instead [-Wclass-memaccess]
+[1.646s]    46 |     memset(&point, 0, sizeof(point_t));
+[1.646s]       |     ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[1.646s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:8:
+[1.646s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.h:52:16: note: ‘point_t’ {aka ‘struct _point_’} declared here
+[1.646s]    52 | typedef struct _point_
+[1.646s]       |                ^~~~~~~
+[1.646s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function ‘int find_index(point_t, pcloud_t&)’:
+[1.646s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:105:9: warning: ‘void* memset(void*, int, size_t)’ clearing an object of non-trivial type ‘point_t’ {aka ‘struct _point_’}; use assignment or value-initialization instead [-Wclass-memaccess]
+[1.646s]   105 |   memset(&point_min, 0, sizeof(point_t));
+[1.646s]       |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[1.646s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:8:
+[1.646s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.h:52:16: note: ‘point_t’ {aka ‘struct _point_’} declared here
+[1.647s]    52 | typedef struct _point_
+[1.647s]       |                ^~~~~~~
+[1.647s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:124:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.647s]   124 |   if (point_min.index > pcloud.data.size())
+[1.647s]       |       ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+[1.647s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function ‘bool intersect(LineSegment, LineSegment, Vector2D&)’:
+[1.647s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:167:10: warning: unused variable ‘cross1’ [-Wunused-variable]
+[1.647s]   167 |   double cross1 = position1.x * direction1.y - position1.y * direction1.x;
+[1.647s]       |          ^~~~~~
+[1.649s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function ‘double pointToLineDist(point_t, double, double)’:
+[1.649s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:439:10: warning: unused variable ‘y0’ [-Wunused-variable]
+[1.649s]   439 |   double y0 = k * x0 + b;
+[1.649s]       |          ^~
+[1.649s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function ‘bool line_judgment(std::vector<_point_>, point_t)’:
+[1.649s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:462:19: warning: comparison of integer expressions of different signedness: ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+[1.649s]   462 |   if (line.size() <= reference)
+[1.649s]       |       ~~~~~~~~~~~~^~~~~~~~~~~~
+[1.649s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:467:19: warning: comparison of integer expressions of different signedness: ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+[1.649s]   467 |   if (line.size() <= reference)
+[1.649s]       |       ~~~~~~~~~~~~^~~~~~~~~~~~
+[1.649s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:471:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.650s]   471 |     for (int i = 1; i < line.size() - 1; i++)
+[1.650s]       |                     ~~^~~~~~~~~~~~~~~~~
+[1.651s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function ‘void fitting_line(pcloud_t&)’:
+[1.652s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:542:25: warning: comparison of integer expressions of different signedness: ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+[1.652s]   542 |         if (line.size() >= calibration_params.line_judgment_point_num)
+[1.652s]       |             ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[1.652s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:560:63: warning: comparison of integer expressions of different signedness: ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+[1.652s]   560 |         if(point.index == point_last_one.index && line.size() >= calibration_params.line_judgment_point_num)
+[1.652s]       |                                                   ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[1.652s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:571:26: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.652s]   571 |   if(point_record2.index < pcloud.data.size()
+[1.652s]       |      ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+[1.652s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:572:28: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.652s]   572 |   &&  point_last_one.index < pcloud.data.size()
+[1.652s]       |       ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+[1.652s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:573:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.653s]   573 |   &&  point_record1.index < pcloud.data.size())
+[1.653s]       |       ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+[1.653s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:597:28: warning: comparison of integer expressions of different signedness: ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+[1.653s]   597 |     if (line_append.size() >= calibration_params.line_judgment_point_num)
+[1.653s]       |         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[1.653s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:606:29: warning: comparison of integer expressions of different signedness: ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+[1.653s]   606 |             if (line.size() >= calibration_params.line_judgment_point_num)
+[1.653s]       |                 ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[1.653s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:617:68: warning: comparison of integer expressions of different signedness: ‘std::vector<_point_>::size_type’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+[1.653s]   617 |           if(point.index == point_append_last.index && line.size() >= calibration_params.line_judgment_point_num)
+[1.653s]       |                                                        ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[1.653s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:632:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::vector<_point_> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.654s]   632 |     for (int i = 0; i < lines.size() - 1; i++)
+[1.654s]       |                     ~~^~~~~~~~~~~~~~~~~~
+[1.654s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function ‘void lidar_calibration(LaserScan&)’:
+[1.654s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:662:11: warning: ‘void* memset(void*, int, size_t)’ clearing an object of type ‘struct LaserPoint’ with no trivial copy-assignment; use assignment or value-initialization instead [-Wclass-memaccess]
+[1.654s]   662 |     memset(&outscan_point, 0, sizeof(LaserPoint));
+[1.654s]       |     ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[1.654s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.h:4,
+[1.654s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:8:
+[1.654s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:210:8: note: ‘struct LaserPoint’ declared here
+[1.654s]   210 | struct LaserPoint
+[1.654s]       |        ^~~~~~~~~~
+[1.655s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function ‘void flushSerial()’:
+[1.655s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:53:24: warning: unused variable ‘bytes_read’ [-Wunused-variable]
+[1.655s]    53 |                 size_t bytes_read = node_lidar.serial_port->read_data(buffer, len);
+[1.656s]       |                        ^~~~~~~~~~
+[1.656s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function ‘bool lidar_state_judgment()’:
+[1.656s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:86:52: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 2 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+[1.656s]    86 |                 printf("Status abnormal restart %lld\n",lidar_status_time);
+[1.656s]       |                                                 ~~~^    ~~~~~~~~~~~~~~~~~
+[1.656s]       |                                                    |    |
+[1.656s]       |                                                    |    uint64_t {aka long unsigned int}
+[1.656s]       |                                                    long long int
+[1.656s]       |                                                 %ld
+[1.656s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:62:21: warning: unused variable ‘status_judge’ [-Wunused-variable]
+[1.656s]    62 |         static bool status_judge = false;     //Overall status judgment
+[1.656s]       |                     ^~~~~~~~~~~~
+[1.657s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:65:21: warning: variable ‘lidar_start_flag’ set but not used [-Wunused-but-set-variable]
+[1.657s]    65 |         static bool lidar_start_flag = false; //Lidar feedback flag after issuing the lidar startup command
+[1.657s]       |                     ^~~~~~~~~~~~~~~~
+[1.657s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function ‘int read_forever()’:
+[1.657s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:205:82: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘size_t’ {aka ‘long unsigned int’} [-Wformat=]
+[1.657s]   205 |                                                         printf("full----- count=%d,time=%lld,frequence=%d\n",scan_count,current_times(),local_scan[0].scan_frequence);
+[1.657s]       |                                                                                 ~^                           ~~~~~~~~~~
+[1.657s]       |                                                                                  |                           |
+[1.657s]       |                                                                                  int                         size_t {aka long unsigned int}
+[1.657s]       |                                                                                 %ld
+[1.658s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:205:92: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 3 has type ‘int64_t’ {aka ‘long int’} [-Wformat=]
+[1.658s]   205 |                                                         printf("full----- count=%d,time=%lld,frequence=%d\n",scan_count,current_times(),local_scan[0].scan_frequence);
+[1.658s]       |                                                                                         ~~~^                            ~~~~~~~~~~~~~~~
+[1.658s]       |                                                                                            |                                         |
+[1.658s]       |                                                                                            long long int                             int64_t {aka long int}
+[1.658s]       |                                                                                         %ld
+[1.658s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function ‘void send_lidar_data(LaserScan&)’:
+[1.658s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:311:43: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.658s]   311 |                         for (int i = 0; i < count; i++)
+[1.658s]       |                                         ~~^~~~~~~
+[1.658s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp: In member function ‘bool Serial_Port::setCustomBaudRate(long unsigned int)’:
+[1.658s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.cpp:571:1: warning: control reaches end of non-void function [-Wreturn-type]
+[1.658s]   571 | }
+[1.659s]       | ^
+[1.671s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp: In member function ‘void Point_cloud_optimize::PointCloudFilter(LaserScan*)’:
+[1.671s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:25:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.671s]    25 |         for (i0 = 0; i0 < Scan->points.size(); i0++)
+[1.671s]       |                      ~~~^~~~~~~~~~~~~~~~~~~~~
+[1.671s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:28:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.671s]    28 |                 i1 = i1 < Scan->points.size() ? i1 : i1 - Scan->points.size();
+[1.671s]       |                      ~~~^~~~~~~~~~~~~~~~~~~~~
+[1.671s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:30:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.671s]    30 |                 i2 = i2 < Scan->points.size() ? i2 : i2 - Scan->points.size();
+[1.672s]       |                      ~~~^~~~~~~~~~~~~~~~~~~~~
+[1.672s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:32:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.672s]    32 |                 i3 = i3 < Scan->points.size() ? i3 : i3 - Scan->points.size();
+[1.672s]       |                      ~~~^~~~~~~~~~~~~~~~~~~~~
+[1.672s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:155:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.672s]   155 |         for (i0 = 0; i0 < Scan->points.size(); i0++)
+[1.672s]       |                      ~~~^~~~~~~~~~~~~~~~~~~~~
+[1.672s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:158:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.672s]   158 |                 i1 = i1 < Scan->points.size() ? i1 : i1 - Scan->points.size();
+[1.672s]       |                      ~~~^~~~~~~~~~~~~~~~~~~~~
+[1.672s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:160:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.673s]   160 |                 i2 = i2 < Scan->points.size() ? i2 : i2 - Scan->points.size();
+[1.673s]       |                      ~~~^~~~~~~~~~~~~~~~~~~~~
+[1.673s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:162:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.673s]   162 |                 i3 = i3 < Scan->points.size() ? i3 : i3 - Scan->points.size();
+[1.673s]       |                      ~~~^~~~~~~~~~~~~~~~~~~~~
+[1.673s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:164:25: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.673s]   164 |                 i4 = i4 < Scan->points.size() ? i4 : i4 - Scan->points.size();
+[1.673s]       |                      ~~~^~~~~~~~~~~~~~~~~~~~~
+[1.673s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp: In member function ‘int Point_cloud_optimize::UltrasonicSimRanging(LaserPoint&)’:
+[1.674s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:228:13: warning: unused variable ‘i’ [-Wunused-variable]
+[1.674s]   228 |         int i, index;
+[1.674s]       |             ^
+[1.674s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:229:15: warning: unused variable ‘tempdep’ [-Wunused-variable]
+[1.674s]   229 |         short tempdep;
+[1.674s]       |               ^~~~~~~
+[1.674s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:253:1: warning: no return statement in function returning non-void [-Wreturn-type]
+[1.674s]   253 | }
+[1.674s]       | ^
+[1.674s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp: In member function ‘void Point_cloud_optimize::lidar_blocked_init()’:
+[1.675s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:404:69: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+[1.675s]   404 |                         if((angle >= 0 && angle < 90)|| angle > 270 && angle <=360){
+[1.675s]       |                                                         ~~~~~~~~~~~~^~~~~~~~~~~~~~
+[1.675s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:375:21: warning: unused variable ‘temp’ [-Wunused-variable]
+[1.675s]   375 |         float r, d, temp;
+[1.675s]       |                     ^~~~
+[1.703s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp: In member function ‘bool Lidar_Data_Processing::wait_start_reply(uint64_t)’:
+[1.703s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:107:49: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+[1.703s]   107 |   while ((waitTime = current_times() - startTs) <= timeout){
+[1.703s]       |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+[1.703s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp: In member function ‘result_t Lidar_Data_Processing::waitSpeedRight(uint8_t, uint64_t)’:
+[1.704s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:209:56: warning: unused parameter ‘cmd’ [-Wunused-parameter]
+[1.704s]   209 | result_t Lidar_Data_Processing::waitSpeedRight(uint8_t cmd,uint64_t timeout)
+[1.704s]       |                                                ~~~~~~~~^~~
+[1.704s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp: In member function ‘result_t Lidar_Data_Processing::waitResponseHeader(uint8_t, uint64_t)’:
+[1.704s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:481:28: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘size_t’ {aka ‘long unsigned int’} [-Wformat=]
+[1.704s]   481 |       printf("data**%d,%d,%d\n",check_sum_cal,recvBuffer[remainSize-1],remainSize);
+[1.704s]       |                           ~^                                           ~~~~~~~~~~
+[1.704s]       |                            |                                           |
+[1.704s]       |                            int                                         size_t {aka long unsigned int}
+[1.705s]       |                           %ld
+[1.707s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp: In member function ‘result_t Lidar_Data_Processing::waitPackage_coin(node_info*, uint32_t)’:
+[1.707s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:973:9: warning: unused variable ‘k’ [-Wunused-variable]
+[1.707s]   973 |     int k;
+[1.707s]       |         ^
+[1.707s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:873:11: warning: variable ‘AngleCorrectForDistance’ set but not used [-Wunused-but-set-variable]
+[1.707s]   873 |   int32_t AngleCorrectForDistance = 0;
+[1.707s]       |           ^~~~~~~~~~~~~~~~~~~~~~~
+[1.708s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:875:11: warning: unused variable ‘package_type’ [-Wunused-variable]
+[1.708s]   875 |   uint8_t package_type = 0;
+[1.708s]       |           ^~~~~~~~~~~~
+[1.708s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:877:12: warning: unused variable ‘start’ [-Wunused-variable]
+[1.708s]   877 |   uint16_t start;
+[1.708s]       |            ^~~~~
+[1.708s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:878:12: warning: unused variable ‘stop’ [-Wunused-variable]
+[1.708s]   878 |   uint16_t stop;
+[1.708s]       |            ^~~~
+[1.727s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: At global scope:
+[1.727s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:62:21: warning: ‘status_judge’ defined but not used [-Wunused-variable]
+[1.728s]    62 |         static bool status_judge = false;     //Overall status judgment
+[1.728s]       |                     ^~~~~~~~~~~~
+[1.784s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function ‘void straightening_process(point_lines, point_t, point_t, pcloud_t&)’:
+[1.784s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:194:12: warning: ‘intersection.Vector2D::x’ is used uninitialized [-Wuninitialized]
+[1.784s]   194 |   Vector2D intersection;
+[1.784s]       |            ^~~~~~~~~~~~
+[1.784s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:194:12: warning: ‘intersection.Vector2D::y’ is used uninitialized [-Wuninitialized]
+[1.839s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp: In member function ‘void Point_cloud_optimize::getLidarCoverAngle(char*)’:
+[1.839s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/point_cloud_optimize.cpp:293:38: warning: ‘index’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+[1.839s]   293 |                         tempstr[index++] = charbuf[i];
+[1.839s]       |                                 ~~~~~^~
+[1.867s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp: In member function ‘result_t Lidar_Data_Processing::waitPackage(node_info*, uint32_t)’:
+[1.867s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.867s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.867s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.867s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.867s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.867s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 2 into destination object ‘node_packages::package_Head’ of size 2
+[1.867s]   144 |   uint16_t package_Head;
+[1.867s]       |            ^~~~~~~~~~~~
+[1.867s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 2 into destination object ‘node_package::package_Head’ of size 2
+[1.868s]   132 |   uint16_t package_Head;
+[1.868s]       |            ^~~~~~~~~~~~
+[1.868s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.868s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.868s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.868s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.868s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.868s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 2 into destination object ‘node_packages::package_Head’ of size 2
+[1.868s]   144 |   uint16_t package_Head;
+[1.868s]       |            ^~~~~~~~~~~~
+[1.868s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 2 into destination object ‘node_package::package_Head’ of size 2
+[1.868s]   132 |   uint16_t package_Head;
+[1.869s]       |            ^~~~~~~~~~~~
+[1.869s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.869s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.869s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.869s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.869s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.869s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 3 into destination object ‘node_packages::package_Head’ of size 2
+[1.869s]   144 |   uint16_t package_Head;
+[1.869s]       |            ^~~~~~~~~~~~
+[1.869s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 3 into destination object ‘node_package::package_Head’ of size 2
+[1.869s]   132 |   uint16_t package_Head;
+[1.869s]       |            ^~~~~~~~~~~~
+[1.869s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.870s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.870s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.870s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.870s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.870s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 4 into destination object ‘node_packages::package_Head’ of size 2
+[1.870s]   144 |   uint16_t package_Head;
+[1.870s]       |            ^~~~~~~~~~~~
+[1.870s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 4 into destination object ‘node_package::package_Head’ of size 2
+[1.870s]   132 |   uint16_t package_Head;
+[1.870s]       |            ^~~~~~~~~~~~
+[1.870s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.870s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.870s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.871s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.871s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.871s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 5 into destination object ‘node_packages::package_Head’ of size 2
+[1.871s]   144 |   uint16_t package_Head;
+[1.871s]       |            ^~~~~~~~~~~~
+[1.871s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 5 into destination object ‘node_package::package_Head’ of size 2
+[1.871s]   132 |   uint16_t package_Head;
+[1.871s]       |            ^~~~~~~~~~~~
+[1.871s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.871s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.871s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.871s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.872s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.872s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 6 into destination object ‘node_packages::package_Head’ of size 2
+[1.872s]   144 |   uint16_t package_Head;
+[1.872s]       |            ^~~~~~~~~~~~
+[1.872s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 6 into destination object ‘node_package::package_Head’ of size 2
+[1.872s]   132 |   uint16_t package_Head;
+[1.872s]       |            ^~~~~~~~~~~~
+[1.872s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.872s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.872s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.872s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.872s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.873s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 7 into destination object ‘node_packages::package_Head’ of size 2
+[1.873s]   144 |   uint16_t package_Head;
+[1.873s]       |            ^~~~~~~~~~~~
+[1.873s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 7 into destination object ‘node_package::package_Head’ of size 2
+[1.873s]   132 |   uint16_t package_Head;
+[1.873s]       |            ^~~~~~~~~~~~
+[1.873s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.873s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.873s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.873s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.873s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.873s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 7 into destination object ‘node_packages::package_Head’ of size 2
+[1.873s]   144 |   uint16_t package_Head;
+[1.874s]       |            ^~~~~~~~~~~~
+[1.874s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 7 into destination object ‘node_package::package_Head’ of size 2
+[1.874s]   132 |   uint16_t package_Head;
+[1.874s]       |            ^~~~~~~~~~~~
+[1.874s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.874s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.874s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.874s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.874s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.874s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 7 into destination object ‘node_packages::package_Head’ of size 2
+[1.874s]   144 |   uint16_t package_Head;
+[1.874s]       |            ^~~~~~~~~~~~
+[1.874s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 7 into destination object ‘node_package::package_Head’ of size 2
+[1.875s]   132 |   uint16_t package_Head;
+[1.875s]       |            ^~~~~~~~~~~~
+[1.875s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.875s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.875s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.875s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.875s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.875s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 7 into destination object ‘node_packages::package_Head’ of size 2
+[1.875s]   144 |   uint16_t package_Head;
+[1.875s]       |            ^~~~~~~~~~~~
+[1.875s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 7 into destination object ‘node_package::package_Head’ of size 2
+[1.875s]   132 |   uint16_t package_Head;
+[1.875s]       |            ^~~~~~~~~~~~
+[1.875s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.875s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.875s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.875s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.875s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.876s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 8 into destination object ‘node_packages::package_Head’ of size 2
+[1.876s]   144 |   uint16_t package_Head;
+[1.876s]       |            ^~~~~~~~~~~~
+[1.876s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 8 into destination object ‘node_package::package_Head’ of size 2
+[1.876s]   132 |   uint16_t package_Head;
+[1.876s]       |            ^~~~~~~~~~~~
+[1.876s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:651:34: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+[1.876s]   651 |         packageBuffer[recvPos++] = currentByte;
+[1.876s]       |         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[1.876s] In file included from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/serial_port.h:4,
+[1.876s]                  from /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_data_processing.cpp:7:
+[1.876s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:144:12: note: at offset 9 into destination object ‘node_packages::package_Head’ of size 2
+[1.876s]   144 |   uint16_t package_Head;
+[1.876s]       |            ^~~~~~~~~~~~
+[1.876s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/lidar_information.h:132:12: note: at offset 9 into destination object ‘node_package::package_Head’ of size 2
+[1.876s]   132 |   uint16_t package_Head;
+[1.876s]       |            ^~~~~~~~~~~~
+[1.955s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp: In function ‘void fitting_line(pcloud_t&)’:
+[1.955s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:530:11: warning: ‘point_record2._point_::index’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+[1.955s]   530 |   point_t point_record2;
+[1.955s]       |           ^~~~~~~~~~~~~
+[1.955s] /home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/calibration.cpp:529:11: warning: ‘point_record1._point_::index’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+[1.955s]   529 |   point_t point_record1;
+[1.955s]       |           ^~~~~~~~~~~~~
+[8.890s] [100%] Linking CXX executable cspc_lidar
+[9.012s] [100%] Built target cspc_lidar
+[9.023s] Invoked command in '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/meng/mdetect_ws/install/mdetect_navigation:/opt/ros/humble /usr/bin/cmake --build /home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar -- -j20 -l20
+[9.038s] Invoking command in '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/meng/mdetect_ws/install/mdetect_navigation:/opt/ros/humble /usr/bin/cmake --install /home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar
+[9.046s] -- Install configuration: "Release"
+[9.046s] -- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/lib/cspc_lidar/cspc_lidar
+[9.049s] -- Set runtime path of "/home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/lib/cspc_lidar/cspc_lidar" to ""
+[9.049s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/launch
+[9.049s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/launch/cspc_lidar.launch.py
+[9.049s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/params
+[9.049s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/params/cspc_lidar.yaml
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/ament_index/resource_index/package_run_dependencies/cspc_lidar
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/ament_index/resource_index/parent_prefix_path/cspc_lidar
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/environment/ament_prefix_path.sh
+[9.050s] -- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/environment/ament_prefix_path.dsv
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/environment/path.sh
+[9.050s] -- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/environment/path.dsv
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/local_setup.bash
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/local_setup.sh
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/local_setup.zsh
+[9.050s] -- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/local_setup.dsv
+[9.050s] -- Installing: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/package.dsv
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/ament_index/resource_index/packages/cspc_lidar
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/cmake/cspc_lidarConfig.cmake
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/cmake/cspc_lidarConfig-version.cmake
+[9.050s] -- Up-to-date: /home/meng/mDetectRobot/turtlebot3_ws/install/cspc_lidar/share/cspc_lidar/package.xml
+[9.052s] Invoked command in '/home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/meng/mdetect_ws/install/mdetect_navigation:/opt/ros/humble /usr/bin/cmake --install /home/meng/mDetectRobot/turtlebot3_ws/build/cspc_lidar

@@ -1,0 +1,59 @@
+CMake Warning (dev) at CMakeLists.txt:20 (find_package):
+  Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.
+  Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  CMake variable PCL_ROOT is set to:
+
+    /usr
+
+  For compatibility, CMake is ignoring the variable.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function ‘void flushSerial()’:
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:53:24: warning: unused variable ‘bytes_read’ [-Wunused-variable]
+   53 |                 size_t bytes_read = node_lidar.serial_port->read_data(buffer, len);
+      |                        ^~~~~~~~~~
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function ‘bool lidar_state_judgment()’:
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:86:52: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 2 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+   86 |                 printf("Status abnormal restart %lld\n",lidar_status_time);
+      |                                                 ~~~^    ~~~~~~~~~~~~~~~~~
+      |                                                    |    |
+      |                                                    |    uint64_t {aka long unsigned int}
+      |                                                    long long int
+      |                                                 %ld
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:62:21: warning: unused variable ‘status_judge’ [-Wunused-variable]
+   62 |         static bool status_judge = false;     //Overall status judgment
+      |                     ^~~~~~~~~~~~
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:65:21: warning: variable ‘lidar_start_flag’ set but not used [-Wunused-but-set-variable]
+   65 |         static bool lidar_start_flag = false; //Lidar feedback flag after issuing the lidar startup command
+      |                     ^~~~~~~~~~~~~~~~
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function ‘int read_forever()’:
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:205:82: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘size_t’ {aka ‘long unsigned int’} [-Wformat=]
+  205 |                                                         printf("full----- count=%d,time=%lld,frequence=%d\n",scan_count,current_times(),local_scan[0].scan_frequence);
+      |                                                                                 ~^                           ~~~~~~~~~~
+      |                                                                                  |                           |
+      |                                                                                  int                         size_t {aka long unsigned int}
+      |                                                                                 %ld
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:205:92: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 3 has type ‘int64_t’ {aka ‘long int’} [-Wformat=]
+  205 |                                                         printf("full----- count=%d,time=%lld,frequence=%d\n",scan_count,current_times(),local_scan[0].scan_frequence);
+      |                                                                                         ~~~^                            ~~~~~~~~~~~~~~~
+      |                                                                                            |                                         |
+      |                                                                                            long long int                             int64_t {aka long int}
+      |                                                                                         %ld
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: In function ‘void send_lidar_data(LaserScan&)’:
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:311:43: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  311 |                         for (int i = 0; i < count; i++)
+      |                                         ~~^~~~~~~
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp: At global scope:
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/sdk/node_lidar.cpp:62:21: warning: ‘status_judge’ defined but not used [-Wunused-variable]
+   62 |         static bool status_judge = false;     //Overall status judgment
+      |                     ^~~~~~~~~~~~
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp: In function ‘int Scan_to_PointCloud(LaserScan&, sensor_msgs::msg::PointCloud2&)’:
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp:87:24: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+   87 |         for(int i = 0;i<scan.points.size();i++)
+      |                       ~^~~~~~~~~~~~~~~~~~~
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp: In function ‘int main(int, char**)’:
+/home/meng/mDetectRobot/turtlebot3_ws/src/cspc_lidar/src/node_lidar_ros.cpp:186:40: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<LaserPoint>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  186 |                         for(int i=0; i < scan.points.size(); i++) {
+      |                                      ~~^~~~~~~~~~~~~~~~~~~~

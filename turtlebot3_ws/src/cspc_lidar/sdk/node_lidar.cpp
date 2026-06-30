@@ -361,7 +361,7 @@ void send_lidar_data(LaserScan &outscan)
 			node_lidar._lock.unlock();
 
 			/*Lidar occlusion judgment*/
-			
+
 			node_lidar.optimize_lidar.lidar_blocked_judge(count);
 
 
@@ -370,7 +370,7 @@ void send_lidar_data(LaserScan &outscan)
 				node_lidar.optimize_lidar.PointCloudFilter(&outscan);
 			}
 
-
+			return;
 		}
 	}
 	node_lidar._lock.unlock();

@@ -338,7 +338,7 @@ void Point_cloud_optimize::lidar_blocked_judge(int count)
 	}
 	if(node_lidar.lidar_block.point_check > 200)
 	{
-		printf("lidar Lidar is 70% seriously blocked %d,%d\n",node_lidar.lidar_block.lidar_zero_count,node_lidar.scan_node_count);
+		printf("lidar: 70%%%% blocked zero=%d nodes=%zu\n",node_lidar.lidar_block.lidar_zero_count,node_lidar.scan_node_count);
 		node_lidar.lidar_status.lidar_abnormal_state |= 0x04;
 		node_lidar.lidar_block.point_check = 0;
 	}
